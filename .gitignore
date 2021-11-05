@@ -1,5 +1,2 @@
-log
-*.log
-.firebase/
-
+target/
 *.mp4
