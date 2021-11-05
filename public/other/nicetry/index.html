@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nice Try</title>
+    <style>
+        body {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        .footer {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+        }
+
+        .footer * {
+            color: #B6B6B6;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Nice Try...</h1>
+    <p>There is no way to stop the Random Facts of the Day!!!</p>
+    <br>
+    <p>well i guess you could brake into my house and destroy my server but i would rather not think about that.</p>
+
+    <div class="footer"><a href="#" id="doit">ok but like i actually wanna unsubscribe</a></div>
+
+    <script>
+        let questions = ["ok but are you really really sure???", "really really sure?", ":'( it would make me sad"];
+        document.getElementById("doit").onclick = () => {
+            for (let i = 0; i < questions.length; i++) {
+                if (!confirm(questions[i])) {
+                    alert("Good Choice! : )");
+                    break;
+                }
+            }
+        }
+    </script>
+</body>
+
+</html>

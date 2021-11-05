@@ -1,0 +1,74 @@
+body {
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #474747;
+
+}
+#title {
+  text-align: center;
+  font-size: 300%;
+  margin-bottom: 0px;
+}
+#subtitle {
+  text-align: center;
+  margin-top: 0px;
+}
+#fbutton {
+  background: #757575;
+  margin: 2px;
+  padding: 7px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+}
+#fbutton:hover {
+  background: #666666;
+  cursor: pointer;
+}
+footer {
+  position: absolute;
+  bottom: 0;
+}
+.wrapper {
+  text-align: center;
+}
+.button {
+  display: block;
+  margin: auto;
+  margin-top: 4rem;
+  background-color: #FEE140;
+  background-color: #21D4FD;
+  background-image: linear-gradient(19deg, #21D4FD 0%, #B721FF 100%);
+  border: none;
+  color: white;
+  padding: 16px 32px;
+  font-size: 5vw;
+  opacity: 0.8;
+  transition: 0.3s;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: 10px 10px rgb(0, 0, 0);
+}
+
+.button:hover {
+  opacity: 1;
+  box-shadow: 15px 15px rgb(0, 0, 0);
+  font-size: 5.2vw;
+}
+#dis {
+  background: #757575;
+  margin: 2px;
+  padding: 7px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+}
+#dis:hover {
+  background: #666666;
+  cursor: pointer;
+}

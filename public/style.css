@@ -1,0 +1,114 @@
+/*Sigma76 On TOP*/
+body {
+  background: #474747;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+#title {
+  text-align: center;
+  font-size: 300%;
+  margin-bottom: 0px;
+  animation-delay: 2s;
+}
+#subtitle {
+  text-align: center;
+  margin-top: 0px;
+}
+#subtitle2 {
+  text-align: center;
+  margin-top: 0px;
+}
+div.projects {
+  display: flex;
+  flex-direction: column;
+  flex-flow: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  width: fit-content;
+}
+button.item {
+  line-height: 50px;
+  background: #757575;
+  padding: 15px;
+  padding-bottom: 0px;
+  width: fit-content;
+  height: fit-content;
+  margin-top: 10px;
+  margin-bottom: 5vh;
+  color: white;
+  font-weight: bold;
+  font-size: 200%;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+  box-shadow: 10px 10px rgb(53, 53, 53);
+  -webkit-transform: scale(1);
+  -ms-transform: scale(1);
+  transform: scale(1);
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+button.item:hover {
+  background-color: #666666;
+  cursor: pointer;
+  -webkit-transform: scale(1.1);
+  -ms-transform: scale(1.1);
+  transform: scale(1.1);
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+button.back {
+  background-color: #474747;
+  border: none;
+  cursor: pointer;
+}
+footer {
+  background-color: #2E2E2E;
+  padding: 15px;
+  color: white;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 5vh;
+}
+#fbutton {
+  background: #757575;
+  margin: 2px;
+  padding: 7px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+}
+#fbutton:hover {
+  background: #666666;
+  cursor: pointer;
+}
+p {
+  display: inline;
+}
+img.pre {
+  display: block;
+  width: 400px;
+}
+@keyframes lightSpeedIn {
+  from {
+    -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
+    transform: translate3d(100%, 0, 0) skewX(-30deg);
+    opacity: 0;
+  }
+}
+#foot {
+  color: white;
+  text-decoration: none;
+}
+a {
+  color: inherit;
+}

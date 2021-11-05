@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+<url>
+<loc>https://connorcode.com</loc>
+<changefreq>weekly</changefreq>
+<priority>1.0</priority>
+</url>
+
+<url>
+<loc>https://connorcode.com/Pi/</loc>
+<changefreq>never</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://connorcode.com/backgrounds/</loc>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://connorcode.com/colornamegen/</loc>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://connorcode.com/randomimg/</loc>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://connorcode.com/IdeaGen/</loc>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+<loc>https://connorcode.com/mc/</loc>
+<changefreq>yearly</changefreq>
+<priority>0.5</priority>
+</url>
+
+<url>
+    <loc>https://elite-anarchy.connorcode.com/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+</url>
+
+<url>
+    <loc>https://2b2t-queue.connorcode.com/</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.5</priority>
+</url>
+</urlset>

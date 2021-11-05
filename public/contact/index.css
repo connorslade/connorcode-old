@@ -1,0 +1,35 @@
+body {
+    background-color: #282c34;
+    padding: 20px;
+    padding-top: 0;
+    color: #dfdfdf;
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    line-height: 22px;
+    max-width: 960px;
+}
+
+p {
+    display: inline;
+}
+
+a {
+    color: #c678dd;
+}
+
+a:hover {
+    color: #51afef;
+}
+
+#name {
+    color: #ecbe7b;
+}
+
+#contact {
+    color: #ff6c6b;
+    font-size: 20px;
+}
+
+.userDataLink {
+    color: #51afef;
+}
