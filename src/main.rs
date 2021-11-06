@@ -5,6 +5,7 @@ use afire::{Header, Server};
 use simple_config_parser::Config;
 
 mod arg_parse;
+mod routes;
 mod serve_static;
 #[macro_use]
 mod color;
@@ -42,6 +43,7 @@ fn main() {
     server.set_socket_timeout(Some(Duration::from_secs(1)));
 
     serve_static::attach(&mut server);
+    routes::attach(&mut server);
 
     color_print!(Color::Blue, "[*] Starting server on {}:{}\n", host, port);
 
