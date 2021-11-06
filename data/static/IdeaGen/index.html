@@ -8,17 +8,17 @@
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
     <link rel='stylesheet' type='text/css' media='screen and (min-width: 1000px)' href='style.css' />
     <link rel='stylesheet' type='text/css' media='screen and (max-width: 1000px)' href='styleM.css' />
-    <link rel='stylesheet' type='text/css' href='https://connorcode.com/Main_Assets/animate.css' />
+    <link rel='stylesheet' type='text/css' href='/assets/animate.css' />
     <title>Idea Generator</title>
   </head>
   <body>
     <h1 id="title" class="animated bounce">Entrepreneur Opportunity Generator</h1>
     <h2 id="subtitle">By: Connor Slade</h2><br/>
-    <P style="text-align: center;display: block;">For only <strong>$1.50</strong> this amazing program will help you on your journey as a Entrepreneur by creating business ideas!</P>
+    <P style="text-align: center;display: block;">For only <strong>$1.50</strong> this amazing program will help you on your journey as a Entrepreneur by creating business ideas! This product is very helpfull and is 0% a joke.</P>
     <P style="text-align: center;display: block;">Made for <strong>Windows</strong></P>
-    <img src="https://connorcode.com/Main_Assets/IdeaIco.png" style="display: block;margin-left: auto;margin-right: auto;"/>
-    <img id="gui"" src="https://connorcode.com/Main_Assets/IdeaGenGui.png" style="display: block;margin-left: auto;margin-right: auto;"/>
-    <script src="https://connorcode.com/IdeaGen/Script.js"></script>
+    <img src="/IdeaGen/img/IdeaIco.png" style="display: block;margin-left: auto;margin-right: auto;"/>
+    <img id="gui" src="/IdeaGen/img/IdeaGenGui.png" style="display: block;margin-left: auto;margin-right: auto;"/>
+    <script src="/IdeaGen/Script.js"></script>
     <div id="paypal-button-container" style="margin-left: auto ;margin-right: auto ;"></div>
     <script src="https://www.paypal.com/sdk/js?client-id=AZAm2lEKHIY8LJl3TEQ0U21wfjZXMdhCd-N4eI4EMC3UXmQY0oeUgDw7q6nTFqxdpkoV5MA4lazkT1oS&currency=USD" data-sdk-integration-source="button-factory"></script>
     <script>
@@ -28,7 +28,7 @@
               color: 'gold',
               layout: 'vertical',
               label: 'paypal',
-              
+
           },
           createOrder: function(data, actions) {
               return actions.order.create({
@@ -47,12 +47,12 @@
           }
       }).render('#paypal-button-container');
     </script>
-    <a  href="https://connorcode.com/IdeaGen/Payed.html" style="text-align: center;display: block;">I already bought the Entrepreneur Opportunity Generator!</a>
+    <a  href="/IdeaGen/payed.html" style="text-align: center;display: block;">I already bought the Entrepreneur Opportunity Generator!</a>
     <span id="footer">
     <form>
-      <input type="button" value="Home" onclick="location.href = 'https://connorcode.com'; " id="fbutton"/>
+      <input type="button" value="Home" onclick="location.href = '/'; " id="fbutton"/>
     </form>
-    <p>© Connor Slade || V0.1</p>
+    <p>© Connor Slade || V{{VERSION}}</p>
   </span>
   </body>
 </html>

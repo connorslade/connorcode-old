@@ -10,7 +10,7 @@ mod serve_static;
 mod color;
 use color::Color;
 
-const VERSION: &str = "0.0.0";
+pub const VERSION: &str = "5.0.0";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -38,6 +38,7 @@ fn main() {
     server.add_default_header(Header::new("X-Content-Type-Options", "nosniff"));
     server.add_default_header(Header::new("X-Frame-Options", "DENY"));
     server.add_default_header(Header::new("X-Version", format!("Connorcode/{}", VERSION)));
+    server.add_default_header(Header::new("X-Server", "afire/0.2.0"));
     server.set_socket_timeout(Some(Duration::from_secs(1)));
 
     serve_static::attach(&mut server);

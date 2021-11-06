@@ -1,6 +1,8 @@
 use afire::*;
 use std::fs;
 
+use crate::VERSION;
+
 /// Dir to find files to serve
 const DATA_DIR: &str = "./data/static";
 
@@ -32,7 +34,7 @@ pub fn attach(server: &mut afire::Server) {
         match fs::read(&path) {
             // If its found send it as response
             Ok(content) => Response::new()
-                .bytes(content)
+                .bytes(add_version(content))
                 .header(Header::new("Content-Type", get_type(&path))),
 
             // If not send 404.html
@@ -64,5 +66,12 @@ pub fn get_type(path: &str) -> &str {
         },
 
         None => "application/octet-stream",
+    }
+}
+
+fn add_version(content: Vec<u8>) -> Vec<u8> {
+    match String::from_utf8(content.clone()) {
+        Ok(i) => return i.replace("{{VERSION}}", VERSION).into_bytes(),
+        Err(_) => return content,
     }
 }

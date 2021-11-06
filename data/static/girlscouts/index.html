@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <script src="stop.js"></script>
-    <script src="script.js"></script>
+    <script src="/girlscouts/script.js"></script>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta property="og:title" content="Today a Reader Tomorrow a Leader" />
     <meta charset="UTF-8" />
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
-    <link rel='stylesheet' type='text/css' media='screen and (min-width: 1000px)' href='style.css' />
-    <link rel='stylesheet' type='text/css' media='screen and (max-width: 1000px)' href='styleM.css' />
-    <link rel='stylesheet' type='text/css' href='https://connorcode.com/Main_Assets/animate.css' />
+    <link rel='stylesheet' type='text/css' href='style.css' />
+    <link rel='stylesheet' type='text/css' href='/assets/animate.css' />
     <script>
       function getCookie(cname) {
         var name = cname + "=";
@@ -35,10 +33,10 @@
           alert("This website will not be displayed properly on internet explorer and the videos might not play. Just use Firefox");
         }}else{
           if (string.search("Edge") >= 0) {
-            window.location = "http://connorcode.com/stop.html";
+            window.location = "/stop.html";
           }
           if (string.search("Trident") >= 0) {
-            window.location = "http://connorcode.com/stop.html";
+            window.location = "/stop.html";
           }
         }
     </script>
@@ -50,14 +48,14 @@
 
     <div class="projects">
       <div id="video_pop" onclick="onPopClick()" class="fadein"></div>
-      <button onClick="onVideoClick('https://connorcode.com/Main_Assets/Books/pigPug.mp4');", class="item"><img src="https://connorcode.com/Main_Assets/Books/08.jpg", class="pre" style="width: 350px;"/>Pig Pug</button>
-      <button onClick="onVideoClick('https://connorcode.com/Main_Assets/Books/polarBear.mp4');", class="item"><img src="https://connorcode.com/Main_Assets/Books/07.jpg", class="pre" style="width: 350px;"/>Polar Bear</button>
-      <button onClick="onVideoClick('https://connorcode.com/Main_Assets/Books/dearZoo.mp4');", class="item"><img src="https://connorcode.com/Main_Assets/Books/06.jpg", class="pre" style="width: 350px;"/>Dear Zoo</button>
-      <button onClick="onVideoClick('https://connorcode.com/Main_Assets/Books/PutMeIntheZoo.mp4');", class="item"><img src="https://connorcode.com/Main_Assets/Books/005.jpg", class="pre" style="width: 350px;"/>Put Me in the Zoo</button>
-      <button onClick="onVideoClick('https://connorcode.com/Main_Assets/Books/DogsVsCats_1.mp4');", class="item"><img src="https://connorcode.com/Main_Assets/Books/001.jpg", class="pre"/>Dogs vs Cats</button>
-      <button onClick="onVideoClick('https://connorcode.com/Main_Assets/Books/MorrisTheMoose.mp4');", class="item"><img src="https://connorcode.com/Main_Assets/Books/002.jpg", class="pre" style="width: 290px;"/>Morris The Moose</button>
-      <button onClick="onVideoClick('https://connorcode.com/Main_Assets/Books/If You Give a Mouse a Cookie.mp4');", class="item"><img src="https://connorcode.com/Main_Assets/Books/003.jpg", class="pre" style="width: fit-content;"/>If you Give a Mouse <br/>a Cookie</button>
-      <button onClick="onVideoClick('https://connorcode.com/Main_Assets/Books/If You Give a Moose a Muffin.mp4');", class="item"><img src="https://connorcode.com/Main_Assets/Books/004.jpg", class="pre" style="width: 350px;"/>If You Give a Moose <br/>a Muffin</button>
+      <button onClick="onVideoClick('/assets/Books/pigPug.mp4');", class="item"><img src="/assets/Books/08.jpg", class="pre" style="width: 350px;"/>Pig Pug</button>
+      <button onClick="onVideoClick('/assets/Books/polarBear.mp4');", class="item"><img src="/assets/Books/07.jpg", class="pre" style="width: 350px;"/>Polar Bear</button>
+      <button onClick="onVideoClick('/assets/Books/dearZoo.mp4');", class="item"><img src="/assets/Books/06.jpg", class="pre" style="width: 350px;"/>Dear Zoo</button>
+      <button onClick="onVideoClick('/assets/Books/PutMeIntheZoo.mp4');", class="item"><img src="/assets/Books/005.jpg", class="pre" style="width: 350px;"/>Put Me in the Zoo</button>
+      <button onClick="onVideoClick('/assets/Books/DogsVsCats_1.mp4');", class="item"><img src="/assets/Books/001.jpg", class="pre"/>Dogs vs Cats</button>
+      <button onClick="onVideoClick('/assets/Books/MorrisTheMoose.mp4');", class="item"><img src="/assets/Books/002.jpg", class="pre" style="width: 290px;"/>Morris The Moose</button>
+      <button onClick="onVideoClick('/assets/Books/If You Give a Mouse a Cookie.mp4');", class="item"><img src="/assets/Books/003.jpg", class="pre" style="width: fit-content;"/>If you Give a Mouse <br/>a Cookie</button>
+      <button onClick="onVideoClick('/assets/Books/If You Give a Moose a Muffin.mp4');", class="item"><img src="/assets/Books/004.jpg", class="pre" style="width: 350px;"/>If You Give a Moose <br/>a Muffin</button>
     </div>
   <footer>
     <form>
@@ -67,4 +65,3 @@
   </footer>
   </body>
 </html>
-
