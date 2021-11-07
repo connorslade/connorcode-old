@@ -4,3 +4,7 @@ target/
 data/static/school/gamedesign/*
 !data/static/school/gamedesign/docs
 !data/static/school/gamedesign/mkdocs.yml
+
+data/static/mc/docs/*
+!data/static/mc/docs/docs
+!data/static/mc/docs/mkdocs.yml

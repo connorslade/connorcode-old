@@ -1,0 +1,81 @@
+/* Sigma76 On TOP */
+
+.projects {
+  display: flex;
+  flex-direction: column;
+  flex-flow: wrap;
+  justify-content: space-evenly;
+  align-items: center;
+  width: fit-content;
+  line-height: 50px;
+}
+
+.item {
+  line-height: 50px;
+  background: #757575;
+  padding: 15px;
+  padding-bottom: 0px;
+  width: fit-content;
+  height: fit-content;
+  margin-bottom: 15px;
+  margin-top: 15px;
+  color: white;
+  font-weight: bold;
+  font-size: 200%;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+  box-shadow: 10px 10px rgb(53, 53, 53);
+  transform: scale(1);
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+
+.item:hover {
+  background-color: #666666;
+  cursor: pointer;
+  transform: scale(1.05);
+  transition-property: all;
+  transition-duration: 0.3s;
+  transition-timing-function: ease;
+  transition-delay: 0s;
+}
+
+.date {
+  font-size: 75%;
+}
+
+.back {
+  background-color: #474747;
+  border: none;
+  cursor: pointer;
+}
+
+
+p {
+  display: inline;
+}
+
+img.pre {
+  display: block;
+  width: 400px;
+}
+
+@keyframes lightSpeedIn {
+  from {
+    -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
+    transform: translate3d(100%, 0, 0) skewX(-30deg);
+    opacity: 0;
+  }
+}
+
+#foot {
+  color: white;
+  text-decoration: none;
+}
+
+a {
+  color: inherit;
+}

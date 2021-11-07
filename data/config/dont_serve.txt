@@ -1,2 +1,5 @@
 /school/gamedesign/mkdocs.yml
 /school/gamedesign/docs
+
+/mc/help/docs
+/mc/help/mkdocs.yml
