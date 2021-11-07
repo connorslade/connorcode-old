@@ -1,8 +1,13 @@
-// Automaticly update Github Lat Update Date :P
-let xmlHttp = new XMLHttpRequest();
-xmlHttp.open("GET", "https://api.github.com/users/basicprogrammer10", false);
-xmlHttp.send(null);
-let lastUpdate = JSON.parse(xmlHttp.responseText)['updated_at'].split('-')
-let data = `${lastUpdate[1]}/${lastUpdate[2].split('T')[0]}/${lastUpdate[0]}`
+// Automaticly update Github Last Update Date :P
 
-document.getElementById('gh').innerHTML = data
+fetch("https://api.github.com/users/basicprogrammer10")
+  .then((r) => r.json())
+  .then((r) => {
+    let lastUpdate = r["updated_at"].split("-");
+    let data = `${lastUpdate[1]}/${lastUpdate[2].split("T")[0]}/${
+      lastUpdate[0]
+    }`;
+    document.querySelector(
+      "html body div.projects a button#github.item span.date"
+    ).innerHTML = data;
+  });

@@ -1,45 +1,31 @@
-function getCookie(cname) {
-  var name = cname + "=";
-  var decodedCookie = decodeURIComponent(document.cookie);
-  var ca = decodedCookie.split(";");
-  for (var i = 0; i < ca.length; i++) {
-    var c = ca[i];
-    while (c.charAt(0) == " ") {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
+document.getElementById("button").addEventListener("click", newImage);
+
+function newImage() {
+  document.getElementById("rand").style.opacity = 0;
+
+  fetch("/randomimg/image.png")
+    .then((r) => {
+      if (r.status !== 200) {
+        newImage();
+        return;
+      }
+      r.blob()
+        .then((r) => r.arrayBuffer())
+        .then((r) => {
+          let base64Image = arrayBufferToBase64(r);
+          document.getElementById(
+            "rand"
+          ).innerHTML = `<img src="data:image/png;base64,${base64Image}"></img>`;
+          document.getElementById("rand").style.opacity = 1;
+        });
+    })
+    .catch(() => newImage());
 }
-function Disclaimer() {
-  var d = new Date();
-  if (
-    confirm(
-      "By pressing OK you understand that this website could lead you to images showing inappropriate or personnel content."
-    )
-  ) {
-    document.cookie = `dis=1; expires=Thu, 18 Dec ${
-      d.getFullYear() + 10
-    } 12:00:00 UTC`;
-  } else {
-    document.cookie = `dis=0; expires=Thu, 18 Dec ${
-      d.getFullYear() + 10
-    } 12:00:00 UTC`;
-    location.href = "https://connorcode.com";
-  }
-}
-// function stringGen(len) {
-//   var text = "";
-//   var charset = "abcdefghijklmnopqrstuvwxyz0123456789";
-//   for (var i = 0; i < len; i++)
-//     text += charset.charAt(Math.floor(Math.random() * charset.length));
-//   return text;
-// }
-function rmg() {
-  // var x = stringGen(6);
-  // window.open("https://prnt.sc/" + x.toString());
-  document.getElementById("rand").innerHTML =
-    `<img src="/randomimg/image.png?t=${new Date().getTime()}"></img>`;
+
+function arrayBufferToBase64(buffer) {
+  let binary = "";
+  let bytes = new Uint8Array(buffer);
+  for (var i = 0; i < bytes.byteLength; i++)
+    binary += String.fromCharCode(bytes[i]);
+  return window.btoa(binary);
 }

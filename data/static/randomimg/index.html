@@ -6,23 +6,12 @@
     <meta property="og:title" content="NoseCoin" />
     <meta charset="UTF-8" />
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
     <link
       rel="stylesheet"
-      type="text/css"
-      media="screen and (min-width: 1000px)"
-      href="style.css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
     />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      media="screen and (max-width: 1000px)"
-      href="styleM.css"
-    />
-    <link
-      rel="stylesheet"
-      type="text/css"
-      href="https://connorcode.com/assets/animate.css"
-    />
+    <link rel="stylesheet" type="text/css" href="/common/common.css" />
     <title>Random Image</title>
   </head>
   <body>
@@ -32,37 +21,23 @@
     <span class="wrapper"
       ><button
         class="button animated bounceIn delay-2s"
-        id="button1"
-        onclick="rmg()"
+        id="button"
       >
         Show Me A Random Image
       </button>
 
-      <span id="rand"></span>
-      </span
-    >
+      <div id="rand"></div>
+    </span>
     <footer>
       <p style="display: inline;">© Connor Slade || V{{VERSION}}</p>
       <form style="display: inline;">
         <input
           type="button"
           value="Home"
-          onclick="location.href = 'https://connorcode.com';"
-          ,
-          id="fbutton"
+          id="homeButton"
         />
       </form>
-      <span id="buttonp" , style="display:inline;"
-        ><button onClick="Disclaimer()" style="display: inline;" id="dis">
-          Disclaimer
-        </button></span
-      >
     </footer>
     <script src="script.js"></script>
-    <script>
-      if (getCookie("dis") == 0) {
-        Disclaimer();
-      }
-    </script>
   </body>
 </html>

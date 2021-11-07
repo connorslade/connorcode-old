@@ -1,0 +1,52 @@
+body {
+  background: #474747;
+  font-family: Roboto, Helvetica, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+.title {
+  text-align: center;
+  font-size: 300%;
+  margin-bottom: 0px;
+  animation-delay: 2s;
+}
+
+.subtitle {
+  text-align: center;
+  margin-top: 0px;
+}
+
+.subtitle2 {
+  text-align: center;
+  margin-top: 0px;
+}
+
+footer {
+  background-color: #2e2e2e;
+  padding: 15px;
+  color: white;
+  position: fixed;
+  width: 100%;
+  bottom: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  margin-top: 5vh;
+}
+
+#backbutton {
+  background: #757575;
+  margin: 2px;
+  padding: 7px;
+  color: white;
+  font-weight: bold;
+  text-align: center;
+  border: none;
+  border-radius: 3px;
+}
+
+#backButton:hover {
+  background: #666666;
+  cursor: pointer;
+}
+
+/*# sourceMappingURL=common.css.map */
