@@ -1,0 +1,11 @@
+site_name: GameDesign
+nav:
+    - Home: index.md
+    - Zork: zork.md
+    - Eacloxus 1: eacloxus_01.md
+    - Eacloxus 2: eacloxus_02.md
+    - Eacloxus Marketing: eacloxus_03.md
+    - Eacloxus Images: eacloxus_img.md
+theme:
+  name: material
+#theme: readthedocs

@@ -7,11 +7,22 @@ use crate::VERSION;
 const DATA_DIR: &str = "./data/static";
 
 /// Disabled files
-const DISABLED_FILES: &[&str] = &[];
+static mut DISABLED_FILES: Vec<String> = vec![];
 
 pub fn attach(server: &mut afire::Server) {
+    let dont_serve = fs::read_to_string("data/config/dont_serve.txt").unwrap();
+    for line in dont_serve.lines() {
+        if line.is_empty() {
+            continue;
+        }
+
+        unsafe {
+            DISABLED_FILES.push(line.to_owned());
+        }
+    }
+
     server.all(|req| {
-        if DISABLED_FILES.contains(&req.path.as_str()) {
+        if unsafe { DISABLED_FILES.clone() }.contains(&req.path.to_lowercase()) {
             return Response::new()
                 .status(404)
                 .text("Not Found")

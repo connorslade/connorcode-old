@@ -1,2 +1,6 @@
 target/
 *.mp4
+
+data/static/school/gamedesign/*
+!data/static/school/gamedesign/docs
+!data/static/school/gamedesign/mkdocs.yml
