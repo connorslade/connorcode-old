@@ -22,7 +22,8 @@ function showData(id, node) {
   let userData = data[id]
   delete data[id]
   let element = document.createElement("P")
-  element.innerHTML = `${"&nbsp;".repeat(3)}➥ ${userData[0]}`
-  if (userData[1] != undefined) element.innerHTML = `${"&nbsp;".repeat(3)}➥ <a href="${userData[1]}" class="userDataLink">${userData[0]}</a>`
+  element.classList.add("infoValue");
+  element.innerHTML = `➥ ${userData[0]}`
+  if (userData[1] != undefined) element.innerHTML = `➥ <a href="${userData[1]}" class="userDataLink">${userData[0]}</a>`
   node.parentNode.insertBefore(element, node.nextSibling);
 }

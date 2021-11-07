@@ -24,19 +24,22 @@ body {
 
 footer {
   background-color: #2e2e2e;
-  padding: 15px;
+  padding: 7px;
   color: white;
   position: fixed;
   width: 100%;
   bottom: 0;
   font-family: Arial, Helvetica, sans-serif;
-  margin-top: 5vh;
+}
+footer * {
+  display: inline;
+  color: white;
 }
 
-#backbutton {
-  background: #757575;
+#homeButton {
   margin: 2px;
   padding: 7px;
+  background-color: #757575;
   color: white;
   font-weight: bold;
   text-align: center;
@@ -44,8 +47,7 @@ footer {
   border-radius: 3px;
 }
 
-#backButton:hover {
-  background: #666666;
+#homeButton:hover {
   cursor: pointer;
 }
 

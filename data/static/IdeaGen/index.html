@@ -6,7 +6,9 @@
     <meta property="og:title" content="Connor's Idea Generator!" />
     <meta charset="UTF-8" />
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
-    <link rel="stylesheet" type="text/css" href="style.css" />
+    <script defer src="/common/common.js"></script>
+    <link rel="stylesheet" type="text/css" href="/common/common.css" />
+    <link rel="stylesheet" type="text/css" href="/IdeaGen/style.css" />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css"
@@ -81,16 +83,9 @@
     <a href="/IdeaGen/payed.html" style="text-align: center; display: block;"
       >I already bought the Entrepreneur Opportunity Generator!</a
     >
-    <span id="footer">
-      <form>
-        <input
-          type="button"
-          value="Home"
-          onclick="location.href = '/'; "
-          id="fbutton"
-        />
-      </form>
+    <footer>
       <p>© Connor Slade || V{{VERSION}}</p>
-    </span>
+      <button id="homeButton">Home</button>
+    </footer>
   </body>
 </html>

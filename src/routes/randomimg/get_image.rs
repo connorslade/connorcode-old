@@ -35,7 +35,7 @@ pub fn attach(server: &mut Server) {
 /// Try to get a random Lightshot Image
 fn get_random_image() -> Option<(Vec<u8>, String)> {
     // Gen Posable Lightshot Image ID
-    let chars: String = (1..6)
+    let chars: String = (0..6)
         .map(|_| thread_rng().sample(Alphanumeric) as char)
         .collect::<String>()
         .to_lowercase();

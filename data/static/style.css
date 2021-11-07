@@ -34,8 +34,9 @@
 }
 
 .item:hover {
-  background-color: #666666;
+  background: #666666;
   cursor: pointer;
+  box-shadow: 15px 15px rgb(53, 53, 53);
   transform: scale(1.05);
   transition-property: all;
   transition-duration: 0.3s;
@@ -61,14 +62,6 @@ p {
 img.pre {
   display: block;
   width: 400px;
-}
-
-@keyframes lightSpeedIn {
-  from {
-    -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
-    transform: translate3d(100%, 0, 0) skewX(-30deg);
-    opacity: 0;
-  }
 }
 
 #foot {

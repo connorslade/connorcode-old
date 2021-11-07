@@ -73,30 +73,6 @@ function colorgen() {
   }
 }
 
-function animateCSS(element, animationName, speed, callback) {
-  const node = document.querySelector(element);
-  node.classList.add("animated", animationName, speed);
-
-  function handleAnimationEnd() {
-    node.classList.remove("animated", animationName, speed);
-    node.removeEventListener("animationend", handleAnimationEnd);
-
-    if (typeof callback === "function") callback();
-  }
-
-  node.addEventListener("animationend", handleAnimationEnd);
-}
-
-
-function lookup() {
-  window.open(
-    "https://duckduckgo.com/?q=" +
-      document.getElementById("p2").textContent.toString() +
-      "&ia=definition",
-    "_blank"
-  );
-}
-
 function main() {
   setTimeout(() => document.querySelector(".button").classList.remove("animated", "bounceIn")
   , 1000);
@@ -114,5 +90,25 @@ function main() {
       document.getElementById("p2").innerHTML = "";
     });
 }
+
+const node = document.querySelectorAll('.button')[0]
+node.addEventListener('click', () => {
+  colorgen();
+  node.classList.add("animate__animated", "animate__jackInTheBox", "animate__faster");
+  node.addEventListener("animationend", () => {
+    node.classList.remove("animate__animated", "animate__jackInTheBox", "animate__faster");
+    node.removeEventListener("animationend", () => {});
+  });
+})
+
+
+document.querySelector('#ddg').addEventListener('click', () => {
+  window.open(
+    "https://duckduckgo.com/?q=" +
+      document.getElementById("p2").textContent.toString() +
+      "&ia=definition",
+    "_blank"
+  );
+});
 
 main();

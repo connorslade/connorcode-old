@@ -1,12 +1,16 @@
 body {
   background-color: #282c34;
-  padding: 20px;
+  padding: 20px 20px 20px 0;
   padding-top: 0;
   color: #dfdfdf;
   font-family: Arial, Helvetica, sans-serif;
   font-size: 14px;
   line-height: 22px;
   max-width: 960px;
+
+  & * {
+    padding-left: 20px;
+  }
 }
 
 p {
@@ -14,6 +18,7 @@ p {
 }
 
 a {
+  padding-left: 0;
   color: #c678dd;
 
   &:hover {
@@ -33,4 +38,12 @@ a {
 
 .userDataLink {
   color: #51afef;
+}
+
+.infoValue {
+  padding-left: 60px;
+}
+
+footer {
+  background-color: #1a1a1d;
 }
