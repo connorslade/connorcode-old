@@ -1,27 +1,36 @@
-
 #bottom {
   position: absolute;
   bottom: 0;
 }
+
 body {
   text-align: center;
   font-family: "Open Sans", sans-serif;
 }
+
 .button {
   background-color: #757575;
+  display: block;
+  margin: auto;
+  margin-top: 4rem;
   border: none;
   color: white;
-  padding: 15px 32px;
-  text-align: center;
+  padding: 16px 32px;
+  font-size: 3vw;
+  opacity: 0.8;
+  transition: 0.3s;
   text-decoration: none;
-  display: inline-block;
-  font-size: 400%;
-  margin: 4px 2px;
   cursor: pointer;
+  box-shadow: 5px 5px rgb(0, 0, 0);
 }
+
 .button:hover {
   background-color: #666666;
+  opacity: 1;
+  box-shadow: 10px 10px rgb(0, 0, 0);
+  font-size: 3.2vw;
 }
+
 .buttons {
   background-color: #ff9900;
   border: none;
@@ -29,26 +38,32 @@ body {
   padding: 5px 15px;
   text-align: center;
   text-decoration: none;
-  font-size: 300%;
+  display: inline-flex;
+  font-size: 100%;
   margin: 5px 10px;
   cursor: pointer;
   justify-content: space-around;
 }
+
 .buttons:hover {
   background-color: #ffc21c;
 }
+
 #p1 {
-  font-size: 1000%;
+  font-size: 750%;
 }
+
 #p2 {
-  font-size: 850%;
-  word-break: break-all;
+  font-size: 750%;
 }
+
 a {
-  font-size: 200%;
-  display: block;
+  display: inline;
   color: black;
+  text-decoration: none;
+  font-family: monospace;
 }
+
 #fbutton {
   background: #757575;
   margin: 5px 10px;
@@ -61,12 +76,14 @@ a {
   text-align: end;
   margin-right: 0px;
   margin-left: auto;
-  font-size: 400%;
+  font-size: 100%;
   cursor: pointer;
 }
+
 #fbutton:hover {
   background: #666666;
 }
+
 form {
   display: inline;
 }

@@ -16,10 +16,11 @@ pub fn attach(server: &mut Server) {
         for _ in 1..5 {
             match get_random_image() {
                 // If image found, send it to client
-                Some(i) => {
+                Some((i, j)) => {
                     return Response::new()
                         .bytes(i)
                         .header(Header::new("Content-Type", "image/png"))
+                        .header(Header::new("X-Image-Id", j))
                 }
 
                 // If not, try again
@@ -32,11 +33,12 @@ pub fn attach(server: &mut Server) {
 }
 
 /// Try to get a random Lightshot Image
-fn get_random_image() -> Option<Vec<u8>> {
+fn get_random_image() -> Option<(Vec<u8>, String)> {
     // Gen Posable Lightshot Image ID
     let chars: String = (1..6)
         .map(|_| thread_rng().sample(Alphanumeric) as char)
-        .collect();
+        .collect::<String>()
+        .to_lowercase();
 
     let agent = ureq::AgentBuilder::new()
         .timeout(Duration::from_secs(1))
@@ -44,7 +46,7 @@ fn get_random_image() -> Option<Vec<u8>> {
 
     // Get Image page
     let i = agent
-        .get(&format!("https://prnt.sc/{}", chars.to_lowercase()))
+        .get(&format!("https://prnt.sc/{}", chars))
         .call()
         .ok()?
         .into_string()
@@ -63,13 +65,13 @@ fn get_random_image() -> Option<Vec<u8>> {
     agent
         .get(&j)
         .call()
-        .unwrap()
+        .ok()?
         .into_reader()
         .read_to_end(&mut buf)
-        .unwrap();
+        .ok()?;
 
     // Respond with Screenshot Bytes
-    Some(buf)
+    Some((buf, chars))
 }
 
 /// Extract Image Url from Lightshot Page

@@ -2,42 +2,41 @@
 <html>
   <head>
     <meta property="og:title" content="Color Name Generator" />
-    <meta name="description" content="Color Name Generator">
-    <meta name="keywords" content="colornamegen, Color Name Gen, Color Name Generator, Connors Color Name Generator, Connors Color Name Gen">
+    <meta name="description" content="Color Name Generator" />
+    <meta
+      name="keywords"
+      content="colornamegen, Color Name Gen, Color Name Generator, Connors Color Name Generator, Connors Color Name Gen"
+    />
     <meta charset="UTF-8" />
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
-    <link href="https://fonts.googleapis.com/css?family=Open+Sans&display=swap" rel="stylesheet"/>
-    <!--<link rel="stylesheet" type="text/css" href="style.css">-->
-    <link rel='stylesheet' type='text/css' media='screen and (min-width: 1000px)' href='style.css' />
-    <link rel='stylesheet' type='text/css' media='screen and (max-width: 1000px)' href='styleM.css' />
-    <link rel='stylesheet' type='text/css' href='https://connorcode.com/assets/animate.css' />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <link rel="stylesheet" type="text/css" href="/assets/animate.css" />
     <title>RandomColor</title>
   </head>
-  <body id="p3", style="background-color: #474747;">
+  <body id="p3" , style="background-color: #474747;">
     <h1 id="p2"><font color="#FFFFFF">Loading...</font></h1>
     <h1 id="p1"><font color="#FFFFFF">Still Loading :-(</font></h1>
-    <button onClick="colorgen();animateCSS('.button', 'tada', 'faster');" , class="button animated bounceIn">Generate Another!</button><br/>
+    <button
+      onClick="colorgen();animateCSS('.button', 'tada', 'faster');"
+      class="button animated bounceIn"
+    >
+      Generate Another!</button
+    ><br />
     <footer id="bottom">
-      <a href="Index.html", id="a1">© ConnorSlade - 2020 V4</a>
-      <span id="buttonp", style="display:inline;"><button onClick="lookup()" , class="buttons">DuckDuckGo!</button></span>
+      <a href="Index.html" , id="a1">© ConnorSlade - 2020 V4</a>
+      <span id="buttonp" , style="display: inline;"
+        ><button onClick="lookup()" , class="buttons">DuckDuckGo!</button></span
+      >
       <form>
         <input
           type="button"
           value="Home"
-          onclick="location.href = 'https://connorcode.com';"
+          onclick="location.href = '/'"
           ,
           id="fbutton"
         />
       </form>
     </footer>
   </body>
-  <script src="animate.js"></script>
   <script src="script.js"></script>
-  <script>
-    function removeclass(){
-      const node = document.querySelector('.button')
-      node.classList.remove('animated', 'bounceIn')
-    }
-    setTimeout(() => {  removeclass(); }, 1000);
-  </script>
 </html>
