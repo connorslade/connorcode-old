@@ -1,3 +1,1 @@
-- Gen index.html from a file of project / image paths
 - Add back `/assets/IdeaGen-Installer.exe`
-- Fix Formatting of new Random Image
