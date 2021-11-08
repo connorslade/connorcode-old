@@ -36,7 +36,6 @@ fn main() {
     let mut server = Server::new(&host, port);
 
     // Set defult headers
-    // server.add_default_header(Header::new("Access-Control-Allow-Origin", "origin"));
     server.add_default_header(Header::new("X-Content-Type-Options", "nosniff"));
     server.add_default_header(Header::new("X-Frame-Options", "DENY"));
     server.add_default_header(Header::new("X-Version", format!("Connorcode/{}", VERSION)));
