@@ -12,7 +12,7 @@ static mut DISABLED_FILES: Vec<String> = vec![];
 pub fn attach(server: &mut afire::Server) {
     let dont_serve = fs::read_to_string("data/config/dont_serve.txt").unwrap();
     for line in dont_serve.lines() {
-        if line.is_empty() {
+        if line.is_empty() || line.starts_with('#') || line.starts_with(';') {
             continue;
         }
 
@@ -22,7 +22,7 @@ pub fn attach(server: &mut afire::Server) {
     }
 
     server.all(|req| {
-        if unsafe { DISABLED_FILES.clone() }.contains(&req.path.to_lowercase()) {
+        if ip_disabled(&req.path).is_some() {
             return Response::new()
                 .status(404)
                 .text("Not Found")
@@ -58,6 +58,16 @@ pub fn attach(server: &mut afire::Server) {
                 .header(Header::new("Content-Type", "text/html")),
         }
     });
+}
+
+fn ip_disabled(req_path: &str) -> Option<()> {
+    let disabled = unsafe { DISABLED_FILES.clone() };
+    if disabled.contains(&req_path.to_lowercase())
+        || disabled.contains(&format!("*.{}", req_path.split('.').last()?))
+    {
+        return Some(());
+    }
+    None
 }
 
 /// Get the type MMIE content type of a file from its extension

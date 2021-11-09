@@ -1,7 +1,7 @@
 use std::env;
 use std::time::Duration;
 
-use afire::{Header, Server};
+use afire::{Header, Response, Server};
 use simple_config_parser::Config;
 
 mod arg_parse;
@@ -34,6 +34,23 @@ fn main() {
     let port = cfg.get::<u16>("port").unwrap();
 
     let mut server = Server::new(&host, port);
+
+    server.set_error_handler(|_req, err| {
+        Response::new()
+            .status(500)
+            .text(format!(
+                "<h1>Internal Server Error</h1><p>Error: {}</p>",
+                err
+            ))
+            .header(Header::new("Content-Type", "text/html"))
+    });
+
+    // TMP
+    server.middleware(Box::new(|req| {
+        println!("[{}] {}", req.method, req.path);
+
+        None
+    }));
 
     // Set defult headers
     server.add_default_header(Header::new("X-Content-Type-Options", "nosniff"));

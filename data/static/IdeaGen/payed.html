@@ -5,6 +5,7 @@
   <meta property="og:title" content="Connor's Idea Generator" />
   <meta charset="UTF-8" />
   <link href="favicon.ico" rel="icon" type="image/x-icon" />
+  <link rel="stylesheet" type="text/css" href="/common/common.css" />
   <link rel="stylesheet" type="text/css" href="style.css" />
   <link
     rel="stylesheet"
@@ -29,17 +30,11 @@
       >Click Here to Download it.</a
     >
     <p style="text-align: center; display: block;" id="payed"></p>
-    <span id="footer">
-      <form>
-        <input
-          type="button"
-          value="Home"
-          onclick="location.href = '/'"
-          id="fbutton"
-        />
-      </form>
+    <footer>
+      <button id="homeButton">Home</button>
       <p>© Connor Slade || V{{VERSION}}</p>
-    </span>
+    </footer>
+    <script defer src="/common/common.js"></script>
     <script src="/IdeaGen/Payed.js"></script>
   </body>
 </html>

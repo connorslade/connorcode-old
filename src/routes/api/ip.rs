@@ -12,5 +12,8 @@ pub fn attach(server: &mut Server) {
 }
 
 fn get_ip(addr: String) -> String {
-    addr.split(':').next().unwrap().to_owned()
+    addr.split(':')
+        .next()
+        .expect("Error Getting Ip. No Idea now that happend but it did.")
+        .to_owned()
 }

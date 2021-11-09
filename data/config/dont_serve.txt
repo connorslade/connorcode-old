@@ -1,3 +1,8 @@
+# File Types
+*.map
+*.scss
+
+# MKDOCS Stuff
 /school/gamedesign/mkdocs.yml
 /school/gamedesign/docs
 
