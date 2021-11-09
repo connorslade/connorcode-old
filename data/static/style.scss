@@ -26,21 +26,16 @@
   border: none;
   border-radius: 3px;
   box-shadow: 10px 10px rgb(53, 53, 53);
-  transform: scale(1);
-  transition-property: all;
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
-  transition-delay: 0s;
-}
+  transition: all 0.3s;
+  overflow: hidden;
+  width: 430px;
+  height: 343px;
 
-.item:hover {
-  background-color: #666666;
-  cursor: pointer;
-  transform: scale(1.05);
-  transition-property: all;
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
-  transition-delay: 0s;
+  &:hover {
+    background-color: #666666;
+    cursor: pointer;
+    transform: scale(1.05);
+  }
 }
 
 .date {
@@ -53,14 +48,15 @@
   cursor: pointer;
 }
 
-
 p {
   display: inline;
 }
 
-img.pre {
+.pre {
+  transition: all 0.3s;
   display: block;
   width: 400px;
+  height: 225px;
 }
 
 @keyframes lightSpeedIn {

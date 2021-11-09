@@ -1,5 +1,4 @@
 /* Sigma76 On TOP */
-
 .projects {
   display: flex;
   flex-direction: column;
@@ -25,23 +24,16 @@
   text-align: center;
   border: none;
   border-radius: 3px;
-  box-shadow: 10px 10px rgb(53, 53, 53);
-  transform: scale(1);
-  transition-property: all;
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
-  transition-delay: 0s;
+  box-shadow: 10px 10px #353535;
+  transition: all 0.3s;
+  overflow: hidden;
+  width: 430px;
+  height: 343px;
 }
-
 .item:hover {
-  background: #666666;
+  background-color: #666666;
   cursor: pointer;
-  box-shadow: 15px 15px rgb(53, 53, 53);
   transform: scale(1.05);
-  transition-property: all;
-  transition-duration: 0.3s;
-  transition-timing-function: ease;
-  transition-delay: 0s;
 }
 
 .date {
@@ -54,16 +46,24 @@
   cursor: pointer;
 }
 
-
 p {
   display: inline;
 }
 
-img.pre {
+.pre {
+  transition: all 0.3s;
   display: block;
   width: 400px;
+  height: 225px;
 }
 
+@keyframes lightSpeedIn {
+  from {
+    -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
+    transform: translate3d(100%, 0, 0) skewX(-30deg);
+    opacity: 0;
+  }
+}
 #foot {
   color: white;
   text-decoration: none;
@@ -72,3 +72,5 @@ img.pre {
 a {
   color: inherit;
 }
+
+/*# sourceMappingURL=style.css.map */
