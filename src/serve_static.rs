@@ -1,6 +1,7 @@
 use afire::*;
 use std::fs;
 
+use crate::Template;
 use crate::VERSION;
 
 /// Dir to find files to serve
@@ -54,9 +55,14 @@ pub fn attach(server: &mut afire::Server) {
             // If not send 404.html
             Err(_) => Response::new()
                 .status(404)
-                .bytes(
-                    fs::read(format!("{}/404.html", DATA_DIR))
-                        .unwrap_or_else(|_| "Not Found :/".as_bytes().to_owned()),
+                .text(
+                    Template::new(
+                        fs::read_to_string("data/template/not_found.html")
+                            .unwrap_or_else(|_| "Not Found :/".to_owned()),
+                    )
+                    .template("VERSION", VERSION)
+                    .template("PAGE", req.path)
+                    .build(),
                 )
                 .header(Header::new("Content-Type", "text/html")),
         }

@@ -24,14 +24,12 @@ pub fn attach(server: &mut Server) {
 
     server.route(Method::GET, "/api/randomnose", |_req| {
         let noses = unsafe { NOSES.clone() };
-        let random_nose = noses
-            .choose(&mut rand::thread_rng())
-            .expect("Err Getting Random Nose");
+        let random_nose = noses.choose(&mut rand::thread_rng()).unwrap();
         let random_nose_str = random_nose.to_str().unwrap().replace('\\', "");
         let random_nose_str = random_nose_str.split('/').last().unwrap();
 
         Response::new()
-            .bytes(fs::read(random_nose).expect("Error Reading Image File"))
+            .bytes(fs::read(random_nose).unwrap())
             .header(Header::new("Content-Type", get_type(&random_nose_str)))
             .header(Header::new("X-Nose-ID", random_nose_str))
     });

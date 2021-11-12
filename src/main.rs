@@ -14,6 +14,7 @@ use color::Color;
 use template::Template;
 
 pub const VERSION: &str = "5.0.0";
+pub const DEBUG: bool = false;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -60,6 +61,7 @@ fn main() {
     server.add_default_header(Header::new("X-Content-Type-Options", "nosniff"));
     server.add_default_header(Header::new("X-Frame-Options", "DENY"));
     server.add_default_header(Header::new("X-Version", format!("Connorcode/{}", VERSION)));
+    server.add_default_header(Header::new("Cache-Control", "max-age=3600"));
 
     // Set other things
     server.add_default_header(Header::new("X-Server", "afire/0.2.0"));
