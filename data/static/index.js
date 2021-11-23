@@ -11,3 +11,10 @@ fetch("https://api.github.com/users/basicprogrammer10")
       "html body div.projects a button#github.item span.date"
     ).innerHTML = data;
   });
+
+VanillaTilt.init(document.querySelectorAll(".item"), {
+  speed: 400,
+  scale: 1.07,
+  glare: true,
+  "max-glare": 0.1
+});

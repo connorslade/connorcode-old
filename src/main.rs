@@ -1,8 +1,7 @@
 use std::env;
-use std::fs;
 use std::time::Duration;
 
-use afire::{Header, Response, ServeStatic, Server};
+use afire::{Header, Response, Server};
 use simple_config_parser::Config;
 #[macro_use]
 extern crate lazy_static;
