@@ -1,8 +1,11 @@
 use std::env;
+use std::fs;
 use std::time::Duration;
 
-use afire::{Header, Response, Server};
+use afire::{Header, Response, ServeStatic, Server};
 use simple_config_parser::Config;
+#[macro_use]
+extern crate lazy_static;
 
 mod arg_parse;
 mod routes;
@@ -38,7 +41,7 @@ fn main() {
 
     let mut server = Server::new(&host, port);
 
-    server.set_error_handler(|_req, err| {
+    server.error_handler(|_req, err| {
         Response::new()
             .status(500)
             .text(
@@ -65,9 +68,11 @@ fn main() {
 
     // Set other things
     server.add_default_header(Header::new("X-Server", "afire/0.2.0"));
-    server.set_socket_timeout(Some(Duration::from_secs(1)));
+    server.socket_timeout(Some(Duration::from_secs(1)));
 
+    // Serve Static Files
     serve_static::attach(&mut server);
+
     routes::attach(&mut server);
 
     color_print!(Color::Blue, "[*] Starting server on {}:{}\n", host, port);

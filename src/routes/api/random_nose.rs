@@ -7,8 +7,6 @@ use afire::Response;
 use afire::Server;
 use rand::seq::SliceRandom;
 
-use crate::serve_static::get_type;
-
 static mut NOSES: Vec<PathBuf> = Vec::new();
 
 pub fn attach(server: &mut Server) {
@@ -33,4 +31,20 @@ pub fn attach(server: &mut Server) {
             .header(Header::new("Content-Type", get_type(&random_nose_str)))
             .header(Header::new("X-Nose-ID", random_nose_str))
     });
+}
+
+/// Get MIME type for common image formats
+fn get_type(path: &str) -> &str {
+    match path.split('.').last() {
+        Some(ext) => match ext {
+            "png" => "image/png",
+            "jpg" => "image/jpeg",
+            "jpeg" => "image/jpeg",
+            "gif" => "image/gif",
+
+            _ => "application/octet-stream",
+        },
+
+        None => "application/octet-stream",
+    }
 }

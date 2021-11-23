@@ -4,9 +4,8 @@ version = 3
 
 [[package]]
 name = "afire"
-version = "0.2.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7e8c8a221624dfe4dbb697fadb8e3033a01cc58fa7ef8562edddeb76ce64093d"
+version = "0.2.1"
+source = "git+https://github.com/Basicprogrammer10/afire.git?branch=0.2.1#187491374092c4591df78302181da6d492d8cc02"
 
 [[package]]
 name = "base64"
@@ -43,6 +42,7 @@ name = "connorcode"
 version = "0.1.0"
 dependencies = [
  "afire",
+ "lazy_static",
  "rand",
  "simple_config_parser",
  "ureq",
