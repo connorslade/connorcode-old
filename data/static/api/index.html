@@ -1,11 +1,21 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8">
+    <meta charset="utf-8" />
     <title>API Routes</title>
+    <script defer src="/common/common.js"></script>
     <style media="screen">
       body {
         font-family: monospace;
+      }
+
+      p {
+        display: inline;
+      }
+
+      footer {
+        position: absolute;
+        bottom: 0;
       }
     </style>
   </head>
@@ -13,11 +23,18 @@
     <h1>Api Routes</h1>
 
     <a href="/api/ip">Ip</a>
-    <br>
+    <br />
+    <a href="/api/randomcolor">Random Color </a>
+    <br />
     <a href="/api/randomnose">Random Nose </a>
-    <br>
+    <br />
     <a href="/api/headers">HTTP Headers</a>
-    <br>
+    <br />
     <a href="/api/rawhttp">Raw HTTP</a>
+
+    <footer>
+      <button id="homeButton">Home</button>
+      <p>© Connor Slade || V{{VERSION}}</p>
+    </footer>
   </body>
 </html>

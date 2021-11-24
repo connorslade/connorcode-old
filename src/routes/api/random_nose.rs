@@ -7,22 +7,28 @@ use afire::Response;
 use afire::Server;
 use rand::seq::SliceRandom;
 
-static mut NOSES: Vec<PathBuf> = Vec::new();
+use crate::DATA_DIR;
+
+lazy_static! {
+    static ref NOSES: Vec<PathBuf> = {
+        let mut working = Vec::new();
+        let all_noses = fs::read_dir(format!("{}/assets/Noses", DATA_DIR)).unwrap();
+
+        for nose in all_noses {
+            let nose = nose.unwrap().path();
+
+            if nose.is_file() {
+                working.push(nose);
+            }
+        }
+
+        working
+    };
+}
 
 pub fn attach(server: &mut Server) {
-    let all_noses = fs::read_dir("data/static/assets/Noses").unwrap();
-
-    for nose in all_noses {
-        let nose = nose.unwrap().path();
-
-        if nose.is_file() {
-            unsafe { NOSES.push(nose) };
-        }
-    }
-
     server.route(Method::GET, "/api/randomnose", |_req| {
-        let noses = unsafe { NOSES.clone() };
-        let random_nose = noses.choose(&mut rand::thread_rng()).unwrap();
+        let random_nose = NOSES.choose(&mut rand::thread_rng()).unwrap();
         let random_nose_str = random_nose.to_str().unwrap().replace('\\', "");
         let random_nose_str = random_nose_str.split('/').last().unwrap();
 

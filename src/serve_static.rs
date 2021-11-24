@@ -1,11 +1,10 @@
-use afire::{Header, Response, ServeStatic, Server};
 use std::fs;
 
-use crate::Template;
-use crate::VERSION;
+use afire::{Header, Response, ServeStatic, Server};
 
-/// Static Files to serve
-const DATA_DIR: &str = "./data/static";
+use crate::Template;
+use crate::DATA_DIR;
+use crate::VERSION;
 
 /// Files not to serve
 const DONT_SERVE_PATH: &str = "data/config/dont_serve.txt";

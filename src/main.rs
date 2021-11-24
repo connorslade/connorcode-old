@@ -16,6 +16,7 @@ use color::Color;
 use template::Template;
 
 pub const VERSION: &str = "5.0.0";
+pub const DATA_DIR: &str = "./data/static";
 pub const DEBUG: bool = false;
 
 fn main() {
