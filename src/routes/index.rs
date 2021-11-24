@@ -30,6 +30,13 @@ impl Project {
             .replace("{{LINK}}", &self.link)
             .replace("{{IMAGE}}", &self.image)
     }
+
+    fn jsonify(&self) -> String {
+        format!(
+            r#"{{"id": "{}", "name": "{}", "date": "{}", "link": "{}", "image": "{}"}}"#,
+            self.id, self.name, self.date, self.link, self.image
+        )
+    }
 }
 
 pub fn attach(server: &mut Server) {
@@ -59,6 +66,7 @@ pub fn attach(server: &mut Server) {
         BASE = Some(base_template);
     }
 
+    // Serve Main Page
     server.route(Method::GET, "/", |_req| {
         let base = unsafe { BASE_PAGE.clone().unwrap() };
         let raw_projects = unsafe { PROJECTS.clone().unwrap() };
@@ -76,5 +84,22 @@ pub fn attach(server: &mut Server) {
                     .replace("{{VERSION}}", VERSION),
             )
             .header(Header::new("Content-Type", "text/html"))
+    });
+
+    server.route(Method::GET, "/api/projects", |_req| {
+        let projects = unsafe { PROJECTS.clone().unwrap() };
+        let mut json = String::new();
+
+        for i in projects {
+            json.push_str(&i.jsonify());
+            json.push_str(", ");
+        }
+
+        json.pop();
+        json.pop();
+
+        Response::new()
+            .text(format!("[{}]", json))
+            .header(Header::new("Content-Type", "application/json"))
     });
 }

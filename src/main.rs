@@ -67,7 +67,7 @@ fn main() {
     server.add_default_header(Header::new("Cache-Control", "max-age=3600"));
 
     // Set other things
-    server.add_default_header(Header::new("X-Server", "afire/0.2.0"));
+    server.add_default_header(Header::new("X-Server", "afire/0.2.1*"));
     server.socket_timeout(Some(Duration::from_secs(1)));
 
     // Serve Static Files
