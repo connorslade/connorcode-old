@@ -14,9 +14,11 @@
   line-height: 50px;
   background: #757575;
   padding: 15px;
+  padding-bottom: 0px;
   width: fit-content;
   height: fit-content;
-  margin: 20px 10px 20px 10px;
+  margin-bottom: 20px;
+  margin-top: 20px;
   color: white;
   font-weight: bold;
   font-size: 200%;
@@ -26,8 +28,9 @@
   box-shadow: 10px 10px #353535;
   transition: all 0.3s;
   overflow: hidden;
-  width: 430px;
-  height: 343px;
+  max-width: 430px;
+  max-height: 343px;
+  width: 90vw;
 }
 .item:hover {
   background-color: #666666;
@@ -45,15 +48,23 @@
   cursor: pointer;
 }
 
-p {
-  display: inline;
-}
-
 .pre {
   transition: all 0.3s;
   display: block;
-  width: 400px;
-  height: 225px;
+  width: 100%;
+}
+
+footer .fa {
+  color: #58a6ff;
+}
+
+.copyleft {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+  display: inline-block;
+  transform: scale(-1, 1);
 }
 
 @keyframes lightSpeedIn {
@@ -68,8 +79,12 @@ p {
   text-decoration: none;
 }
 
+p {
+  display: inline;
+}
+
 a {
-  color: inherit;
+  color: #58a6ff;
 }
 
 /*# sourceMappingURL=style.css.map */

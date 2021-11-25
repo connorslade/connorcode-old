@@ -8,23 +8,15 @@ use afire::Server;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
 
-use ureq;
-
 pub fn attach(server: &mut Server) {
     server.route(Method::GET, "/randomimg/image.png", |_req| {
         // Try to find a ramdom image 5 times
         for _ in 1..5 {
-            match get_random_image() {
-                // If image found, send it to client
-                Some((i, j)) => {
-                    return Response::new()
-                        .bytes(i)
-                        .header(Header::new("Content-Type", "image/png"))
-                        .header(Header::new("X-Image-Id", j))
-                }
-
-                // If not, try again
-                None => {}
+            if let Some((i, j)) = get_random_image() {
+                return Response::new()
+                    .bytes(i)
+                    .header(Header::new("Content-Type", "image/png"))
+                    .header(Header::new("X-Image-Id", j));
             }
         }
 

@@ -29,8 +29,9 @@
   box-shadow: 10px 10px rgb(53, 53, 53);
   transition: all 0.3s;
   overflow: hidden;
-  width: 430px;
-  height: 343px;
+  max-width: 430px;
+  max-height: 343px;
+  width: 90vw;
 
   &:hover {
     background-color: #666666;
@@ -49,15 +50,24 @@
   cursor: pointer;
 }
 
-p {
-  display: inline;
-}
-
 .pre {
   transition: all 0.3s;
   display: block;
-  width: 400px;
-  height: 225px;
+  width: 100%;
+}
+
+footer .fa {
+  color: #58a6ff;
+}
+
+.copyleft {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+
+  display: inline-block;
+  transform: scale(-1, 1);
 }
 
 @keyframes lightSpeedIn {
@@ -73,6 +83,10 @@ p {
   text-decoration: none;
 }
 
+p {
+  display: inline;
+}
+
 a {
-  color: inherit;
+  color: #58a6ff;
 }

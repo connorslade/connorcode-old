@@ -30,13 +30,11 @@ pub fn attach(mut server: &mut Server) {
         // Inject version into reponses
         // Replaces `{{VERSION}}` with the verison in main.rs
         .middleware(|_req, res, suc| match String::from_utf8(res.data.clone()) {
-            Ok(i) => {
-                return Some((
-                    res.bytes(i.replace("{{VERSION}}", VERSION).into_bytes()),
-                    suc,
-                ))
-            }
-            Err(_) => return None,
+            Ok(i) => Some((
+                res.bytes(i.replace("{{VERSION}}", VERSION).into_bytes()),
+                suc,
+            )),
+            Err(_) => None,
         })
         // Response with not found if file is disabled
         .middleware(|req, _res, suc| {

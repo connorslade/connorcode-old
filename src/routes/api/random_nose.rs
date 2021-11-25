@@ -34,7 +34,7 @@ pub fn attach(server: &mut Server) {
 
         Response::new()
             .bytes(fs::read(random_nose).unwrap())
-            .header(Header::new("Content-Type", get_type(&random_nose_str)))
+            .header(Header::new("Content-Type", get_type(random_nose_str)))
             .header(Header::new("X-Nose-ID", random_nose_str))
     });
 }

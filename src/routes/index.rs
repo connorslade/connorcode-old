@@ -8,9 +8,9 @@ use simple_config_parser::Config;
 
 use crate::VERSION;
 
-static mut PROJECTS: Option<Vec<Project>> = None;
-static mut BASE_PAGE: Option<String> = None;
-static mut BASE: Option<String> = None;
+static mut PROJECTS: Vec<Project> = Vec::new();
+static mut BASE_PAGE: String = String::new();
+static mut BASE: String = String::new();
 
 #[derive(Clone)]
 struct Project {
@@ -47,7 +47,7 @@ pub fn attach(server: &mut Server) {
 
     for i in cfg.data {
         if i[0].starts_with("project_") {
-            let parts: Vec<String> = i[1].split(",").map(|x| x.to_string()).collect();
+            let parts: Vec<String> = i[1].split(',').map(|x| x.to_string()).collect();
             let id = i[0].split("project_").nth(1).unwrap();
 
             projects.push(Project {
@@ -61,16 +61,16 @@ pub fn attach(server: &mut Server) {
     }
 
     unsafe {
-        PROJECTS = Some(projects);
-        BASE_PAGE = Some(base_page);
-        BASE = Some(base_template);
+        PROJECTS = projects;
+        BASE_PAGE = base_page;
+        BASE = base_template;
     }
 
     // Serve Main Page
     server.route(Method::GET, "/", |_req| {
-        let base = unsafe { BASE_PAGE.clone().unwrap() };
-        let raw_projects = unsafe { PROJECTS.clone().unwrap() };
-        let template = unsafe { BASE.clone().unwrap() };
+        let base = unsafe { BASE_PAGE.clone() };
+        let raw_projects = unsafe { PROJECTS.clone() };
+        let template = unsafe { BASE.clone() };
 
         let mut projects = String::new();
         for i in raw_projects {
@@ -87,7 +87,7 @@ pub fn attach(server: &mut Server) {
     });
 
     server.route(Method::GET, "/api/projects", |_req| {
-        let projects = unsafe { PROJECTS.clone().unwrap() };
+        let projects = unsafe { PROJECTS.clone() };
         let mut json = String::new();
 
         for i in projects {
