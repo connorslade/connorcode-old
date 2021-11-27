@@ -15,12 +15,12 @@ use crate::config::{ANALYTICS_ENABLED, ANALYTICS_PATH, DUMP_PEROID};
 type Ip = String;
 
 #[derive(Clone, Serialize, Deserialize)]
-struct Stats {
-    time: u64,
-    path: String,
-    method: Method,
-    user_agent: Option<String>,
-    referer: Option<String>,
+pub struct Stats {
+    pub time: u64,
+    pub path: String,
+    pub method: Method,
+    pub user_agent: Option<String>,
+    pub referer: Option<String>,
 }
 
 #[derive(Debug, Serialize, Deserialize)]
@@ -30,7 +30,7 @@ struct Analytics {
 }
 
 #[derive(Clone, Serialize, Deserialize)]
-enum Method {
+pub enum Method {
     GET,
     POST,
     PUT,

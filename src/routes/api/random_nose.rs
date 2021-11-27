@@ -7,12 +7,12 @@ use afire::Response;
 use afire::Server;
 use rand::seq::SliceRandom;
 
-use crate::DATA_DIR;
+use crate::config::DATA_DIR;
 
 lazy_static! {
     static ref NOSES: Vec<PathBuf> = {
         let mut working = Vec::new();
-        let all_noses = fs::read_dir(format!("{}/assets/Noses", DATA_DIR)).unwrap();
+        let all_noses = fs::read_dir(format!("{}/assets/Noses", *DATA_DIR)).unwrap();
 
         for nose in all_noses {
             let nose = nose.unwrap().path();

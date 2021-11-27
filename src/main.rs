@@ -18,8 +18,6 @@ use config::{SERVER_HOST, SERVER_PORT};
 use template::Template;
 
 pub const VERSION: &str = "5.0.0";
-pub const DATA_DIR: &str = "./data/static";
-pub const DEBUG: bool = false;
 
 fn main() {
     let args: Vec<String> = env::args().collect();

@@ -6,11 +6,11 @@ use afire::Response;
 use afire::Server;
 use rand::seq::SliceRandom;
 
-use crate::DATA_DIR;
+use crate::config::DATA_DIR;
 
 lazy_static! {
     static ref WORDS: Vec<String> = {
-        let raw = fs::read_to_string(format!("{}/colornamegen/words.txt", DATA_DIR)).unwrap();
+        let raw = fs::read_to_string(format!("{}/colornamegen/words.txt", *DATA_DIR)).unwrap();
         raw.lines().map(|x| x.to_owned()).collect()
     };
 }
