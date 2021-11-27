@@ -2,7 +2,6 @@ use std::env;
 use std::time::Duration;
 
 use afire::{Header, Response, Server};
-use simple_config_parser::Config;
 #[macro_use]
 extern crate lazy_static;
 
@@ -12,7 +11,10 @@ mod serve_static;
 mod template;
 #[macro_use]
 mod color;
+mod analytics;
+mod config;
 use color::Color;
+use config::{SERVER_HOST, SERVER_PORT};
 use template::Template;
 
 pub const VERSION: &str = "5.0.0";
@@ -24,12 +26,7 @@ fn main() {
     let config_file: &str =
         arg_parse::get_arg_value(&args, "--config").unwrap_or("./data/config/config.cfg");
 
-    let cfg = Config::new()
-        .file(config_file)
-        .expect("Error reading the config file");
-
-    let host = cfg.get_str("ip").unwrap();
-    let port = cfg.get::<u16>("port").unwrap();
+    config::load(config_file).expect("Error Reading Config");
 
     println!(
         "{}",
@@ -39,7 +36,7 @@ fn main() {
         )
     );
 
-    let mut server = Server::new(&host, port);
+    let mut server = Server::new(&*SERVER_HOST, *SERVER_PORT);
 
     server.error_handler(|_req, err| {
         Response::new()
@@ -70,12 +67,21 @@ fn main() {
     server.add_default_header(Header::new("X-Server", "afire/0.2.1*"));
     server.socket_timeout(Some(Duration::from_secs(1)));
 
+    // Add my Analytics middleware
+    analytics::attach(&mut server);
+
     // Serve Static Files
     serve_static::attach(&mut server);
 
+    // Add Api Routes
     routes::attach(&mut server);
 
-    color_print!(Color::Blue, "[*] Starting server on {}:{}\n", host, port);
+    color_print!(
+        Color::Blue,
+        "[*] Starting server on {}:{}\n",
+        SERVER_HOST,
+        SERVER_PORT
+    );
 
     server.start().unwrap();
 }
