@@ -20,10 +20,28 @@ pub fn attach(server: &mut Server) {
         let mut all_data: HashMap<String, Vec<Stats>> = HashMap::new();
 
         for i in files {
+            // Read file
             let file = i.unwrap();
             let data = fs::read(file.path()).unwrap();
+
+            // Parse Data
             let data: HashMap<String, Vec<Stats>> = bincode::deserialize(&data).unwrap();
-            all_data.extend(data);
+
+            // Marge data to all_data
+            for i in data {
+                let ip = i.0;
+                for data in i.1 {
+
+                if all_data.contains_key(&ip) {
+                    let mut new = all_data.get(&ip).unwrap().to_vec();
+                    new.push(data);
+                    all_data.insert(ip.to_owned(), new);
+                    continue;
+                }
+
+                all_data.insert(ip.to_owned(), vec![data]);
+                }
+            }
         }
 
         if all_data.len() == 0 {
@@ -56,11 +74,13 @@ pub fn attach(server: &mut Server) {
                 segment.pop();
             }
 
+            working.push_str(&format!(r#""{}": ["#, i));
             working.push_str(&segment);
+            working.push(']');
         }
 
         Response::new()
-            .text(format!("[{}]", working))
+            .text(format!("{{{}}}", working))
             .header(Header::new("Content-Type", "application/json"))
     });
 }

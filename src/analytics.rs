@@ -120,6 +120,9 @@ impl Analytics {
 
         println!("[*] Saveing Analytics");
 
+        // Update Last Dump time
+        self.last_dump = SystemTime::now();
+
         // Create Path
         let folder = Path::new(&*ANALYTICS_PATH);
         if !folder.exists() {
@@ -134,7 +137,22 @@ impl Analytics {
             let mut old: HashMap<Ip, Vec<Stats>> = bincode::deserialize(&old).ok()?;
 
             // Add New Data
-            old.extend(self.data.clone());
+            for i in self.data.clone() {
+                let ip = i.0;
+                for data in i.1 {
+                    if old.contains_key(&ip) {
+                        let mut new = old.get(&ip)?.to_vec();
+                        new.push(data);
+                        old.insert(ip.to_owned(), new);
+                        continue;
+                    }
+
+                    old.insert(ip.to_owned(), vec![data]);
+                }
+            }
+
+            // Reset In Memory Analytics Cache thing
+            self.data.clear();
             let new = bincode::serialize(&old).ok()?;
 
             // Write New File
