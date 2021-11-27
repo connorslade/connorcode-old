@@ -16,16 +16,16 @@ pub fn attach(server: &mut Server) {
     server.route(Method::GET, "/api/analytics", |_req| {
         // Get Data From Disk
         let folder = Path::new(&*ANALYTICS_PATH);
-        let files = fs::read_dir(folder).unwrap();
+        let files = fs::read_dir(folder).expect("Error Reading Dir");
         let mut all_data: HashMap<String, Vec<Stats>> = HashMap::new();
 
         for i in files {
             // Read file
             let file = i.unwrap();
-            let data = fs::read(file.path()).unwrap();
+            let data = fs::read(file.path()).expect("Error Reading Analytics File");
 
             // Parse Data
-            let data: HashMap<String, Vec<Stats>> = bincode::deserialize(&data).unwrap();
+            let data: HashMap<String, Vec<Stats>> = bincode::deserialize(&data).expect("Error Deserializeing Data");
 
             // Marge data to all_data
             for i in data {
@@ -54,8 +54,8 @@ pub fn attach(server: &mut Server) {
 
         let mut working = String::new();
 
-        for i in all_data.keys() {
-            let data = all_data.get(i).unwrap();
+        for i in all_data {
+            let data = i.1;
             let mut segment = String::new();
 
             for i in data {
@@ -74,7 +74,7 @@ pub fn attach(server: &mut Server) {
                 segment.pop();
             }
 
-            working.push_str(&format!(r#""{}": ["#, i));
+            working.push_str(&format!(r#""{}": ["#, i.0));
             working.push_str(&segment);
             working.push(']');
         }
