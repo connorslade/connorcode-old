@@ -4,16 +4,33 @@ use std::path::Path;
 
 use afire::{Header, Method, Response, Server};
 use bincode;
+use sha2::{Digest, Sha256};
 
 use crate::analytics::Stats;
-use crate::config::{ANALYTICS_PATH, ANALYTICS_SERVE};
+use crate::config::{ANALYTICS_PASS, ANALYTICS_PATH, ANALYTICS_SERVE};
 
 pub fn attach(server: &mut Server) {
     if !*ANALYTICS_SERVE {
         return;
     }
 
-    server.route(Method::GET, "/api/analytics", |_req| {
+    server.route(Method::GET, "/api/analytics", |req| {
+        // Check Auth
+        let auth = match get_header(req.headers, "Auth") {
+            Some(i) => i,
+            None => {
+                return Response::new().status(403).text("No Authorization Header");
+            }
+        };
+
+        let mut hasher = Sha256::new();
+        hasher.update(auth.into_bytes());
+        let result = hasher.finalize();
+
+        if format!("{:02x}", result) != *ANALYTICS_PASS {
+            return Response::new().status(403).text("Invalid Pass Header");
+        }
+
         // Get Data From Disk
         let folder = Path::new(&*ANALYTICS_PATH);
         let files = fs::read_dir(folder).expect("Error Reading Dir");
@@ -83,4 +100,13 @@ pub fn attach(server: &mut Server) {
             .text(format!("{{{}}}", working))
             .header(Header::new("Content-Type", "application/json"))
     });
+}
+
+fn get_header(headers: Vec<Header>, header: &str) -> Option<String> {
+    for i in headers {
+        if i.name == header {
+            return Some(i.value);
+        }
+    }
+    None
 }
