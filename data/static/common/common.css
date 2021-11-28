@@ -22,6 +22,21 @@ body {
   margin-top: 0px;
 }
 
+.archive {
+  padding: 15px;
+  background: #00000091;
+  color: white;
+  text-align: center;
+  font-size: 20px;
+  border-color: #ffffff8f;
+  border-width: 1px;
+  border-radius: 0 0 5px 5px;
+  border-bottom-style: solid;
+}
+.archive::before {
+  content: "This Page Is Archived";
+}
+
 footer {
   background-color: #2e2e2e;
   padding: 7px;
