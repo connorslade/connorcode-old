@@ -93,8 +93,11 @@ pub fn attach(server: &mut Server) {
 
             working.push_str(&format!(r#""{}": ["#, i.0));
             working.push_str(&segment);
-            working.push(']');
+            working.push_str("], ");
         }
+
+        working.pop();
+        working.pop();
 
         Response::new()
             .text(format!("{{{}}}", working))

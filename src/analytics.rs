@@ -87,7 +87,17 @@ impl Analytics {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        let ip = req.address.split(':').next()?;
+        let mut ip = req.address.split(':').next()?.to_owned();
+
+        // If Ip is Localhost and 'X-Forwarded-For' Header is present
+        // Use that as Ip
+        if ip == "127.0.0.1" {
+            for i in req.headers.clone() {
+                if i.name == "X-Forwarded-For" {
+                    ip = i.value;
+                }
+            }
+        }
 
         let mut path = req.path.clone();
         if !path.starts_with('/') {
@@ -103,8 +113,8 @@ impl Analytics {
             referer,
         );
 
-        if self.data.contains_key(ip) {
-            let mut new = self.data.get(ip)?.to_vec();
+        if self.data.contains_key(&ip) {
+            let mut new = self.data.get(&ip)?.to_vec();
             new.push(stats);
             self.data.insert(ip.to_owned(), new);
             return Some(());
