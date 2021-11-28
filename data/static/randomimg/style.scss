@@ -66,12 +66,12 @@ img {
   transition: 0.3s;
   text-decoration: none;
   cursor: pointer;
-  box-shadow: 10px 10px black;
+  box-shadow: 10px 10px rgb(0, 0, 0);
 }
 
 .button:hover {
   opacity: 1;
-  box-shadow: 15px 15px black;
+  box-shadow: 15px 15px rgb(0, 0, 0);
   font-size: 5.2vw;
 }
 
@@ -94,5 +94,3 @@ img {
 #rand {
   transition: opacity 1s;
 }
-
-/*# sourceMappingURL=style.css.map */

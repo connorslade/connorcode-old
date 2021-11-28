@@ -3,7 +3,8 @@
 }
 
 body {
-  background: linear-gradient(rgba(20, 26, 35, 0.55), rgba(20, 26, 35, 0.55)), url("../img/minecraft.jpg") no-repeat center center fixed;
+  background: linear-gradient(rgba(20, 26, 35, 0.55), rgba(20, 26, 35, 0.55)),
+    url("../img/minecraft.jpg") no-repeat center center fixed;
   background-size: cover;
   font-family: "Open Sans", Helvetica;
   margin: 0;
@@ -40,8 +41,7 @@ p {
 }
 
 .logo img {
-  width: 225px;
-  /* Change image size for mobile */
+  width: 225px; /* Change image size for mobile */
   -webkit-animation-name: logo;
   animation-name: logo;
   -webkit-animation-duration: 5s;
@@ -66,6 +66,7 @@ p {
     transform: scale(1);
   }
 }
+
 @keyframes logo {
   0% {
     -webkit-transform: scale(1);
@@ -80,6 +81,7 @@ p {
     transform: scale(1);
   }
 }
+
 .playercount {
   display: inline-block;
   margin: 20px 15px 0 15px;
@@ -152,7 +154,6 @@ p {
   margin: 0;
   padding: 0;
 }
-
 .logo img {
   width: 90vw;
 }
@@ -170,11 +171,11 @@ p {
   .playercount > p > span {
     padding: 2px 7px;
   }
-
   .img {
     width: 100px;
   }
 }
+
 @media (min-width: 1250px) {
   .title {
     font-size: 24px;
@@ -191,15 +192,12 @@ p {
   .logo {
     margin-bottom: 28px;
   }
-
   .img {
     width: 150px;
   }
-
   .items {
     padding: 30px 0 20px 0;
   }
-
   .playercount {
     font-size: 1.22em;
     padding: 10px;
@@ -213,6 +211,7 @@ p {
     padding: 4px 7px;
   }
 }
+
 @media (min-width: 1000px) {
   .items {
     -webkit-box-pack: center;
@@ -224,5 +223,3 @@ p {
     margin-left: 90px;
   }
 }
-
-/*# sourceMappingURL=stylesheet.css.map */

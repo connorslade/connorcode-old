@@ -4,20 +4,24 @@ body {
   margin: 0;
   padding: 0;
 }
+
 #title {
   text-align: center;
   font-size: 300%;
   margin-bottom: 0px;
   animation-delay: 2s;
 }
+
 #subtitle {
   text-align: center;
   margin-top: 0px;
 }
+
 #subtitle2 {
   text-align: center;
   margin-top: 0px;
 }
+
 div.projects {
   display: flex;
   flex-direction: column;
@@ -26,6 +30,7 @@ div.projects {
   align-items: center;
   width: fit-content;
 }
+
 button.item {
   line-height: 75px;
   background: #757575;
@@ -40,7 +45,7 @@ button.item {
   text-align: center;
   border: none;
   border-radius: 3px;
-  box-shadow: 10px 10px rgb(53, 53, 53);
+  box-shadow: 10px 10px #353535;
   -webkit-transform: scale(1);
   -ms-transform: scale(1);
   transform: scale(1);
@@ -49,6 +54,7 @@ button.item {
   transition-timing-function: ease;
   transition-delay: 0s;
 }
+
 button.item:hover {
   background-color: #666666;
   cursor: pointer;
@@ -60,15 +66,18 @@ button.item:hover {
   transition-timing-function: ease;
   transition-delay: 0s;
 }
+
 button.back {
   background-color: #474747;
   border: none;
   cursor: pointer;
 }
+
 #footer {
   position: absolute;
   bottom: 0;
 }
+
 #fbutton {
   background: #757575;
   margin: 2px;
@@ -79,17 +88,21 @@ button.back {
   border: none;
   border-radius: 3px;
 }
+
 #fbutton:hover {
   background: #666666;
   cursor: pointer;
 }
+
 p {
   display: inline;
 }
+
 img.pre {
   display: block;
   width: 400px;
 }
+
 @keyframes lightSpeedIn {
   from {
     -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
@@ -100,6 +113,9 @@ img.pre {
 #gui {
   width: 500px;
 }
+
 #paypal-button-container {
-  width: 700px ;
+  width: 700px;
 }
+
+/*# sourceMappingURL=style.css.map */
