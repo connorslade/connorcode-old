@@ -10,16 +10,16 @@ macro_rules! config {
 
 lazy_static! {
     // Server Config
-    pub static ref SERVER_HOST: String = config!().get_str("ip").unwrap().to_owned();
-    pub static ref SERVER_PORT: u16 = config!().get::<u16>("port").unwrap().to_owned();
-    pub static ref DATA_DIR: String = config!().get_str("data_dir").unwrap().to_owned();
+    pub static ref SERVER_HOST: String = config!().get_str("ip").unwrap();
+    pub static ref SERVER_PORT: u16 = config!().get::<u16>("port").unwrap();
+    pub static ref DATA_DIR: String = config!().get_str("data_dir").unwrap();
 
     // Analytics Config
-    pub static ref ANALYTICS_ENABLED: bool = config!().get::<bool>("analytics_enabled").unwrap().to_owned();
-    pub static ref ANALYTICS_SERVE: bool = config!().get::<bool>("analytics_serve").unwrap().to_owned();
-    pub static ref ANALYTICS_PATH: String = config!().get_str("analytics_path").unwrap().to_owned();
-    pub static ref ANALYTICS_PASS: String = config!().get_str("analytics_pass").unwrap().to_owned();
-    pub static ref DUMP_PEROID: u64 = config!().get::<u64>("dump_peroid").unwrap().to_owned();
+    pub static ref ANALYTICS_ENABLED: bool = config!().get::<bool>("analytics_enabled").unwrap();
+    pub static ref ANALYTICS_SERVE: bool = config!().get::<bool>("analytics_serve").unwrap();
+    pub static ref ANALYTICS_PATH: String = config!().get_str("analytics_path").unwrap();
+    pub static ref ANALYTICS_PASS: String = config!().get_str("analytics_pass").unwrap();
+    pub static ref DUMP_PEROID: u64 = config!().get::<u64>("dump_peroid").unwrap();
 
 }
 

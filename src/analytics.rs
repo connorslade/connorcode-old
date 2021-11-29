@@ -6,7 +6,6 @@ use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use afire::{Header, Request, Server};
-use bincode;
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -31,15 +30,15 @@ struct Analytics {
 
 #[derive(Clone, Serialize, Deserialize)]
 pub enum Method {
-    GET,
-    POST,
-    PUT,
-    DELETE,
-    OPTIONS,
-    HEAD,
-    PATCH,
-    TRACE,
-    CUSTOM(String),
+    Get,
+    Post,
+    Put,
+    Delete,
+    Options,
+    Head,
+    Patch,
+    Trace,
+    Custom(String),
 }
 
 pub fn attach(server: &mut Server) {
@@ -107,7 +106,7 @@ impl Analytics {
         let referer = get_header(&req.headers, "Referer");
         let stats = Stats::new(
             time,
-            path.to_owned(),
+            path,
             Method::from_afire(req.method.clone()),
             agent,
             referer,
@@ -116,10 +115,10 @@ impl Analytics {
         if self.data.contains_key(&ip) {
             let mut new = self.data.get(&ip)?.to_vec();
             new.push(stats);
-            self.data.insert(ip.to_owned(), new);
+            self.data.insert(ip, new);
             return Some(());
         }
-        self.data.insert(ip.to_owned(), vec![stats]);
+        self.data.insert(ip, vec![stats]);
         Some(())
     }
 
@@ -181,16 +180,16 @@ impl Analytics {
 impl Method {
     fn from_afire(old: afire::Method) -> Method {
         match old {
-            afire::Method::GET => Method::GET,
-            afire::Method::POST => Method::POST,
-            afire::Method::PUT => Method::PUT,
-            afire::Method::DELETE => Method::DELETE,
-            afire::Method::OPTIONS => Method::OPTIONS,
-            afire::Method::HEAD => Method::HEAD,
-            afire::Method::PATCH => Method::PATCH,
-            afire::Method::TRACE => Method::TRACE,
-            afire::Method::CUSTOM(s) => Method::CUSTOM(s),
-            afire::Method::ANY => Method::CUSTOM("ANY".to_owned()),
+            afire::Method::GET => Method::Get,
+            afire::Method::POST => Method::Post,
+            afire::Method::PUT => Method::Put,
+            afire::Method::DELETE => Method::Delete,
+            afire::Method::OPTIONS => Method::Options,
+            afire::Method::HEAD => Method::Head,
+            afire::Method::PATCH => Method::Patch,
+            afire::Method::TRACE => Method::Trace,
+            afire::Method::CUSTOM(s) => Method::Custom(s),
+            afire::Method::ANY => Method::Custom("ANY".to_owned()),
         }
     }
 }
@@ -198,15 +197,15 @@ impl Method {
 impl fmt::Display for Method {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         match self {
-            Method::GET => write!(f, "GET"),
-            Method::POST => write!(f, "POST"),
-            Method::PUT => write!(f, "PUT"),
-            Method::DELETE => write!(f, "DELETE"),
-            Method::OPTIONS => write!(f, "OPTIONS"),
-            Method::HEAD => write!(f, "HEAD"),
-            Method::PATCH => write!(f, "PATCH"),
-            Method::TRACE => write!(f, "TRACE"),
-            Method::CUSTOM(s) => write!(f, "{}", s),
+            Method::Get => write!(f, "GET"),
+            Method::Post => write!(f, "POST"),
+            Method::Put => write!(f, "PUT"),
+            Method::Delete => write!(f, "DELETE"),
+            Method::Options => write!(f, "OPTIONS"),
+            Method::Head => write!(f, "HEAD"),
+            Method::Patch => write!(f, "PATCH"),
+            Method::Trace => write!(f, "TRACE"),
+            Method::Custom(s) => write!(f, "{}", s),
         }
     }
 }
@@ -226,7 +225,7 @@ impl fmt::Debug for Stats {
     }
 }
 
-fn get_header(headers: &Vec<Header>, key: &str) -> Option<String> {
+fn get_header(headers: &[Header], key: &str) -> Option<String> {
     for i in headers {
         if i.name == key {
             return Some(i.value.clone());
