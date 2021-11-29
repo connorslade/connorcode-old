@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
@@ -39,6 +40,10 @@ pub fn attach(server: &mut Server) {
         for i in files {
             // Read file
             let file = i.unwrap();
+            if !file.path().is_file() || file.path().extension() != Some(OsStr::new("aan")) {
+                continue;
+            }
+
             let data = fs::read(file.path()).expect("Error Reading Analytics File");
 
             // Parse Data
