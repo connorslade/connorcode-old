@@ -1,0 +1,22 @@
+   __________  _   ___   ______  ____  __________  ____  ______ __________  __  ___
+  / ____/ __ \/ | / / | / / __ \/ __ \/ ____/ __ \/ __ \/ ____// ____/ __ \/  |/  /
+ / /   / / / /  |/ /  |/ / / / / /_/ / /   / / / / / / / __/  / /   / / / / /|_/ /
+/ /___/ /_/ / /|  / /|  / /_/ / _, _/ /___/ /_/ / /_/ / /____/ /___/ /_/ / /  / /
+\____/\____/_/ |_/_/ |_/\____/_/ |_|\____/\____/_____/_____(_)____/\____/_/  /_/
+
+https://connorcode.com
+https://github.com/Basicprogrammer10/connorcode
+
+/* Made By */
+Name:   Connor Slade
+Github: https://github.connorcode.com
+Email:  connor(at)connorcode.com
+
+/* Made With */
+- Rust
+- Afire (My Dependency Free Web Server Framework)
+- Scss
+- The Usual: Html, JS
+- Atom (Text Editor)
+- Love!
+- More
