@@ -39,7 +39,7 @@ fn load_links(file: &str) -> Option<Vec<[String; 2]>> {
         if i.is_empty() || i.starts_with(';') || i.starts_with('#') {
             continue;
         }
-        let mut parts = i.split('=');
+        let mut parts = i.splitn(2, '=');
         let code = parts.next()?.trim().to_owned();
         let link = parts.next()?.trim().to_owned();
         out.push([code, link]);
