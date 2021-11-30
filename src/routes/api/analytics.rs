@@ -7,7 +7,7 @@ use afire::{Header, Method, Response, Server};
 use sha2::{Digest, Sha256};
 
 use crate::analytics::Stats;
-use crate::config::{ANALYTICS_PASS, ANALYTICS_PATH, ANALYTICS_SERVE};
+use crate::config::{ANALYTICS_PATH, ANALYTICS_SERVE, PASS};
 
 pub fn attach(server: &mut Server) {
     if !*ANALYTICS_SERVE {
@@ -27,7 +27,7 @@ pub fn attach(server: &mut Server) {
         hasher.update(auth.into_bytes());
         let result = hasher.finalize();
 
-        if format!("{:02x}", result) != *ANALYTICS_PASS {
+        if format!("{:02x}", result) != *PASS {
             return Response::new().status(403).text("Invalid Pass Header");
         }
 
