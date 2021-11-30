@@ -5,7 +5,7 @@ use crate::common::get_header;
 use crate::config::{PASS, STATUS_SERVE};
 use crate::template::Template;
 
-const OUT_FORMAT: &str = r#"{"os": {"type": "{{OS_TYPE}}", "release": "{{OS_RELEASE}}"}, "disk": {"total": {{DISK_TOTAL}}, "free": {{DISK_FREE}}}, "memory": {"total": {{MEM_TOTAL}}, "free": {{MEM_FREE}}}, "load": {"1m": {{LOAD_1}}, "5m": {{LOAD_5}}, "15m": {{LOAD_15}}}f, "processes": {{PROC}}}"#;
+const OUT_FORMAT: &str = r#"{"os": {"type": "{{OS_TYPE}}", "release": "{{OS_RELEASE}}"}, "disk": {"total": {{DISK_TOTAL}}, "free": {{DISK_FREE}}}, "memory": {"total": {{MEM_TOTAL}}, "free": {{MEM_FREE}}}, "load": {"1m": {{LOAD_1}}, "5m": {{LOAD_5}}, "15m": {{LOAD_15}}}, "processes": {{PROC}}}"#;
 
 pub fn attach(server: &mut Server) {
     if !*STATUS_SERVE {

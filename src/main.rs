@@ -49,13 +49,6 @@ fn main() {
             .header(Header::new("Content-Type", "text/html"))
     });
 
-    // TMP
-    server.middleware(Box::new(|req| {
-        println!("[{}] {}", req.method, req.path);
-
-        None
-    }));
-
     // Set defult headers
     server.add_default_header(Header::new("X-Content-Type-Options", "nosniff"));
     server.add_default_header(Header::new("X-Frame-Options", "DENY"));
@@ -74,6 +67,13 @@ fn main() {
 
     // Add Api Routes
     routes::attach(&mut server);
+
+    // TMP
+    server.middleware(Box::new(|req| {
+        println!("[{}] {}", req.method, req.path);
+
+        None
+    }));
 
     color_print!(
         Color::Blue,
