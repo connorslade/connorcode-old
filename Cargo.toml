@@ -20,6 +20,7 @@ sha2 = "0.9.8"
 
 # Other
 lazy_static = "1.4.0"
+sys-info = "0.9.1"
 chrono = "0.4.19"
 ureq = "2.3.0"
 rand = "0.8.4"

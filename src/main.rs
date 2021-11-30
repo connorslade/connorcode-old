@@ -12,6 +12,7 @@ mod template;
 #[macro_use]
 mod color;
 mod analytics;
+mod common;
 mod config;
 use color::Color;
 use config::{SERVER_HOST, SERVER_PORT};

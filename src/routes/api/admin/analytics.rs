@@ -7,6 +7,7 @@ use afire::{Header, Method, Response, Server};
 use sha2::{Digest, Sha256};
 
 use crate::analytics::Stats;
+use crate::common::get_header;
 use crate::config::{ANALYTICS_PATH, ANALYTICS_SERVE, PASS};
 
 pub fn attach(server: &mut Server) {
@@ -107,13 +108,4 @@ pub fn attach(server: &mut Server) {
             .text(format!("{{{}}}", working))
             .header(Header::new("Content-Type", "application/json"))
     });
-}
-
-fn get_header(headers: Vec<Header>, header: &str) -> Option<String> {
-    for i in headers {
-        if i.name == header {
-            return Some(i.value);
-        }
-    }
-    None
 }

@@ -21,6 +21,7 @@ lazy_static! {
     pub static ref DUMP_PEROID: u64 = config!().get::<u64>("dump_peroid").unwrap();
 
     // Other
+    pub static ref STATUS_SERVE: bool = config!().get::<bool>("status_serve").unwrap();
     pub static ref PASS: String = config!().get_str("pass").unwrap();
 }
 
