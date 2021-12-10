@@ -14,11 +14,12 @@ mod color;
 mod analytics;
 mod common;
 mod config;
+mod files;
 use color::Color;
 use config::{SERVER_HOST, SERVER_PORT};
 use template::Template;
 
-pub const VERSION: &str = "5.0.1";
+pub const VERSION: &str = "5.0.2";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -58,6 +59,8 @@ fn main() {
     // Set other things
     server.add_default_header(Header::new("X-Server", "afire/0.2.1*"));
     server.socket_timeout(Some(Duration::from_secs(1)));
+
+    files::attach(&mut server);
 
     // Add my Analytics middleware
     analytics::attach(&mut server);

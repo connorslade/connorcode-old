@@ -14,6 +14,10 @@ lazy_static! {
     pub static ref SERVER_PORT: u16 = config!().get::<u16>("port").unwrap();
     pub static ref DATA_DIR: String = config!().get_str("data_dir").unwrap();
 
+    // File Serve
+    pub static ref FILE_SERVE: bool = config!().get::<bool>("file_serve").unwrap();
+    pub static ref FILE_SERVE_PATH: String = config!().get_str("file_serve_path").unwrap();
+
     // Analytics Config
     pub static ref ANALYTICS_ENABLED: bool = config!().get::<bool>("analytics_enabled").unwrap();
     pub static ref ANALYTICS_SERVE: bool = config!().get::<bool>("analytics_serve").unwrap();
