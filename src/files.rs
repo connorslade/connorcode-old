@@ -13,7 +13,7 @@ pub fn attach(server: &mut Server) {
     }
 
     server.middleware(Box::new(|req| {
-        if req.method != Method::GET || !req.path.starts_with("/files") {
+        if !req.path.starts_with("/files") || req.method != Method::GET {
             return None;
         }
 
@@ -27,7 +27,7 @@ pub fn attach(server: &mut Server) {
         let path = PathBuf::from(FILE_SERVE_PATH.clone()).join(&file_path);
 
         if path.is_dir() {
-            let dir = match fs::read_dir(&path) {
+            let mut dir = match fs::read_dir(&path) {
                 Ok(i) => i,
                 Err(_) => {
                     return Some(
@@ -40,7 +40,16 @@ pub fn attach(server: &mut Server) {
             .map(|x| x.unwrap().path())
             .collect::<Vec<PathBuf>>();
 
+            dir.sort();
+
             let mut out = String::new();
+
+            if path != PathBuf::from(FILE_SERVE_PATH.clone()) {
+                out.push_str(
+                    &format!(r#"<div class="file"><a href="/files{}"><i class="fa fa-folder"></i> ..</a></div>"#,
+                    path.parent().unwrap().as_os_str().to_string_lossy().replacen(FILE_SERVE_PATH.as_str(), "", 1))
+                );
+            }
 
             for i in dir {
                 let j = i.to_str()?;
@@ -50,7 +59,10 @@ pub fn attach(server: &mut Server) {
                 out.push_str(&format!(
                     r#"<div class="file"><a href="/files{}"><i class="fa fa-{}"></i> {}</a></div>"#,
                     url,
-                    if i.is_file() { "file" } else { "folder" },
+                    match i.is_file() {
+                        true => "file",
+                        _ => "folder",
+                    },
                     name.strip_prefix('/')
                         .unwrap_or(&name)
                         .strip_prefix('\\')

@@ -38,6 +38,16 @@ body {
   }
 }
 
+.copyleft {
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 0;
+  padding-right: 0;
+
+  display: inline-block;
+  transform: scale(-1, 1);
+}
+
 footer {
   background-color: #2e2e2e;
   padding: 7px;
