@@ -24,9 +24,13 @@ lazy_static! {
     pub static ref ANALYTICS_PATH: String = config!().get_str("analytics_path").unwrap();
     pub static ref DUMP_PEROID: u64 = config!().get::<u64>("dump_peroid").unwrap();
 
-    // Other
+    // Admin Other
     pub static ref STATUS_SERVE: bool = config!().get::<bool>("status_serve").unwrap();
     pub static ref PASS: String = config!().get_str("pass").unwrap();
+
+    // Other
+    pub static ref BROADCAST_ONION: bool = config!().get::<bool>("onion_brodcast").unwrap();
+    pub static ref ONION_SITE: String = config!().get_str("onion_site").unwrap();
 }
 
 pub fn load(path: &str) -> Option<()> {

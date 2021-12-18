@@ -1,8 +1,8 @@
 use std::fs;
 
-use afire::{Header, Response, ServeStatic, Server};
+use afire::{Header, Request, Response, ServeStatic, Server};
 
-use crate::config::DATA_DIR;
+use crate::config::{BROADCAST_ONION, DATA_DIR, ONION_SITE};
 use crate::Template;
 use crate::VERSION;
 
@@ -36,6 +36,8 @@ pub fn attach(mut server: &mut Server) {
             )),
             Err(_) => None,
         })
+        // Add Onion-Location Header
+        .middleware(onion_header)
         // Response with not found if file is disabled
         .middleware(|req, _res, suc| {
             if is_disabled(&req.path).is_some() {
@@ -70,4 +72,17 @@ fn not_found(path: &str) -> Response {
             .build(),
         )
         .header(Header::new("Content-Type", "text/html"))
+}
+
+fn onion_header(req: Request, res: Response, suc: bool) -> Option<(Response, bool)> {
+    if !*BROADCAST_ONION {
+        return None;
+    }
+
+    let res = res.header(Header::new(
+        "Onion-Location",
+        format!("{}{}", *ONION_SITE, req.path),
+    ));
+
+    Some((res, suc))
 }

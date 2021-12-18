@@ -36,7 +36,15 @@ fn main() {
         )
     );
 
-    let mut server = Server::new(&*SERVER_HOST, *SERVER_PORT);
+    let mut server = Server::new(&*SERVER_HOST, *SERVER_PORT)
+        // Set defult headers
+        .default_header(Header::new("X-Content-Type-Options", "nosniff"))
+        .default_header(Header::new("X-Frame-Options", "DENY"))
+        .default_header(Header::new("X-Version", format!("Connorcode/{}", VERSION)))
+        .default_header(Header::new("Cache-Control", "max-age=3600"))
+        // Set other things
+        .default_header(Header::new("X-Server", "afire/0.2.3*"))
+        .socket_timeout(Duration::from_secs(1));
 
     server.error_handler(|_req, err| {
         Response::new()
@@ -49,16 +57,6 @@ fn main() {
             )
             .header(Header::new("Content-Type", "text/html"))
     });
-
-    // Set defult headers
-    server.add_default_header(Header::new("X-Content-Type-Options", "nosniff"));
-    server.add_default_header(Header::new("X-Frame-Options", "DENY"));
-    server.add_default_header(Header::new("X-Version", format!("Connorcode/{}", VERSION)));
-    server.add_default_header(Header::new("Cache-Control", "max-age=3600"));
-
-    // Set other things
-    server.add_default_header(Header::new("X-Server", "afire/0.2.1*"));
-    server.socket_timeout(Some(Duration::from_secs(1)));
 
     files::attach(&mut server);
 
@@ -74,7 +72,6 @@ fn main() {
     // TMP
     server.middleware(Box::new(|req| {
         println!("[{}] {}", req.method, req.path);
-
         None
     }));
 

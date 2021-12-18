@@ -4,8 +4,8 @@ version = 3
 
 [[package]]
 name = "afire"
-version = "0.2.1"
-source = "git+https://github.com/Basicprogrammer10/afire.git?branch=0.2.1#187491374092c4591df78302181da6d492d8cc02"
+version = "0.2.3"
+source = "git+https://github.com/Basicprogrammer10/afire.git?branch=0.2.3#d9e366a3546a5261b21f8220b56851207ec5184a"
 
 [[package]]
 name = "autocfg"

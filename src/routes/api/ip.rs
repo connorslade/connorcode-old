@@ -1,7 +1,4 @@
-use afire::Header;
-use afire::Method;
-use afire::Response;
-use afire::Server;
+use afire::{Header, Method, Response, Server};
 
 pub fn attach(server: &mut Server) {
     server.route(Method::GET, "/api/ip", |req| {
