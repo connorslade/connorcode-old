@@ -1,6 +1,5 @@
 target/
 local/
-*.mp4
 
 data/analytics/*.aan
 
