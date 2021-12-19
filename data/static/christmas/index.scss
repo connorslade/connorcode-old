@@ -1,0 +1,44 @@
+body {
+  background: #17171a;
+  font-family: Consolas, Monaco, Lucida Console, Liberation Mono,
+    DejaVu Sans Mono, Bitstream Vera Sans Mono, Courier New, monospace;
+}
+
+footer {
+  background-color: #1a1a1d;
+  padding: 7px;
+  color: white;
+  position: fixed;
+  width: 100vw;
+  left: 0;
+  bottom: 0;
+  height: 19px;
+
+  & * {
+    position: absolute;
+    top: -7px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: inline;
+    color: white;
+  }
+}
+
+.countdown {
+  color: white;
+  font-size: 6em;
+  font-weight: 700;
+  text-align: center;
+  top: 50%;
+  left: 50%;
+  position: absolute;
+  transform: translate(-50%, -50%);
+  text-shadow: 0 0 10px #eee;
+  pointer-events: none;
+}
+
+#body {
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
+}
