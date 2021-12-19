@@ -19,7 +19,7 @@ use color::Color;
 use config::{SERVER_HOST, SERVER_PORT};
 use template::Template;
 
-pub const VERSION: &str = "5.0.2";
+pub const VERSION: &str = "5.1.0";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
