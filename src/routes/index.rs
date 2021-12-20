@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{Header, Method, Response, Server};
+use afire::{Content, Header, Method, Response, Server};
 use simple_config_parser::Config;
 
 use crate::config::{BROADCAST_ONION, ONION_SITE};
@@ -81,7 +81,7 @@ pub fn attach(server: &mut Server) {
                 base.replace("{{ITEMS}}", &projects)
                     .replace("{{VERSION}}", VERSION),
             )
-            .header(Header::new("Content-Type", "text/html"));
+            .content(Content::HTML);
 
         if *BROADCAST_ONION {
             res = res.header(Header::new("Onion-Location", &*ONION_SITE));
@@ -99,8 +99,7 @@ pub fn attach(server: &mut Server) {
             json.push_str(", ");
         }
 
-        json.pop();
-        json.pop();
+        json.truncate(json.len() - 2);
 
         Response::new()
             .text(format!("[{}]", json))
