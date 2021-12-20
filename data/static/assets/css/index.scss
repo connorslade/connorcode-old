@@ -1,4 +1,7 @@
 /* Sigma76 On TOP */
+// This Css is Very old.. Dont Judge
+
+@import 'common';
 
 .projects {
   display: flex;
@@ -72,7 +75,6 @@ footer .fa {
 
 @keyframes lightSpeedIn {
   from {
-    -webkit-transform: translate3d(100%, 0, 0) skewX(-30deg);
     transform: translate3d(100%, 0, 0) skewX(-30deg);
     opacity: 0;
   }

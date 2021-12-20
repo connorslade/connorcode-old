@@ -1,3 +1,5 @@
+@import 'common';
+
 .content {
   background: rgb(33, 38, 45);
   border-radius: 10px;
@@ -23,7 +25,7 @@
   & > a {
     margin-right: 10px;
   }
-  
+
   &:nth-child(even) {
     border-width: 0;
   }
