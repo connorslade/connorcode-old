@@ -63,6 +63,10 @@ footer {
     display: inline;
     color: vars.$font-color;
   }
+
+  a, .fa {
+    color: vars.$a-font-color;
+  }
 }
 
 code {

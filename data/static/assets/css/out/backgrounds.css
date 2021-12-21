@@ -59,6 +59,9 @@ footer * {
   display: inline;
   color: #fff;
 }
+footer a, footer .fa {
+  color: #58a6ff;
+}
 
 code {
   padding: 2px 4px;
