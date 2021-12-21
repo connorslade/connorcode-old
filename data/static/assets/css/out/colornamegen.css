@@ -25,7 +25,7 @@ body {
 .archive {
   padding: 15px;
   background: #00000091;
-  color: white;
+  color: #fff;
   text-align: center;
   font-size: 20px;
   border-color: #ffffff8f;
@@ -49,15 +49,15 @@ body {
 footer {
   background-color: #2e2e2e;
   padding: 7px;
-  color: white;
+  color: #fff;
   position: fixed;
-  width: 100%;
+  width: calc(100vw - 17px);
   bottom: 0;
   font-family: Arial, Helvetica, sans-serif;
 }
 footer * {
   display: inline;
-  color: white;
+  color: #fff;
 }
 
 code {
@@ -72,7 +72,7 @@ code {
   margin: 2px;
   padding: 7px;
   background-color: #757575;
-  color: white;
+  color: #fff;
   font-weight: bold;
   text-align: center;
   border: none;

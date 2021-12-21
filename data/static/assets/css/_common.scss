@@ -1,5 +1,7 @@
+@use 'vars';
+
 body {
-  background: #474747;
+  background: vars.$background-color;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -25,7 +27,7 @@ body {
 .archive {
   padding: 15px;
   background: #00000091;
-  color: white;
+  color: vars.$font-color;
   text-align: center;
   font-size: 20px;
   border-color: #ffffff8f;
@@ -49,17 +51,17 @@ body {
 }
 
 footer {
-  background-color: #2e2e2e;
+  background-color: vars.$footer-color;
   padding: 7px;
-  color: white;
+  color: vars.$font-color;
   position: fixed;
-  width: 100%;
+  width: calc(100vw - 17px);
   bottom: 0;
   font-family: Arial, Helvetica, sans-serif;
 
   & * {
     display: inline;
-    color: white;
+    color: vars.$font-color;
   }
 }
 
@@ -75,7 +77,7 @@ code {
   margin: 2px;
   padding: 7px;
   background-color: #757575;
-  color: white;
+  color: vars.$font-color;
   font-weight: bold;
   text-align: center;
   border: none;

@@ -1,7 +1,8 @@
 /* Sigma76 On TOP */
 // This Css is Very old.. Dont Judge
 
-@import 'common';
+@use 'common';
+@use 'vars';
 
 .projects {
   display: flex;
@@ -16,28 +17,27 @@
 
 .item {
   line-height: 50px;
-  background: #757575;
+  background: vars.$tile-color;
   padding: 15px;
   padding-bottom: 0px;
-  width: fit-content;
   height: fit-content;
   margin-bottom: 20px;
   margin-top: 20px;
-  color: white;
+  color: vars.$font-color;
   font-weight: bold;
   font-size: 200%;
   text-align: center;
-  border: none;
+  border: 0;
   border-radius: 3px;
-  box-shadow: 10px 10px rgb(53, 53, 53);
-  transition: all 0.3s;
+  box-shadow: 10px 10px vars.$tile-shadow-color;
+  transition: all .3s;
   overflow: hidden;
   max-width: 430px;
   max-height: 343px;
   width: 90vw;
 
   &:hover {
-    background-color: #666666;
+    background-color: vars.$tile-hover-color;
     cursor: pointer;
     transform: scale(1.05);
   }
@@ -54,13 +54,13 @@
 }
 
 .pre {
-  transition: all 0.3s;
+  transition: all .3s;
   display: block;
   width: 100%;
 }
 
-footer .fa {
-  color: #58a6ff;
+.title, .subtitle {
+  color: vars.$title-font-color;
 }
 
 .copyleft {
@@ -73,15 +73,8 @@ footer .fa {
   transform: scale(-1, 1);
 }
 
-@keyframes lightSpeedIn {
-  from {
-    transform: translate3d(100%, 0, 0) skewX(-30deg);
-    opacity: 0;
-  }
-}
-
 #foot {
-  color: white;
+  color: vars.$font-color;
   text-decoration: none;
 }
 
@@ -90,5 +83,5 @@ p {
 }
 
 a {
-  color: #58a6ff;
+  color: vars.$a-font-color;
 }

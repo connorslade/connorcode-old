@@ -1,0 +1,31 @@
+@use 'common';
+@use 'vars';
+
+#title {
+  font-size: 300%;
+  margin-bottom: 0px;
+  animation-delay: 2s;
+  text-align: center;
+}
+
+#subtitle {
+  margin-top: 0px;
+  text-align: center;
+}
+
+#gui {
+  width: 500px;
+}
+
+#paypal-button-container {
+  width: 700px;
+}
+
+img.pre {
+  display: block;
+  width: 400px;
+}
+
+footer * {
+  text-align: left;
+}
