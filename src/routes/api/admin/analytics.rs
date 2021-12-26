@@ -84,10 +84,10 @@ pub fn attach(server: &mut Server) {
                 segment.push_str(&format!(
                     r#"{{"time": {}, "method": "{}", "path": "{}", "agent": "{}", "referer": "{}"}}, "#,
                     i.time,
-                    i.method.to_string(),
-                    i.path,
-                    i.user_agent.clone().unwrap_or_else(|| "".to_owned()),
-                    i.referer.clone().unwrap_or_else(|| "".to_owned())
+                    i.method.to_string().replace('\"', "\\\""),
+                    i.path.replace('\"', "\\\""),
+                    i.user_agent.clone().unwrap_or_else(|| "".to_owned()).replace('\"', "\\\""),
+                    i.referer.clone().unwrap_or_else(|| "".to_owned()).replace('\"', "\\\"")
                 ))
             }
 
