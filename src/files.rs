@@ -12,8 +12,8 @@ pub fn attach(server: &mut Server) {
         return;
     }
 
-    server.middleware(Box::new(|req| {
-        run(req).unwrap_or(Some(
+    let route_run = |req| {
+        run(req).unwrap_or_else(|| {
             Response::new()
                 .status(500)
                 .text(
@@ -22,16 +22,16 @@ pub fn attach(server: &mut Server) {
                         .template("ERROR", "smthng")
                         .build(),
                 )
-                .header(Header::new("Content-Type", "text/html")),
-        ))
-    }));
+                .header(Header::new("Content-Type", "text/html"))
+        })
+    };
+
+    // TODO: CLean this up
+    server.route(Method::GET, "/files/*", route_run);
+    server.route(Method::GET, "/files", route_run);
 }
 
-fn run(req: &Request) -> Option<Option<Response>> {
-    if !req.path.starts_with("/files") || req.method != Method::GET {
-        return Some(None);
-    }
-
+fn run(req: Request) -> Option<Response> {
     let file_path = req.path.replace("/..", "");
     let mut file_path = file_path.strip_prefix("/files")?.to_owned();
 
@@ -45,11 +45,11 @@ fn run(req: &Request) -> Option<Option<Response>> {
         let mut dir = match fs::read_dir(&path) {
             Ok(i) => i,
             Err(_) => {
-                return Some(Some(
+                return Some(
                     Response::new()
                         .status(404)
                         .text(format!("Folder `{}` not found", file_path)),
-                ))
+                )
             }
         }
         .map(|x| x.unwrap().path())
@@ -89,7 +89,7 @@ fn run(req: &Request) -> Option<Option<Response>> {
             ));
         }
 
-        return Some(Some(
+        return Some(
             Response::new()
                 .text(
                     Template::new(
@@ -102,35 +102,35 @@ fn run(req: &Request) -> Option<Option<Response>> {
                     .build(),
                 )
                 .header(Header::new("Content-Type", "text/html; charset=utf-8")),
-        ));
+        );
     }
 
     let file = match fs::read(&path) {
         Ok(i) => i,
         Err(_) => {
-            return Some(Some(
+            return Some(
                 Response::new()
                     .status(404)
                     .text(format!("File `{}` not found", file_path)),
-            ))
+            )
         }
     };
 
     if req.query.get("download").is_some() {
-        return Some(Some(
+        return Some(
             Response::new()
                 .bytes(file)
                 .header(Header::new("Content-Type", "application/octet-stream")),
-        ));
+        );
     }
 
-    Some(Some(
+    Some(
         show_response(path)
             .unwrap_or_else(|| {
                 Response::new().header(Header::new("Content-Type", "application/octet-stream"))
             })
             .bytes(file),
-    ))
+    )
 }
 
 fn show_response(file: PathBuf) -> Option<Response> {

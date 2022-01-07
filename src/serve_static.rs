@@ -25,7 +25,7 @@ lazy_static! {
     };
 }
 
-pub fn attach(mut server: &mut Server) {
+pub fn attach(server: &mut Server) {
     ServeStatic::new(&*DATA_DIR)
         // Inject version into reponses
         // Replaces `{{VERSION}}` with the verison in main.rs
@@ -47,7 +47,7 @@ pub fn attach(mut server: &mut Server) {
             None
         })
         .not_found(|req, _| not_found(&req.path))
-        .attach(&mut server);
+        .attach(server);
 }
 
 fn is_disabled(req_path: &str) -> Option<()> {

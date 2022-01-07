@@ -1,7 +1,7 @@
 use std::env;
 use std::time::Duration;
 
-use afire::{Header, Response, Server};
+use afire::{Header, Logger, Middleware, Response, Server};
 #[macro_use]
 extern crate lazy_static;
 
@@ -43,7 +43,7 @@ fn main() {
         .default_header(Header::new("X-Version", format!("Connorcode/{}", VERSION)))
         .default_header(Header::new("Cache-Control", "max-age=3600"))
         // Set other things
-        .default_header(Header::new("X-Server", "afire/0.2.3*"))
+        .default_header(Header::new("X-Server", format!("afire/{}", afire::VERSION)))
         .socket_timeout(Duration::from_secs(1));
 
     server.error_handler(|_req, err| {
@@ -58,8 +58,6 @@ fn main() {
             .header(Header::new("Content-Type", "text/html"))
     });
 
-    files::attach(&mut server);
-
     // Add my Analytics middleware
     analytics::attach(&mut server);
 
@@ -69,11 +67,10 @@ fn main() {
     // Add Api Routes
     routes::attach(&mut server);
 
-    // TMP
-    server.middleware(Box::new(|req| {
-        println!("[{}] {}", req.method, req.path);
-        None
-    }));
+    // Serve Files
+    files::attach(&mut server);
+
+    Logger::new().attach(&mut server);
 
     color_print!(
         Color::Blue,

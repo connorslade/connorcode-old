@@ -1,34 +1,32 @@
 use std::fs;
 
-use afire::{Header, Method, Request, Response, Server};
+use afire::{Header, Method, Response, Server};
 
-pub fn attach(server: &mut Server) {
-    server.middleware(Box::new(|req| link(req)));
+lazy_static! {
+    static ref LINKS: Vec<[String; 2]> =
+        load_links("data/config/link.cfg").expect("Error Loading Links");
 }
 
-fn link(req: &Request) -> Option<Response> {
-    if req.method != Method::GET || !req.path.starts_with("/r/") {
-        return None;
-    }
+pub fn attach(server: &mut Server) {
+    lazy_static::initialize(&LINKS);
 
-    let code = req.path.split("/r/").last()?.to_lowercase();
-    let links = load_links("data/config/link.cfg")?;
+    server.route(Method::GET, "/r/{code}", |req| {
+        let code = req.path_param("code").unwrap();
 
-    for i in links {
-        if i[0].to_lowercase() == code {
-            let link = &i[1];
-            return Some(
-                Response::new()
+        for i in (*LINKS).clone() {
+            if i[0].to_lowercase() == code {
+                let link = &i[1];
+                return Response::new()
                     .status(308)
                     .reason("Permanent Redirect")
                     .text(format!(r#"<a href={link}>{link}</a>"#, link = link))
                     .header(Header::new("Content-Type", "text/html"))
-                    .header(Header::new("Location", link)),
-            );
+                    .header(Header::new("Location", link));
+            }
         }
-    }
 
-    None
+        Response::new()
+    });
 }
 
 fn load_links(file: &str) -> Option<Vec<[String; 2]>> {

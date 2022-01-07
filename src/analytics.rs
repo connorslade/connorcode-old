@@ -5,7 +5,10 @@ use std::fs;
 use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use afire::{Header, Request, Server};
+use afire::{
+    middleware::{MiddleRequest, Middleware},
+    Header, Request, Server,
+};
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 
@@ -23,7 +26,7 @@ pub struct Stats {
 }
 
 #[derive(Debug, Serialize, Deserialize)]
-struct Analytics {
+pub struct Analytics {
     data: HashMap<Ip, Vec<Stats>>,
     last_dump: SystemTime,
 }
@@ -41,18 +44,24 @@ pub enum Method {
     Custom(String),
 }
 
-pub fn attach(server: &mut Server) {
-    if !*ANALYTICS_ENABLED {
-        return;
+impl Middleware for Analytics {
+    fn pre(&mut self, req: Request) -> MiddleRequest {
+        self.save(&req);
+        self.check_dump();
+
+        MiddleRequest::Continue
     }
 
-    let cell = RefCell::new(Analytics::new());
+    fn attach(self, server: &mut Server)
+    where
+        Self: Sized + 'static,
+    {
+        if !*ANALYTICS_ENABLED {
+            return;
+        }
 
-    server.middleware(Box::new(move |req| {
-        cell.borrow_mut().save(req);
-        cell.borrow_mut().check_dump();
-        None
-    }));
+        server.middleware.push(Box::new(RefCell::new(self)));
+    }
 }
 
 impl Stats {
@@ -223,6 +232,10 @@ impl fmt::Debug for Stats {
 
         f.write_str(&out)
     }
+}
+
+pub fn attach(server: &mut Server) {
+    Analytics::new().attach(server);
 }
 
 fn get_header(headers: &[Header], key: &str) -> Option<String> {
