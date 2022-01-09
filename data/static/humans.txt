@@ -22,7 +22,7 @@ Email:  connor(at)connorcode.com
 
  / Backend /
 - Rust
-- Afire (My Dependency Free Web Server Framework)
+- afire (My Dependency Free Web Server Framework)
 - simple_config_parser (My *simple* ini Config Parser)
 - Other Crates: serde, bincode, sha2, lazy_static, chrono, ureq, rand
 

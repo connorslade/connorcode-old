@@ -1,1 +1,1 @@
-sass ./data/static/assets/css/:./data/static/assets/css/out/
+sass ./data/static/assets/scss/:./data/static/assets/css/
