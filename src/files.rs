@@ -1,21 +1,46 @@
+use std::cell::RefCell;
 use std::fs;
 use std::path::PathBuf;
 
-use afire::{Header, Method, Request, Response, Server};
+use afire::{
+    middleware::{MiddleRequest, Middleware},
+    Header, Method, Request, Response, Server,
+};
 
 use crate::config::{FILE_SERVE, FILE_SERVE_PATH};
 use crate::Template;
 use crate::VERSION;
 
 const FILE_SIZES: &[&str] = &["B", "KB", "MB", "GB", "TB", "PB"];
+const TIME_UNITS: &[(&str, u16)] = &[
+    ("second", 60),
+    ("minutes", 60),
+    ("hour", 24),
+    ("day", 30),
+    ("month", 12),
+    ("year", 0),
+];
 
-pub fn attach(server: &mut Server) {
-    if !*FILE_SERVE {
-        return;
+pub struct Files;
+
+impl Middleware for Files {
+    fn attach(self, server: &mut Server)
+    where
+        Self: Sized + 'static,
+    {
+        if !*FILE_SERVE {
+            return;
+        }
+
+        server.middleware.push(Box::new(RefCell::new(self)));
     }
 
-    let route_run = |req| {
-        run(req).unwrap_or_else(|| {
+    fn pre(&mut self, req: Request) -> MiddleRequest {
+        if !req.path.starts_with("/files") || req.method != Method::GET {
+            return MiddleRequest::Continue;
+        }
+
+        MiddleRequest::Send(run(req).unwrap_or_else(|| {
             Response::new()
                 .status(500)
                 .text(
@@ -25,12 +50,14 @@ pub fn attach(server: &mut Server) {
                         .build(),
                 )
                 .header(Header::new("Content-Type", "text/html"))
-        })
-    };
+        }))
+    }
+}
 
-    // TODO: CLean this up
-    server.route(Method::GET, "/files/*", route_run);
-    server.route(Method::GET, "/files", route_run);
+impl Files {
+    pub fn new() -> Self {
+        Files
+    }
 }
 
 fn run(req: Request) -> Option<Response> {
@@ -63,8 +90,8 @@ fn run(req: Request) -> Option<Response> {
 
         if path != PathBuf::from(FILE_SERVE_PATH.clone()) {
             out.push_str(&format!(
-                r#"<div class="file"><a href="/files{}"><i class="fa fa-folder"></i>..</a></div>"#,
-                path.parent()?.as_os_str().to_string_lossy().replacen(
+                r#"<div class="file"><i class="fa fa-folder"></i><a href="/files{}">..</a><p class="size"></p></div>"#,
+                path.parent()?.to_string_lossy().replacen(
                     FILE_SERVE_PATH.as_str(),
                     "",
                     1
@@ -73,7 +100,7 @@ fn run(req: Request) -> Option<Response> {
         }
 
         for i in dir {
-            let j = i.to_str()?;
+            let j = i.to_string_lossy();
             let url = j.split(&*FILE_SERVE_PATH).nth(1)?.to_owned();
             let name = j.split(path.to_str()?).nth(1)?.to_owned();
             let mut size = i.metadata().ok()?.len();
@@ -87,17 +114,18 @@ fn run(req: Request) -> Option<Response> {
             }
 
             out.push_str(&format!(
-                r#"<div class="file"><a href="/files{}"><i class="fa fa-{}"></i>{}</a><p class="size">{}</p></div>"#,
-                url,
+                r#"<div class="file"><i class="fa fa-{}"></i><a href="/files{}">{}</a><p class="size">{}</p><p class="modified">{}</p></div>"#,
                 match i.is_file() {
                     true => "file",
                     _ => "folder",
                 },
+                url,
                 name.strip_prefix('/')
                     .unwrap_or(&name)
                     .strip_prefix('\\')
                     .unwrap_or(&name),
-                best_size(size)
+                best_size(size),
+                best_time(i.metadata().ok()?.modified().ok()?.elapsed().ok()?.as_secs())
             ));
         }
 
@@ -163,12 +191,20 @@ fn best_size(bytes: u64) -> String {
     )
 }
 
-// 1 byte (B) = Single unit of space
-// 1 kilobyte (KB) = 1,000 bytes
-// 1 megabyte (MB) = 1,000 kilobytes
-// 1 gigabyte (GB) = 1,000 megabytes
-// 1 terabyte (TB) = 1,000 gigabytes
-// 1 petabyte (PB) = 1,000 gigabytes
+fn best_time(secs: u64) -> String {
+    let mut secs = secs as f64;
+
+    for i in TIME_UNITS {
+        if i.1 == 0 || secs < i.1 as f64 {
+            secs = secs.round();
+            return format!("{} {}{} ago", secs, i.0, if secs > 1.0 { "s" } else { "" });
+        }
+
+        secs /= i.1 as f64;
+    }
+
+    format!("{} years ago", secs.round())
+}
 
 fn show_response(file: PathBuf) -> Option<Response> {
     let content_type = match file.extension()?.to_str()?.to_lowercase().as_str() {

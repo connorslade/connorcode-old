@@ -107,10 +107,15 @@ code {
   padding: 5px;
   border-color: #30363d;
   display: grid;
-  grid-template-columns: 200px auto;
+  grid-template-columns: 30px 300px 82px 125px;
+  grid-gap: 0 10px 10px 10px;
 }
 .file .size {
   margin: 0;
+}
+.file .modified {
+  margin: 0 5px 0 0;
+  text-align: right;
 }
 .file > a {
   margin-right: 10px;
@@ -123,11 +128,11 @@ code {
 }
 .file:last-child {
   border-radius: 0 0 5px 5px;
-  border-width: 0 0 1px 0;
 }
 
 .fa {
-  padding: 0 10px 0 10px;
+  color: #c9d1d9;
+  padding: 0 10px 0 5px;
 }
 
 a {

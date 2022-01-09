@@ -18,6 +18,7 @@ mod files;
 use analytics::Analytics;
 use color::Color;
 use config::{SERVER_HOST, SERVER_PORT};
+use files::Files;
 use template::Template;
 
 pub const VERSION: &str = "5.1.0";
@@ -69,7 +70,7 @@ fn main() {
     routes::attach(&mut server);
 
     // Serve Files
-    files::attach(&mut server);
+    Files::new().attach(&mut server);
 
     Logger::new().attach(&mut server);
 
