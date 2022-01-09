@@ -7,6 +7,8 @@ use crate::config::{FILE_SERVE, FILE_SERVE_PATH};
 use crate::Template;
 use crate::VERSION;
 
+const FILE_SIZES: &[&str] = &["B", "KB", "MB", "GB", "TB", "PB"];
+
 pub fn attach(server: &mut Server) {
     if !*FILE_SERVE {
         return;
@@ -61,7 +63,7 @@ fn run(req: Request) -> Option<Response> {
 
         if path != PathBuf::from(FILE_SERVE_PATH.clone()) {
             out.push_str(&format!(
-                r#"<div class="file"><a href="/files{}"><i class="fa fa-folder"></i> ..</a></div>"#,
+                r#"<div class="file"><a href="/files{}"><i class="fa fa-folder"></i>..</a></div>"#,
                 path.parent()?.as_os_str().to_string_lossy().replacen(
                     FILE_SERVE_PATH.as_str(),
                     "",
@@ -74,9 +76,18 @@ fn run(req: Request) -> Option<Response> {
             let j = i.to_str()?;
             let url = j.split(&*FILE_SERVE_PATH).nth(1)?.to_owned();
             let name = j.split(path.to_str()?).nth(1)?.to_owned();
+            let mut size = i.metadata().ok()?.len();
+
+            if i.is_dir() {
+                if let Some(sub_dir) = fs::read_dir(&i).ok() {
+                    for i in sub_dir.map(|x| x.unwrap().path()).collect::<Vec<PathBuf>>() {
+                        size += i.metadata().ok()?.len();
+                    }
+                }
+            }
 
             out.push_str(&format!(
-                r#"<div class="file"><a href="/files{}"><i class="fa fa-{}"></i> {}</a></div>"#,
+                r#"<div class="file"><a href="/files{}"><i class="fa fa-{}"></i>{}</a><p class="size">{}</p></div>"#,
                 url,
                 match i.is_file() {
                     true => "file",
@@ -85,7 +96,8 @@ fn run(req: Request) -> Option<Response> {
                 name.strip_prefix('/')
                     .unwrap_or(&name)
                     .strip_prefix('\\')
-                    .unwrap_or(&name)
+                    .unwrap_or(&name),
+                best_size(size)
             ));
         }
 
@@ -132,6 +144,31 @@ fn run(req: Request) -> Option<Response> {
             .bytes(file),
     )
 }
+
+/// Convert a Byte size into the biggest unit
+fn best_size(bytes: u64) -> String {
+    let mut bytes = bytes as f64;
+
+    for i in FILE_SIZES {
+        if bytes < 1024.0 {
+            return format!("{} {}", (bytes * 10.0).round() / 10.0, i);
+        }
+        bytes /= 1024.0;
+    }
+
+    format!(
+        "{} {}",
+        (bytes * 10.0).round() / 10.0,
+        FILE_SIZES.last().unwrap()
+    )
+}
+
+// 1 byte (B) = Single unit of space
+// 1 kilobyte (KB) = 1,000 bytes
+// 1 megabyte (MB) = 1,000 kilobytes
+// 1 gigabyte (GB) = 1,000 megabytes
+// 1 terabyte (TB) = 1,000 gigabytes
+// 1 petabyte (PB) = 1,000 gigabytes
 
 fn show_response(file: PathBuf) -> Option<Response> {
     let content_type = match file.extension()?.to_str()?.to_lowercase().as_str() {

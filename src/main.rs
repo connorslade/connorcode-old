@@ -15,6 +15,7 @@ mod analytics;
 mod common;
 mod config;
 mod files;
+use analytics::Analytics;
 use color::Color;
 use config::{SERVER_HOST, SERVER_PORT};
 use template::Template;
@@ -44,7 +45,7 @@ fn main() {
         .default_header(Header::new("Cache-Control", "max-age=3600"))
         // Set other things
         .default_header(Header::new("X-Server", format!("afire/{}", afire::VERSION)))
-        .socket_timeout(Duration::from_secs(1));
+        .socket_timeout(Duration::from_secs(5));
 
     server.error_handler(|_req, err| {
         Response::new()
@@ -59,7 +60,7 @@ fn main() {
     });
 
     // Add my Analytics middleware
-    analytics::attach(&mut server);
+    Analytics::new().attach(&mut server);
 
     // Serve Static Files
     serve_static::attach(&mut server);

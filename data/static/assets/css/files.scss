@@ -5,7 +5,7 @@
   border-radius: 10px;
   width: max-content;
   max-width: 95vw;
-  color: white;
+  color: rgb(201, 209, 217);
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
@@ -16,11 +16,16 @@
 }
 
 .file {
-  color: white;
   border: solid;
   border-width: 1px 0 1px 0;
   padding: 5px;
   border-color: #30363d;
+  display: grid;
+  grid-template-columns: 200px auto;
+
+  & .size {
+    margin: 0;
+  }
 
   & > a {
     margin-right: 10px;

@@ -6,6 +6,7 @@ use std::path::Path;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use afire::{
+    internal,
     middleware::{MiddleRequest, Middleware},
     Header, Request, Server,
 };
@@ -83,7 +84,7 @@ impl Stats {
 }
 
 impl Analytics {
-    fn new() -> Self {
+    pub fn new() -> Self {
         Analytics {
             data: HashMap::new(),
             last_dump: SystemTime::now(),
@@ -95,22 +96,17 @@ impl Analytics {
             .duration_since(UNIX_EPOCH)
             .unwrap()
             .as_secs();
-        let mut ip = req.address.split(':').next()?.to_owned();
+        let mut ip = internal::common::remove_address_port(req.address.to_owned());
 
         // If Ip is Localhost and 'X-Forwarded-For' Header is present
         // Use that as Ip
         if ip == "127.0.0.1" {
-            for i in req.headers.clone() {
-                if i.name == "X-Forwarded-For" {
-                    ip = i.value;
-                }
+            if let Some(i) = req.headers.iter().find(|x| x.name == "X-Forwarded-For") {
+                ip = i.value.to_owned();
             }
         }
 
-        let mut path = req.path.clone();
-        if !path.starts_with('/') {
-            path = format!("/{}", path);
-        }
+        let path = internal::path::normalize_path(req.path.to_owned());
         let agent = get_header(&req.headers, "User-Agent");
         let referer = get_header(&req.headers, "Referer");
         let stats = Stats::new(
@@ -232,10 +228,6 @@ impl fmt::Debug for Stats {
 
         f.write_str(&out)
     }
-}
-
-pub fn attach(server: &mut Server) {
-    Analytics::new().attach(server);
 }
 
 fn get_header(headers: &[Header], key: &str) -> Option<String> {
