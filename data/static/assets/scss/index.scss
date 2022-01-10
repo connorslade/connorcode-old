@@ -2,12 +2,40 @@
 // This Css is Very old.. Dont Judge
 
 @use 'common';
+@use 'fonts';
 @use 'vars';
 
+.container {
+  max-width: 1280px;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
+}
+
+.title {
+  width: 100%;
+  margin-top: 32px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background: vars.$tile-color;
+  color: vars.$font-color;
+  height: 164px;
+
+  & p {
+    top: 50%;
+    position: relative;
+    transform: translateY(-50%);
+    margin: 0;
+    display: block;
+    font-size: 75px;
+    font-family: "Basement Grotesque";
+  }
+}
+
 .projects {
-  display: flex;
-  flex-direction: column;
-  flex-flow: wrap;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 25px;
   justify-content: space-evenly;
   align-items: center;
   width: fit-content;
@@ -16,35 +44,34 @@
 }
 
 .item {
+  font-family: "Aileron-SemiBold";
   line-height: 50px;
   background: vars.$tile-color;
-  padding: 15px;
-  padding-bottom: 0px;
+  padding: 25px;
   height: fit-content;
-  margin-bottom: 20px;
-  margin-top: 20px;
   color: vars.$font-color;
   font-weight: bold;
   font-size: 200%;
-  text-align: center;
-  border: 0;
-  border-radius: 3px;
-  box-shadow: 10px 10px vars.$tile-shadow-color;
-  transition: all .3s;
-  overflow: hidden;
-  max-width: 430px;
-  max-height: 343px;
-  width: 90vw;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 3px 3px 10px vars.$tile-shadow-color;
+  transition: all 0.3s;
+  width: 628px;
+
+  & .date {
+    padding-bottom: 10px;
+    font-size: 17px;
+    color: #a1a7bb;
+    float: right;
+  }
+
+  & .name {
+    float: left;
+  }
 
   &:hover {
-    background-color: vars.$tile-hover-color;
     cursor: pointer;
-    transform: scale(1.05);
   }
-}
-
-.date {
-  font-size: 75%;
 }
 
 .back {
@@ -54,13 +81,14 @@
 }
 
 .pre {
-  transition: all .3s;
+  transition: all 0.3s;
+  border-radius: 12px;
   display: block;
   width: 100%;
 }
 
-.title, .subtitle {
-  color: vars.$title-font-color;
+.js-tilt-glare {
+  border-radius: 12px !important;
 }
 
 .copyleft {
@@ -71,6 +99,11 @@
 
   display: inline-block;
   transform: scale(-1, 1);
+}
+
+footer {
+  filter: drop-shadow(0 -3px 3px #000000ba);
+  background: vars.$tile-color;
 }
 
 #foot {

@@ -1,20 +1,32 @@
 // Automaticly update Github Last Update Date :P
 
+let load = false;
+let data = null;
+
 fetch("https://api.github.com/users/basicprogrammer10")
   .then((r) => r.json())
   .then((r) => {
     let lastUpdate = r["updated_at"].split("-");
-    let data = `${lastUpdate[1]}/${lastUpdate[2].split("T")[0]}/${
-      lastUpdate[0]
-    }`;
-    document.querySelector(
-      "html body div.projects a button#github.item span.date"
-    ).innerHTML = data;
+    data = `${lastUpdate[1]}-${lastUpdate[2].split("T")[0]}-${lastUpdate[0]}`;
+
+    if (load)
+      document.querySelector(
+        "html body div.projects a button#github.item span.date"
+      ).innerHTML = `<i class="fa fa-calendar"></i> ${data}`;
   });
 
-VanillaTilt.init(document.querySelectorAll(".item"), {
-  speed: 400,
-  scale: 1.07,
-  glare: true,
-  "max-glare": 0.1
+window.addEventListener("load", () => {
+  load = true;
+
+  VanillaTilt.init(document.querySelectorAll(".item"), {
+    max: 5,
+    scale: 1.02,
+    glare: true,
+    "max-glare": 0.1,
+  });
+
+  if (data)
+    document.querySelector(
+      "html body div.projects a button#github.item span.date"
+    ).innerHTML = `<i class="fa fa-calendar"></i> ${data}`;
 });

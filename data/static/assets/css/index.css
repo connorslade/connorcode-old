@@ -1,5 +1,5 @@
 body {
-  background: #474747;
+  background: #17171A;
   font-family: Roboto, Helvetica, Arial, sans-serif;
   margin: 0;
   padding: 0;
@@ -86,11 +86,45 @@ code {
   cursor: pointer;
 }
 
+@font-face {
+  font-family: "Basement Grotesque";
+  src: url("/assets/fonts/BasementGrotesque-Black_v1.202.woff") format("woff"), url("/assets/fonts/BasementGrotesque-Black_v1.202.woff2") format("woff2");
+}
+@font-face {
+  font-family: "Aileron-SemiBold";
+  src: url("/assets/fonts/Aileron-SemiBold.woff") format("woff"), url("/assets/fonts/Aileron-SemiBold.woff2") format("woff2");
+}
 /* Sigma76 On TOP */
+.container {
+  max-width: 1280px;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
+}
+
+.title {
+  width: 100%;
+  margin-top: 32px;
+  margin-bottom: 24px;
+  border-radius: 12px;
+  background: #323546;
+  color: #fff;
+  height: 164px;
+}
+.title p {
+  top: 50%;
+  position: relative;
+  transform: translateY(-50%);
+  margin: 0;
+  display: block;
+  font-size: 75px;
+  font-family: "Basement Grotesque";
+}
+
 .projects {
-  display: flex;
-  flex-direction: column;
-  flex-flow: wrap;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-gap: 25px;
   justify-content: space-evenly;
   align-items: center;
   width: fit-content;
@@ -99,34 +133,31 @@ code {
 }
 
 .item {
+  font-family: "Aileron-SemiBold";
   line-height: 50px;
-  background: #757575;
-  padding: 15px;
-  padding-bottom: 0px;
+  background: #323546;
+  padding: 25px;
   height: fit-content;
-  margin-bottom: 20px;
-  margin-top: 20px;
   color: #fff;
   font-weight: bold;
   font-size: 200%;
-  text-align: center;
-  border: 0;
-  border-radius: 3px;
-  box-shadow: 10px 10px #353535;
+  border: none;
+  border-radius: 12px;
+  box-shadow: 3px 3px 10px #000;
   transition: all 0.3s;
-  overflow: hidden;
-  max-width: 430px;
-  max-height: 343px;
-  width: 90vw;
+  width: 628px;
+}
+.item .date {
+  padding-bottom: 10px;
+  font-size: 17px;
+  color: #a1a7bb;
+  float: right;
+}
+.item .name {
+  float: left;
 }
 .item:hover {
-  background-color: #666666;
   cursor: pointer;
-  transform: scale(1.05);
-}
-
-.date {
-  font-size: 75%;
 }
 
 .back {
@@ -137,12 +168,13 @@ code {
 
 .pre {
   transition: all 0.3s;
+  border-radius: 12px;
   display: block;
   width: 100%;
 }
 
-.title, .subtitle {
-  color: #000;
+.js-tilt-glare {
+  border-radius: 12px !important;
 }
 
 .copyleft {
@@ -152,6 +184,11 @@ code {
   padding-right: 0;
   display: inline-block;
   transform: scale(-1, 1);
+}
+
+footer {
+  filter: drop-shadow(0 -3px 3px #000000ba);
+  background: #323546;
 }
 
 #foot {

@@ -16,22 +16,35 @@
       type="text/css"
       href="https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css"
     />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css">
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+    />
     <link rel="stylesheet" type="text/css" href="/assets/css/index.css" />
-    <script defer src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
-    <script defer src="index.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"
+    ></script>
+    <script src="index.js"></script>
     <title>ConnorCode</title>
   </head>
   <body>
-    <h1 class="title animate__animated animate__bounce">🍞 My Projects 🚀</h1>
-    <h2 class="subtitle">Connor Slade</h2>
+    <div class="container">
+      <div class="title">
+        <p>Connor Code</p>
+      </div>
 
-    <div class="projects">
-      {{ITEMS}}
+      <div class="projects">
+        {{ITEMS}}
+      </div>
     </div>
+
     <footer>
       <a href="/contact" id="foot">
-        ⫸ <span class="copyleft">©</span> Connor Slade · V{{VERSION}} · <a href="https://github.com/Basicprogrammer10/connorcode"><i class="cat fa fa-github"></i> Github</a>
+        ⫸ <span class="copyleft">©</span> Connor Slade · V{{VERSION}} ·
+        <a href="https://github.com/Basicprogrammer10/connorcode"
+          ><i class="cat fa fa-github"></i> Github</a
+        >
       </a>
     </footer>
   </body>
