@@ -6,6 +6,10 @@
   transform: translateX(-50%);
 }
 
+[strike] {
+  text-decoration: line-through;
+}
+
 body {
   background: vars.$background-color;
   font-family: Roboto, Helvetica, Arial, sans-serif;

@@ -6,6 +6,10 @@ body {
   overflow-y: scroll;
 }
 
+.container {
+  margin: 32px 32px 66px 32px;
+}
+
 .content {
   background: vars.$tile-color;
   color: vars.$font-color;
@@ -16,9 +20,5 @@ body {
   & .text {
     @include common.center;
     width: 50%;
-
-    & [strike] {
-      text-decoration: line-through;
-    }
   }
 }

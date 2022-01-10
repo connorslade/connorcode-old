@@ -2,6 +2,8 @@
 @use 'fonts';
 @use 'vars';
 
+@import url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css');
+
 .container {
   max-width: 1280px;
   margin-top: 32px;
@@ -31,6 +33,11 @@
     font-size: 75px;
     font-family: fonts.$basement-grotesque;
   }
+}
+
+.nav-container {
+  @include common.center;
+  width: 100%;
 }
 
 .nav {
@@ -185,6 +192,10 @@ a {
 }
 
 @media (max-width: 690px) {
+  .nav-container {
+    width: 95vw;
+  }
+
   .container {
     margin-top: 2.5vw;
   }
@@ -216,7 +227,7 @@ a {
         white-space: pre;
         text-overflow: ellipsis;
         overflow: hidden;
-        max-width: calc(95vw - 50px - 100px);
+        max-width: calc(95vw - 150px);
       }
 
       & .fa {
