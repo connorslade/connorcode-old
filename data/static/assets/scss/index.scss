@@ -15,11 +15,15 @@
 .title {
   width: 100%;
   margin-top: 32px;
-  margin-bottom: 24px;
-  border-radius: 12px;
+  border-radius: 12px 12px 0 0;
   background: vars.$tile-color;
   color: vars.$font-color;
   height: 164px;
+  border: solid 1px #000;
+  border-bottom: none;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
 
   & p {
     top: 50%;
@@ -28,7 +32,37 @@
     margin: 0;
     display: block;
     font-size: 75px;
-    font-family: "Basement Grotesque";
+    font-family: fonts.$basement-grotesque;
+  }
+}
+
+.nav {
+  background: vars.$nav-color;
+  color: vars.$font-color;
+  margin-bottom: 24px;
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  justify-content: center;
+
+  & .this {
+    border-bottom: solid 2px #3861fb;
+
+    &:hover {
+      border-bottom: solid 2px #3861fb;
+    }
+  }
+
+  & a {
+    border-bottom: solid 2px vars.$nav-color;
+    transition: border-bottom 0.15s;
+    display: block;
+    padding: 12px 24px;
+    color: white;
+    text-decoration: none;
+
+    &:hover {
+      border-bottom: solid 2px #6188ff;
+    }
   }
 }
 
@@ -44,7 +78,7 @@
 }
 
 .item {
-  font-family: "Aileron-SemiBold";
+  font-family: fonts.$aileron-semibold;
   line-height: 50px;
   background: vars.$tile-color;
   padding: 25px;
@@ -103,7 +137,8 @@
 
 footer {
   filter: drop-shadow(0 -3px 3px #000000ba);
-  background: vars.$tile-color;
+  font-family: fonts.$aileron-semibold;
+  background: vars.$footer-color;
 }
 
 #foot {

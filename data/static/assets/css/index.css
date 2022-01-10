@@ -47,7 +47,7 @@ body {
 }
 
 footer {
-  background-color: #2e2e2e;
+  background-color: #323546;
   padding: 7px;
   color: #fff;
   position: fixed;
@@ -105,11 +105,15 @@ code {
 .title {
   width: 100%;
   margin-top: 32px;
-  margin-bottom: 24px;
-  border-radius: 12px;
+  border-radius: 12px 12px 0 0;
   background: #323546;
   color: #fff;
   height: 164px;
+  border: solid 1px #000;
+  border-bottom: none;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
 }
 .title p {
   top: 50%;
@@ -119,6 +123,32 @@ code {
   display: block;
   font-size: 75px;
   font-family: "Basement Grotesque";
+}
+
+.nav {
+  background: #323546;
+  color: #fff;
+  margin-bottom: 24px;
+  border-radius: 0 0 12px 12px;
+  display: flex;
+  justify-content: center;
+}
+.nav .this {
+  border-bottom: solid 2px #3861fb;
+}
+.nav .this:hover {
+  border-bottom: solid 2px #3861fb;
+}
+.nav a {
+  border-bottom: solid 2px #323546;
+  transition: border-bottom 0.15s;
+  display: block;
+  padding: 12px 24px;
+  color: white;
+  text-decoration: none;
+}
+.nav a:hover {
+  border-bottom: solid 2px #6188ff;
 }
 
 .projects {
@@ -188,6 +218,7 @@ code {
 
 footer {
   filter: drop-shadow(0 -3px 3px #000000ba);
+  font-family: "Aileron-SemiBold";
   background: #323546;
 }
 
