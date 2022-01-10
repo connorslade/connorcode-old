@@ -303,5 +303,25 @@ a {
     display: none;
   }
 }
+body {
+  overflow-y: scroll;
+}
 
-/*# sourceMappingURL=index.css.map */
+.content {
+  background: #323546;
+  color: #fff;
+  font-family: Segoe UI, Roboto, sans-serif, Helvetica Neue, Arial, Noto Sans;
+  border-radius: 12px;
+  padding: 24px;
+}
+.content .text {
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
+  width: 50%;
+}
+.content .text [strike] {
+  text-decoration: line-through;
+}
+
+/*# sourceMappingURL=about.css.map */
