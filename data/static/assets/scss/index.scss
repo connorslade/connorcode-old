@@ -56,6 +56,10 @@
   top: 0;
   z-index: 10;
 
+  .fa-external-link {
+    margin-left: 5px;
+  }
+
   & .this {
     border-bottom: solid 2px #3861fb;
 
@@ -218,6 +222,7 @@ a {
 
   .item {
     width: 95vw;
+    padding: 4vw;
 
     & .info {
       width: 100%;
