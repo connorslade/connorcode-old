@@ -97,6 +97,7 @@ code {
 /* Sigma76 On TOP */
 .container {
   max-width: 1280px;
+  margin-top: 32px;
   left: 50%;
   position: relative;
   transform: translateX(-50%);
@@ -104,7 +105,6 @@ code {
 
 .title {
   width: 100%;
-  margin-top: 32px;
   border-radius: 12px 12px 0 0;
   background: #323546;
   color: #fff;
@@ -132,6 +132,9 @@ code {
   border-radius: 0 0 12px 12px;
   display: flex;
   justify-content: center;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
 }
 .nav .this {
   border-bottom: solid 2px #3861fb;
@@ -160,6 +163,9 @@ code {
   width: fit-content;
   line-height: 50px;
   margin-bottom: 45px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .item {
@@ -177,13 +183,16 @@ code {
   transition: all 0.3s;
   width: 628px;
 }
-.item .date {
+.item .info {
   padding-bottom: 10px;
+  height: 50px;
+}
+.item .info .date {
   font-size: 17px;
   color: #a1a7bb;
   float: right;
 }
-.item .name {
+.item .info .name {
   float: left;
 }
 .item:hover {
@@ -233,6 +242,54 @@ p {
 
 a {
   color: #58a6ff;
+}
+
+@media (max-width: 1280px) {
+  .container {
+    margin: 32px 32px 0 32px;
+    transform: translateX(calc(-50% - 32px));
+  }
+
+  .projects {
+    grid-template-columns: auto;
+  }
+}
+@media (max-width: 690px) {
+  .container {
+    margin-top: 2.5vw;
+  }
+
+  .title {
+    width: 95vw;
+  }
+  .title p {
+    font-size: calc(12vw - 8px);
+  }
+
+  .nav {
+    width: 95vw;
+  }
+
+  .projects {
+    grid-gap: 2.5vw;
+  }
+
+  .item {
+    width: 95vw;
+  }
+  .item .info {
+    width: 100%;
+  }
+  .item .info .name {
+    height: 50px;
+    white-space: pre;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    max-width: calc(95vw - 50px - 100px);
+  }
+  .item .info .fa {
+    display: none;
+  }
 }
 
 /*# sourceMappingURL=index.css.map */

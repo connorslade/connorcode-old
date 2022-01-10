@@ -7,6 +7,7 @@
 
 .container {
   max-width: 1280px;
+  margin-top: 32px;
   left: 50%;
   position: relative;
   transform: translateX(-50%);
@@ -14,7 +15,6 @@
 
 .title {
   width: 100%;
-  margin-top: 32px;
   border-radius: 12px 12px 0 0;
   background: vars.$tile-color;
   color: vars.$font-color;
@@ -43,6 +43,9 @@
   border-radius: 0 0 12px 12px;
   display: flex;
   justify-content: center;
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
 
   & .this {
     border-bottom: solid 2px #3861fb;
@@ -75,6 +78,9 @@
   width: fit-content;
   line-height: 50px;
   margin-bottom: 45px;
+  position: relative;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .item {
@@ -92,15 +98,19 @@
   transition: all 0.3s;
   width: 628px;
 
-  & .date {
+  & .info {
     padding-bottom: 10px;
-    font-size: 17px;
-    color: #a1a7bb;
-    float: right;
-  }
+    height: 50px;
 
-  & .name {
-    float: left;
+    & .date {
+      font-size: 17px;
+      color: #a1a7bb;
+      float: right;
+    }
+
+    & .name {
+      float: left;
+    }
   }
 
   &:hover {
@@ -152,4 +162,57 @@ p {
 
 a {
   color: vars.$a-font-color;
+}
+
+@media (max-width: 1280px) {
+  .container {
+    margin: 32px 32px 0 32px;
+    transform: translateX(calc(-50% - 32px));
+  }
+
+  .projects {
+    grid-template-columns: auto;
+  }
+}
+
+@media (max-width: 690px) {
+  .container {
+    margin-top: 2.5vw;
+  }
+
+  .title {
+    width: 95vw;
+
+    & p {
+      font-size: calc(12vw - 8px);
+    }
+  }
+
+  .nav {
+    width: 95vw;
+  }
+
+  .projects {
+    grid-gap: 2.5vw;
+  }
+
+  .item {
+    width: 95vw;
+
+    & .info {
+      width: 100%;
+
+      & .name {
+        height: 50px;
+        white-space: pre;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        max-width: calc(95vw - 50px - 100px);
+      }
+
+      & .fa {
+        display: none;
+      }
+    }
+  }
 }
