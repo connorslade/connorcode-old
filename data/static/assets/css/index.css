@@ -125,18 +125,19 @@ code {
 }
 
 .nav {
-  left: 50%;
-  position: relative;
-  transform: translateX(-50%);
-  width: 100%;
+  transform: translateX(-1px);
+  border-radius: 0 0 12px 12px;
   background: #323546;
   color: #fff;
-  margin-bottom: 24px;
-  border-radius: 0 0 12px 12px;
-  display: flex;
   justify-content: center;
   border: solid 1px #000;
+  margin-bottom: 24px;
+  display: flex;
+  width: 100%;
   border-top: none;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 .nav .this {
   border-bottom: solid 2px #3861fb;
@@ -237,7 +238,9 @@ footer {
   border-radius: 12px 12px 0 0;
   text-align: center;
   max-width: 1280px;
+  position: fixed;
   width: 100%;
+  bottom: 0;
 }
 footer #foot {
   color: #fff;
