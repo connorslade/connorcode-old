@@ -3,7 +3,6 @@ use std::fs;
 use afire::{Content, Header, Method, Response, Server};
 use simple_config_parser::Config;
 
-use crate::config::{BROADCAST_ONION, ONION_SITE};
 use crate::VERSION;
 
 static mut PROJECTS: Vec<Project> = Vec::new();
@@ -76,16 +75,12 @@ pub fn attach(server: &mut Server) {
             projects.push('\n');
         }
 
-        let mut res = Response::new()
+        let res = Response::new()
             .text(
                 base.replace("{{ITEMS}}", &projects)
                     .replace("{{VERSION}}", VERSION),
             )
             .content(Content::HTML);
-
-        if *BROADCAST_ONION {
-            res = res.header(Header::new("Onion-Location", &*ONION_SITE));
-        }
 
         res
     });
