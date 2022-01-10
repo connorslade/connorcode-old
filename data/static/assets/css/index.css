@@ -94,7 +94,6 @@ code {
   font-family: "Aileron-SemiBold";
   src: url("/assets/fonts/Aileron-SemiBold.woff") format("woff"), url("/assets/fonts/Aileron-SemiBold.woff2") format("woff2");
 }
-/* Sigma76 On TOP */
 .container {
   max-width: 1280px;
   margin-top: 32px;
@@ -126,15 +125,18 @@ code {
 }
 
 .nav {
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
+  width: 100%;
   background: #323546;
   color: #fff;
   margin-bottom: 24px;
   border-radius: 0 0 12px 12px;
   display: flex;
   justify-content: center;
-  left: 50%;
-  position: relative;
-  transform: translateX(-50%);
+  border: solid 1px #000;
+  border-top: none;
 }
 .nav .this {
   border-bottom: solid 2px #3861fb;
@@ -226,12 +228,18 @@ code {
 }
 
 footer {
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
   filter: drop-shadow(0 -3px 3px #000000ba);
   font-family: "Aileron-SemiBold";
   background: #323546;
+  border-radius: 12px 12px 0 0;
+  text-align: center;
+  max-width: 1280px;
+  width: 100%;
 }
-
-#foot {
+footer #foot {
   color: #fff;
   text-decoration: none;
 }

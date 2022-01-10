@@ -11,8 +11,8 @@ fetch("https://api.github.com/users/basicprogrammer10")
 
     if (load)
       document.querySelector(
-        "html body div.projects a button#github.item span.date"
-      ).innerHTML = `<i class="fa fa-calendar"></i> ${data}`;
+        "html body div.container div.projects a button#github.item div.info div.date p"
+      ).innerHTML = data;
   });
 
 window.addEventListener("load", () => {
@@ -27,6 +27,6 @@ window.addEventListener("load", () => {
 
   if (data)
     document.querySelector(
-      "html body div.projects a button#github.item span.date"
-    ).innerHTML = `<i class="fa fa-calendar"></i> ${data}`;
+      "html body div.container div.projects a button#github.item div.info div.date p"
+    ).innerHTML = data;
 });

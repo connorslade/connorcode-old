@@ -1,5 +1,11 @@
 @use 'vars';
 
+@mixin center {
+  left: 50%;
+  position: relative;
+  transform: translateX(-50%);
+}
+
 body {
   background: vars.$background-color;
   font-family: Roboto, Helvetica, Arial, sans-serif;
