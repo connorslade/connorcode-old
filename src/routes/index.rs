@@ -75,14 +75,12 @@ pub fn attach(server: &mut Server) {
             projects.push('\n');
         }
 
-        let res = Response::new()
+        Response::new()
             .text(
                 base.replace("{{ITEMS}}", &projects)
                     .replace("{{VERSION}}", VERSION),
             )
-            .content(Content::HTML);
-
-        res
+            .content(Content::HTML)
     });
 
     server.route(Method::GET, "/api/projects", |_req| {

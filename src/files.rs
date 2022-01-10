@@ -105,7 +105,7 @@ impl Files {
                 let mut size = i.metadata().ok()?.len();
 
                 if i.is_dir() {
-                    if let Some(sub_dir) = fs::read_dir(&i).ok() {
+                    if let Ok(sub_dir) = fs::read_dir(&i) {
                         for i in sub_dir.map(|x| x.unwrap().path()).collect::<Vec<PathBuf>>() {
                             size += i.metadata().ok()?.len();
                         }

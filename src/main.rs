@@ -62,23 +62,19 @@ fn main() {
             .header(Header::new("Content-Type", "text/html"))
     });
 
-    // Add my Analytics middleware
-    Analytics::new().attach(&mut server);
-
-    // Add Onion Brodcast Middleware
-    Onion::new().attach(&mut server);
-
     // Serve Static Files
     serve_static::attach(&mut server);
 
     // Add Api Routes
     routes::attach(&mut server);
 
-    // Serve Files
+    // Add Logger, Analytics, Onion Brodcast and Files
     Files::new().attach(&mut server);
-
+    Onion::new().attach(&mut server);
+    Analytics::new().attach(&mut server);
     Logger::new().attach(&mut server);
 
+    print_info();
     color_print!(
         Color::Blue,
         "[*] Starting server on {}:{}\n",
@@ -87,4 +83,16 @@ fn main() {
     );
 
     server.start().unwrap();
+}
+
+#[rustfmt::skip]
+fn print_info() {
+    color_print!(Color::Magenta, "[=] Config");
+    color_print!(Color::Magenta, " ├── Analytics");
+    color_print!(Color::Magenta, " │   ├── Enabled: {}", config::ANALYTICS_ENABLED);
+    color_print!(Color::Magenta, " │   ├── Peroid: {}", config::DUMP_PEROID);
+    color_print!(Color::Magenta, " │   └── Serve: {}", config::ANALYTICS_SERVE);
+    color_print!(Color::Magenta, " └── Other");
+    color_print!(Color::Magenta, "     ├── Status Serve: {}", config::STATUS_SERVE);
+    color_print!(Color::Magenta, "     └── Onion Brodcast: {}", config::BROADCAST_ONION);
 }
