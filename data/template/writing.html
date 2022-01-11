@@ -5,7 +5,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="/assets/css/writing.css" />
-    <!-- <script src="/writing/index.js"></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.7.0/dist/cdn.min.js"></script>
+    <script src="/writing/article.js"></script>
     <title>ConnorCode — Writing</title>
   </head>
   <body>
@@ -28,8 +29,10 @@
         </div>
       </div>
 
-      <div class="document">
-      {{DOCUMENT}}
+      <div class="document" x-data="{path: '{{PATH}}'}" x-init="path = load(path)">
+          <div class="path" x-html="path"></div>
+        {{DOCUMENT}}
+      </div>
     </div>
 
     <footer>

@@ -16,7 +16,8 @@
     padding: 10px;
     height: 21.25px;
 
-    & p, a {
+    & p,
+    a {
       margin: 0;
       overflow: hidden;
       text-overflow: ellipsis;
@@ -68,4 +69,25 @@
     height: 21.25px;
     border-radius: 12px;
   }
+}
+
+.document {
+  background: vars.$tile-color;
+  color: vars.$font-color;
+  font-family: Segoe UI, Roboto, sans-serif, Helvetica Neue, Arial, Noto Sans;
+  border-radius: 12px;
+  padding: 24px;
+
+  & .path a {
+    color: #a1a7bb;
+  }
+}
+
+footer {
+  background-color: #323546;
+  padding: 7px;
+  color: #fff;
+  position: fixed;
+  bottom: 0;
+  font-family: Arial, Helvetica, sans-serif;
 }

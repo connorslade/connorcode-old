@@ -104,7 +104,9 @@ impl Middleware for Markdown {
 
         let doc_render = markdown::to_html(&doc.data);
         let html = Template::new(include_str!("../../data/template/writing.html"))
+            .template("VERSION", crate::VERSION)
             .template("DOCUMENT", doc_render)
+            .template("PATH", &doc.path)
             .build();
 
         MiddleRequest::Send(Response::new().text(html).content(Content::HTML))
