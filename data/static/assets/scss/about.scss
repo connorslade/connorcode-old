@@ -2,15 +2,6 @@
 @use 'index';
 @use 'vars';
 
-body {
-  overflow-y: scroll;
-}
-
-// img {
-//   max-width: 100%;
-//   border-radius: 12px;
-// }
-
 .container {
   margin: 32px 12px 66px 12px;
   transform: translateX(calc(-50% - 12px));

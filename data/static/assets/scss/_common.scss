@@ -10,6 +10,10 @@
   text-decoration: line-through;
 }
 
+[x-cloak] {
+  display: none !important;
+}
+
 body {
   background: vars.$background-color;
   font-family: Roboto, Helvetica, Arial, sans-serif;
@@ -46,7 +50,7 @@ body {
   border-bottom-style: solid;
 
   &::before {
-     content: "This Page Is Archived";
+    content: "This Page Is Archived";
   }
 }
 
@@ -74,7 +78,8 @@ footer {
     color: vars.$font-color;
   }
 
-  a, .fa {
+  a,
+  .fa {
     color: vars.$a-font-color;
   }
 }

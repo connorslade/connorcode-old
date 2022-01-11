@@ -5,6 +5,7 @@ mod index;
 mod key;
 mod link;
 mod randomimg;
+mod writing;
 
 pub fn attach(server: &mut Server) {
     index::attach(server);
@@ -12,4 +13,5 @@ pub fn attach(server: &mut Server) {
     key::attach(server);
     link::attach(server);
     randomimg::attach(server);
+    writing::attach(server);
 }

@@ -2,7 +2,11 @@
 @use 'fonts';
 @use 'vars';
 
-@import url('https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css');
+@import url("https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css");
+
+body {
+  overflow-y: scroll;
+}
 
 .container {
   max-width: 1280px;
@@ -198,6 +202,14 @@ a {
 @media (max-width: 690px) {
   .nav-container {
     width: 95vw;
+
+    & .nav {
+      width: 95vw;
+
+      & a:last-child {
+        display: none;
+      }
+    }
   }
 
   .container {
@@ -210,10 +222,6 @@ a {
     & p {
       font-size: calc(12vw - 8px);
     }
-  }
-
-  .nav {
-    width: 95vw;
   }
 
   .projects {
