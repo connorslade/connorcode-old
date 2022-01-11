@@ -5,6 +5,11 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="/assets/css/writing.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/highlight.js@9.12.0/styles/atom-one-dark.css"
+    />
+    <script src="//cdn.jsdelivr.net/gh/highlightjs/cdn-release@11.4.0/build/highlight.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/alpinejs@3.7.0/dist/cdn.min.js"></script>
     <script src="/writing/article.js"></script>
     <title>ConnorCode — Writing</title>
@@ -32,16 +37,19 @@
       <div
         class="document"
         x-data="{path: '{{PATH}}', date: '{{DATE}}'}"
-        x-init="path = loadPath(path)"
+        x-init="path = loadPath(path);hljs.highlightAll();"
       >
-        <div class="meta">
-          <div class="path" x-html="path"></div>
-          <div
-            class="date"
-            x-html="`<i class='fa fa-calendar'></i> ${date}`"
-          ></div>
+        <div class="content">
+          <div class="meta">
+            <div class="path" x-html="path"></div>
+            <div
+              class="date"
+              x-html="`<i class='fa fa-calendar'></i> ${date}`"
+            ></div>
+          </div>
+
+          {{DOCUMENT}}
         </div>
-        {{DOCUMENT}}
       </div>
     </div>
 

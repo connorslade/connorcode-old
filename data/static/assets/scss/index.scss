@@ -40,7 +40,7 @@ body {
 }
 
 .nav-container {
-  @include common.center;
+  @include common.center-h;
   width: 100%;
 }
 
@@ -163,7 +163,7 @@ body {
 }
 
 footer {
-  @include common.center;
+  @include common.center-h;
   filter: drop-shadow(0 -3px 3px #000000ba);
   font-family: fonts.$aileron-semibold;
   background: vars.$footer-color;

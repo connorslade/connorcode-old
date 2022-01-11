@@ -76,26 +76,38 @@
   color: vars.$font-color;
   font-family: Segoe UI, Roboto, sans-serif, Helvetica Neue, Arial, Noto Sans;
   border-radius: 12px;
+  margin-bottom: 57px;
   padding: 24px;
 
-  & .meta {
-    & .path {
-      display: inline;
+  & .content {
+    @include common.center-h;
+    max-width: 620px;
 
-      & a {
+    & .meta {
+      & .path {
+        display: inline;
+
+        & a {
+          color: #a1a7bb;
+        }
+      }
+
+      & .date {
         color: #a1a7bb;
+        float: right;
       }
     }
 
-    & .date {
-      color: #a1a7bb;
-      float: right;
+    & p {
+      display: block;
     }
   }
+}
 
-  & p {
-    display: block;
-  }
+pre code {
+  display: block;
+  padding: 10px;
+  font-size: 12px;
 }
 
 footer {

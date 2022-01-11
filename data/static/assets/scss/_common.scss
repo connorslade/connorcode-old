@@ -1,6 +1,6 @@
 @use 'vars';
 
-@mixin center {
+@mixin center-h {
   left: 50%;
   position: relative;
   transform: translateX(-50%);

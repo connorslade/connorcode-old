@@ -15,7 +15,7 @@
   padding: 24px;
 
   & .text {
-    @include common.center;
+    @include common.center-h;
     max-width: 620px;
   }
 }
