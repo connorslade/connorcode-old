@@ -1,4 +1,4 @@
-use std::fs;
+use std::fs::{self, DirEntry};
 use std::path::PathBuf;
 
 use afire::{
@@ -46,36 +46,9 @@ impl Document {
         for i in files {
             let i = i.unwrap();
 
-            if i.path()
-                .extension()
-                .unwrap()
-                .to_str()
-                .unwrap()
-                .to_lowercase()
-                .as_str()
-                != "md"
-            {
-                continue;
-            }
-
-            let data = fs::read_to_string(i.path()).expect("Error Reading a Writing");
-            let mut parts = data.splitn(2, "---");
-
-            let cfg = Config::new()
-                .text(parts.next().unwrap())
-                .expect("Error Parseing a Writing Config");
-
-            out.push(Document {
-                path: cfg.get_str("@Path").expect("Error geting Writing Path"),
-                file_path: i.path(),
-                title: cfg.get_str("@Title").expect("Error geting Writing Title"),
-                date: cfg.get_str("@Date").expect("Error geting Writing Date"),
-                description: cfg
-                    .get_str("@Description")
-                    .expect("Error geting Writing Description"),
-                hidden: cfg.get("@Hidden").unwrap_or(false),
-                assets: PathBuf::from(cfg.get_str("@Assets").expect("Error geting Writing Assets")),
-            })
+            if let Some(doc) = Document::load_document(i) {
+                out.push(doc);
+            };
         }
 
         out.sort_unstable_by(|x, y| {
@@ -97,6 +70,29 @@ impl Document {
         });
 
         out
+    }
+
+    fn load_document(i: DirEntry) -> Option<Document> {
+        if i.path().extension()?.to_str()?.to_lowercase().as_str() != "md" {
+            return None;
+        }
+
+        let data = fs::read_to_string(i.path()).expect("Error Reading a Writing");
+        let mut parts = data.splitn(2, "---");
+
+        let cfg = Config::new()
+            .text(parts.next().unwrap())
+            .expect("Error Parseing a Writing Config");
+
+        Some(Document {
+            path: cfg.get_str("@Path").ok()?,
+            file_path: i.path(),
+            title: cfg.get_str("@Title").ok()?,
+            date: cfg.get_str("@Date").ok()?,
+            description: cfg.get_str("@Description").ok()?,
+            hidden: cfg.get("@Hidden").unwrap_or(false),
+            assets: PathBuf::from(cfg.get_str("@Assets").ok()?),
+        })
     }
 
     fn jsonify(&self) -> String {

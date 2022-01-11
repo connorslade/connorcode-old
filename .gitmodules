@@ -1,0 +1,6 @@
+[submodule "data/static/mc/help"]
+    path = data/static/mc/help
+    url = git://github.com/Basicprogrammer10/Denali-MC-Help.git
+[submodule ".\\data\\writing"]
+	path = .\\data\\writing
+	url = https://github.com/Basicprogrammer10/connorcode-writing.git
