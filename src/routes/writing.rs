@@ -107,6 +107,7 @@ impl Middleware for Markdown {
             .template("VERSION", crate::VERSION)
             .template("DOCUMENT", doc_render)
             .template("PATH", &doc.path)
+            .template("DATE", &doc.date)
             .build();
 
         MiddleRequest::Send(Response::new().text(html).content(Content::HTML))

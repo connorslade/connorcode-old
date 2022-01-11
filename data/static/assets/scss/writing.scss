@@ -78,8 +78,23 @@
   border-radius: 12px;
   padding: 24px;
 
-  & .path a {
-    color: #a1a7bb;
+  & .meta {
+    & .path {
+      display: inline;
+
+      & a {
+        color: #a1a7bb;
+      }
+    }
+
+    & .date {
+      color: #a1a7bb;
+      float: right;
+    }
+  }
+
+  & p {
+    display: block;
   }
 }
 

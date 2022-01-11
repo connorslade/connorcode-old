@@ -8,7 +8,7 @@
 // }
 
 
-function load(path) {
+function loadPath(path) {
   let out = `<a href="/writing">writing</a> `;
 
   path.split('/').forEach((item) => {

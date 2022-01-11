@@ -29,8 +29,18 @@
         </div>
       </div>
 
-      <div class="document" x-data="{path: '{{PATH}}'}" x-init="path = load(path)">
+      <div
+        class="document"
+        x-data="{path: '{{PATH}}', date: '{{DATE}}'}"
+        x-init="path = loadPath(path)"
+      >
+        <div class="meta">
           <div class="path" x-html="path"></div>
+          <div
+            class="date"
+            x-html="`<i class='fa fa-calendar'></i> ${date}`"
+          ></div>
+        </div>
         {{DOCUMENT}}
       </div>
     </div>
