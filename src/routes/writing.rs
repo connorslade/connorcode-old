@@ -8,6 +8,8 @@ use afire::{
 use lazy_static::LazyStatic;
 use simple_config_parser::Config;
 
+use crate::Template;
+
 lazy_static! {
     static ref DOCS: Vec<Document> = Document::load_documents();
     static ref DOCS_API: String = gen_api_data();
@@ -100,11 +102,12 @@ impl Middleware for Markdown {
             None => return MiddleRequest::Continue,
         };
 
-        MiddleRequest::Send(
-            Response::new()
-                .text(markdown::to_html(&doc.data))
-                .content(Content::HTML),
-        )
+        let doc_render = markdown::to_html(&doc.data);
+        let html = Template::new(include_str!("../../data/template/writing.html"))
+            .template("DOCUMENT", doc_render)
+            .build();
+
+        MiddleRequest::Send(Response::new().text(html).content(Content::HTML))
     }
 }
 
