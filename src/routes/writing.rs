@@ -5,6 +5,7 @@ use afire::{
     middleware::{MiddleRequest, Middleware},
     Content, Method, Request, Response, Server,
 };
+use chrono::prelude::*;
 use lazy_static::LazyStatic;
 use simple_config_parser::Config;
 
@@ -22,8 +23,8 @@ struct Document {
     title: String,
     date: String,
     description: String,
+    hidden: bool,
     assets: PathBuf,
-    data: String,
 }
 
 struct Markdown;
@@ -72,12 +73,28 @@ impl Document {
                 description: cfg
                     .get_str("@Description")
                     .expect("Error geting Writing Description"),
+                hidden: cfg.get("@Hidden").unwrap_or(false),
                 assets: PathBuf::from(cfg.get_str("@Assets").expect("Error geting Writing Assets")),
-                data: parts.next().unwrap().to_owned(),
             })
         }
 
-        out.sort_unstable_by(|x, y| x.date.cmp(&y.date));
+        out.sort_unstable_by(|x, y| {
+            let x_parts = x.date.split("-").collect::<Vec<_>>();
+            let y_parts = y.date.split("-").collect::<Vec<_>>();
+
+            let x = Utc.ymd(
+                x_parts[2].parse().unwrap(),
+                x_parts[0].parse().unwrap(),
+                x_parts[1].parse().unwrap(),
+            );
+            let y = Utc.ymd(
+                y_parts[2].parse().unwrap(),
+                y_parts[0].parse().unwrap(),
+                y_parts[1].parse().unwrap(),
+            );
+
+            y.cmp(&x)
+        });
 
         out
     }
@@ -102,7 +119,15 @@ impl Middleware for Markdown {
             None => return MiddleRequest::Continue,
         };
 
-        let doc_render = markdown::to_html(&doc.data);
+        let data = fs::read_to_string(&doc.file_path).unwrap();
+        let data = data.split_once("---").unwrap().1;
+
+        let mut opt = comrak::ComrakOptions::default();
+        opt.extension.table = true;
+        opt.extension.strikethrough = true;
+        opt.extension.autolink = true;
+
+        let doc_render = comrak::markdown_to_html(&data, &opt);
         let html = Template::new(include_str!("../../data/template/writing.html"))
             .template("VERSION", crate::VERSION)
             .template("DOCUMENT", doc_render)
@@ -118,6 +143,10 @@ fn gen_api_data() -> String {
     let mut out = String::new();
 
     for i in &*DOCS {
+        if i.hidden {
+            continue;
+        }
+
         out.push_str(i.jsonify().as_str());
         out.push_str(", ");
     }

@@ -22,7 +22,7 @@ body {
   background: vars.$tile-color;
   color: vars.$font-color;
   height: 164px;
-  border: solid 1px #000;
+  border: solid 1px #323546;
   border-bottom: none;
   left: 50%;
   position: relative;
@@ -40,25 +40,25 @@ body {
 }
 
 .nav-container {
-  @include common.center-h;
+  position: sticky;
+  top: 0;
   width: 100%;
+  z-index: 10;
 }
 
 .nav {
+  @include common.center-h;
   font-family: fonts.$aileron-semibold;
-  transform: translateX(-1px);
   border-radius: 0 0 12px 12px;
   background: vars.$nav-color;
   color: vars.$font-color;
   justify-content: center;
-  border: solid 1px #000;
+  border: solid 1px #323546;
   margin-bottom: 24px;
   display: flex;
   width: 100%;
   border-top: none;
-  position: sticky;
-  top: 0;
-  z-index: 10;
+
 
   .fa-external-link {
     margin-left: 5px;
@@ -165,6 +165,7 @@ body {
 footer {
   @include common.center-h;
   filter: drop-shadow(0 -3px 3px #000000ba);
+  border: solid 1px #323546;
   font-family: fonts.$aileron-semibold;
   background: vars.$footer-color;
   border-radius: 12px 12px 0 0;
@@ -201,6 +202,7 @@ a {
 
 @media (max-width: 690px) {
   .nav-container {
+    @include common.center-h;
     width: 95vw;
 
     & .nav {

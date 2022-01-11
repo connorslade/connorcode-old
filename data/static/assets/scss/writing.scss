@@ -100,6 +100,7 @@
 
     & p {
       display: block;
+      color: #fffc;
     }
   }
 }
@@ -107,7 +108,22 @@
 pre code {
   display: block;
   padding: 10px;
-  font-size: 12px;
+  font-size: 14px;
+}
+
+table {
+  border-collapse: collapse;
+
+  & td,
+  & th {
+    border: 1px solid #323546;
+    padding: 5px;
+    border-collapse: collapse;
+  }
+
+  & tbody tr:nth-child(n):nth-child(even) {
+    background: #3235467F;
+  }
 }
 
 footer {

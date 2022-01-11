@@ -21,6 +21,40 @@ body {
   padding: 0;
 }
 
+footer {
+  background-color: vars.$footer-color;
+  padding: 7px;
+  color: vars.$font-color;
+  position: fixed;
+  width: calc(100vw - 17px);
+  bottom: 0;
+  font-family: Arial, Helvetica, sans-serif;
+
+  & * {
+    display: inline;
+    color: vars.$font-color;
+  }
+
+  a,
+  .fa {
+    color: vars.$a-font-color;
+  }
+}
+
+blockquote {
+  border-left: solid 4px #323546;
+  margin-left: 20px;
+  padding-left: 15px;
+  border-radius: 3px;
+}
+
+code {
+  padding: 2px 4px;
+  color: #fff;
+  background-color: #282c34;
+  border-radius: 4px;
+}
+
 .title {
   text-align: center;
   font-size: 300%;
@@ -62,34 +96,6 @@ body {
 
   display: inline-block;
   transform: scale(-1, 1);
-}
-
-footer {
-  background-color: vars.$footer-color;
-  padding: 7px;
-  color: vars.$font-color;
-  position: fixed;
-  width: calc(100vw - 17px);
-  bottom: 0;
-  font-family: Arial, Helvetica, sans-serif;
-
-  & * {
-    display: inline;
-    color: vars.$font-color;
-  }
-
-  a,
-  .fa {
-    color: vars.$a-font-color;
-  }
-}
-
-code {
-  padding: 2px 4px;
-  font-size: 90%;
-  color: #c7254e;
-  background-color: #f9f2f4;
-  border-radius: 4px;
 }
 
 #homeButton {

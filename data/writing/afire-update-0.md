@@ -8,14 +8,15 @@
 
 # 🔥 afire v0.3.0
 
-This document will outline some new features and changes to [afire](crates.io/crates/afire) in version `0.3.0`! The full changelog can be found [here](https://github.com/Basicprogrammer10/afire/blob/0.2.3/Changelog.md).
+This document will outline some new features and changes to [afire](crates.io/crates/afire) in version `0.3.0`!
+The full changelog can be found on GitHub [here](https://github.com/Basicprogrammer10/afire/blob/0.2.3/Changelog.md).
 
 ## 📰 New Features
 
 #### Content Types
 
-Now you don't need to make a Header for every response to set the Content Type.
-Now you can call `.content(Content::X)` on your response.
+You no longer need to make a Header for every response just to set the Content Type.
+Now you can just call `.content(Content::X)` on your response.
 Currently, Content supports the following Types:
 
 - HTML
@@ -36,16 +37,18 @@ Response::new()
 
 #### _Advanced_ Middleware
 
-I have made the Middleware much more powerful! Is now a Trait you can implement on a struct.
-You can implement the `pre`, `post` and `attach` functions for it.
+I have made the Middleware much more powerful!
+Is now a Trait you can implement the `pre`, `post` and `attach` functions for it.
 Pre will run _before_ the routes handle the request, Post will run _after_.
 
-Middleware will now return a MiddleResponse from post and MiddleRequest from pre.
+Middleware will now return a `MiddleResponse` from post and `MiddleRequest` from pre.
 This allows you to do any of the following things:
 
-- Continue - Move on to the next Middleware or Route
-- Add - Modify the Request / Response and continue to the next Middleware / Route
-- Send - Send a Response now. Will not run other Middleware or Routes.
+| Option   | Description                                                   |
+| -------- | ------------------------------------------------------------- |
+| Continue | Move on to the next Middleware or Route                       |
+| Add      | Modify the Request / Response and Continue                    |
+| Send     | Send a Response now. Will not run other Middleware or Routes. |
 
 Here is a simple Logger Middleware from [examples](https://github.com/Basicprogrammer10/afire/blob/main/examples/08_middleware.rs)
 
@@ -86,20 +89,25 @@ Log.attach(&mut server);
 
 #### Path Parameters
 
-Path parameters are used embed data in a URI. For example a page like this one could use a path parameter to get the name of the document you want to access:
+Path parameters are used to embed data in a URI. For example a page like this one could use a path parameter to get the name of the document you want to access:
+
 ```HTTP
 GET /writing/{document}
 ```
 
-Now lets make an API route to greet people!
+I think the world needs more positivity…
+So let's make an API route to greet people!
+
 ```rust
 use afire::{Header, Method, Query, Response, Server, Content};
 
 // Add the Greet API Path
 server.route(Method::GET, "/greet/{name}", |req| {
-    // As this route would ever run without all the path params being filled
+    // This route can't run without all the path params being filled
     // It is safe to unwrap if the name is in the path
-    let data = format!("<h1>Hello, {}</h1>", req.path_param("name").unwrap());
+    let data = format!("<h1>Hello, {}</h1>",
+      req.path_param("name").unwrap()
+    );
 
     Response::new()
         .text(data)
@@ -109,17 +117,19 @@ server.route(Method::GET, "/greet/{name}", |req| {
 
 #### Socket Closing
 
-This is a smaller change but it could be usefull... Maybe...
+This is a smaller change, but it could be useful… Maybe…
 It allows you to make a Response that will kill the socket.
 If a response has any other data it will not be sent.
-Im not exactly sure what this is usefull but anyway.
+I'm not exactly sure what this is useful for.
+
+anyway
 
 Here is a route that will kill the socket when called.
 
 ```rust
 use afire::{Header, Method, Query, Response, Server, Content};
 
-// Add the Greet API Path
+// *KILL ALL SOCKETS*
 server.route(Method::GET, "/kill", |_req| {
     Response::new().close()
 });
@@ -127,12 +137,16 @@ server.route(Method::GET, "/kill", |_req| {
 
 #### Other
 
-- Changeable Socket Buffer size
+Here are some less important changes that are still worth knowing about.
+
+- Custom Socket Buffer sizes
 - Made Internal functions Public `afire::internal::{http, common, path}`
-- Use Rusts `std::net::IpAddr` for Server Ip
+- Server now use Rusts `std::net::IpAddr` for Server IP
 
 ## 💠 Changes
 
-- Removed limited Thread pool
-- Deprecate `.all` routes
 - Update Logger / Rate limit Syntax
+- Removed the very limited Thread pool
+  - Don't worry… It will return. _someday_
+- Deprecate `.all` routes
+  - Now use `.route(Method::Any, "**", ...)`
