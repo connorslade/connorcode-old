@@ -85,6 +85,9 @@
 
     & .meta {
       height: 21px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
 
       & .path {
         display: inline;
@@ -124,7 +127,7 @@ table {
   }
 
   & tbody tr:nth-child(n):nth-child(even) {
-    background: #3235467F;
+    background: #3235467f;
   }
 }
 
@@ -135,4 +138,28 @@ footer {
   position: fixed;
   bottom: 0;
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@media (max-width: 690px) {
+  .container {
+    margin-top: 2.5vw;
+  }
+
+  .articles {
+    @include common.center-h;
+    width: 100%;
+
+    & .article {
+      grid-template-columns: 25px auto 95px;
+
+      & .disc {
+        display: none;
+      }
+    }
+  }
+
+  .document {
+    @include common.center-h;
+    width: 100%;
+  }
 }
