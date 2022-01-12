@@ -11,6 +11,7 @@
 
   & .article {
     grid-template-columns: 25px 210px auto 95px;
+    border-top: solid 1px #515e76;
     display: grid;
     background-color: #171924;
     padding: 10px;
@@ -49,6 +50,7 @@
     }
 
     &:nth-child(3) {
+      border-top: none;
       border-top-left-radius: 12px;
       border-top-right-radius: 12px;
     }
@@ -56,10 +58,6 @@
     &:last-child {
       border-bottom-left-radius: 12px;
       border-bottom-right-radius: 12px;
-    }
-
-    &:nth-child(even) {
-      border-top: solid 1px #515e76;
     }
   }
 

@@ -44,7 +44,7 @@ impl Middleware for Files {
             Response::new()
                 .status(500)
                 .text(
-                    Template::new(include_str!("../data/template/error.html"))
+                    Template::new(crate::assets::ERROR_PAGE)
                         .template("VERSION", VERSION)
                         .template("ERROR", "smthng")
                         .build(),

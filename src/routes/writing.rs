@@ -12,7 +12,7 @@ use simple_config_parser::Config;
 use crate::Template;
 
 lazy_static! {
-    static ref DOCS: Vec<Document> = Document::load_documents();
+    static ref DOCS: Vec<Document> = Document::load_documents(PathBuf::from("./data/writing"));
     static ref DOCS_API: String = gen_api_data();
 }
 
@@ -39,12 +39,16 @@ pub fn attach(server: &mut Server) {
 }
 
 impl Document {
-    fn load_documents() -> Vec<Self> {
+    fn load_documents(path: PathBuf) -> Vec<Self> {
         let mut out = Vec::new();
 
-        let files = fs::read_dir("./data/writing").expect("Error Reading Writing Dir");
+        let files = fs::read_dir(path).expect("Error Reading Writing Dir");
         for i in files {
             let i = i.unwrap();
+
+            if i.path().is_dir() {
+                out.append(&mut Document::load_documents(i.path()));
+            }
 
             if let Some(doc) = Document::load_document(i) {
                 out.push(doc);
@@ -109,13 +113,28 @@ impl Middleware for Markdown {
             return MiddleRequest::Continue;
         }
 
-        let code = req.path.strip_prefix("/writing/").unwrap();
+        let code = req.path.strip_prefix("/writing/").unwrap_or_default();
         let doc = match (*DOCS).iter().find(|x| x.path == code) {
             Some(i) => i,
             None => return MiddleRequest::Continue,
         };
 
-        let data = fs::read_to_string(&doc.file_path).unwrap();
+        let data = match fs::read_to_string(&doc.file_path) {
+            Ok(i) => i,
+            Err(i) => {
+                return MiddleRequest::Send(
+                    Response::new()
+                        .status(500)
+                        .text(
+                            Template::new(crate::assets::ERROR_PAGE)
+                                .template("ERROR", i)
+                                .template("VERSION", crate::VERSION)
+                                .build(),
+                        )
+                        .content(Content::HTML),
+                )
+            }
+        };
         let data = data.split_once("---").unwrap().1;
 
         let mut opt = comrak::ComrakOptions::default();

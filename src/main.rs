@@ -12,6 +12,7 @@ mod template;
 #[macro_use]
 mod color;
 mod analytics;
+mod assets;
 mod common;
 mod config;
 mod files;
@@ -54,7 +55,7 @@ fn main() {
         Response::new()
             .status(500)
             .text(
-                Template::new(include_str!("../data/template/error.html"))
+                Template::new(assets::ERROR_PAGE)
                     .template("VERSION", VERSION)
                     .template("ERROR", err)
                     .build(),
