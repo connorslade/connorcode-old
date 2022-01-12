@@ -9,6 +9,8 @@ use chrono::prelude::*;
 use lazy_static::LazyStatic;
 use simple_config_parser::Config;
 
+use crate::assets::WRITING;
+use crate::color::{color, Color};
 use crate::Template;
 
 lazy_static! {
@@ -18,13 +20,15 @@ lazy_static! {
 
 #[derive(Debug, Clone)]
 struct Document {
-    path: String,
     file_path: PathBuf,
+    path: String,
     title: String,
     date: String,
     description: String,
+    author: String,
+    tags: Vec<String>,
     hidden: bool,
-    assets: PathBuf,
+    // assets: PathBuf,
 }
 
 struct Markdown;
@@ -38,6 +42,21 @@ pub fn attach(server: &mut Server) {
     });
 }
 
+macro_rules! safe_config {
+    ($e: expr, $d: expr, $dn: expr) => {{
+        if $e.ok().is_none() {
+            let text = format!(
+                "[-] No `{}` defined on document `{}`",
+                $d,
+                $dn.as_os_str().to_str().unwrap_or_default()
+            );
+            println!("{}", color(text, Color::Red));
+        }
+
+        $e.ok()
+    }};
+}
+
 impl Document {
     fn load_documents(path: PathBuf) -> Vec<Self> {
         let mut out = Vec::new();
@@ -48,6 +67,10 @@ impl Document {
 
             if i.path().is_dir() {
                 out.append(&mut Document::load_documents(i.path()));
+            }
+
+            if i.file_name().to_string_lossy() == "README.md" {
+                continue;
             }
 
             if let Some(doc) = Document::load_document(i) {
@@ -88,14 +111,33 @@ impl Document {
             .text(parts.next().unwrap())
             .expect("Error Parseing a Writing Config");
 
+        let tags = cfg
+            .get_str("@Tags")
+            .unwrap_or_default()
+            .split(",")
+            .map(|x| x.trim().to_owned())
+            .collect();
+
+        let file_path = i.path();
+        let path = safe_config!(cfg.get_str("@Path"), "Path", i.path());
+        let title = safe_config!(cfg.get_str("@Title"), "Title", i.path());
+        let date = safe_config!(cfg.get_str("@Date"), "Date", i.path());
+        let description = safe_config!(cfg.get_str("@Description"), "Description", i.path());
+        let author = cfg
+            .get_str("@Author")
+            .unwrap_or_else(|_| "Connor Slade".to_owned());
+        let hidden = cfg.get("@Hidden").unwrap_or(false);
+
         Some(Document {
-            path: cfg.get_str("@Path").ok()?,
-            file_path: i.path(),
-            title: cfg.get_str("@Title").ok()?,
-            date: cfg.get_str("@Date").ok()?,
-            description: cfg.get_str("@Description").ok()?,
-            hidden: cfg.get("@Hidden").unwrap_or(false),
-            assets: PathBuf::from(cfg.get_str("@Assets").ok()?),
+            file_path,
+            path: path?,
+            title: title?,
+            date: date?,
+            description: description?,
+            author,
+            hidden,
+            tags,
+            // assets: PathBuf::from(cfg.get_str("@Assets").ok()?),
         })
     }
 
@@ -143,11 +185,14 @@ impl Middleware for Markdown {
         opt.extension.autolink = true;
 
         let doc_render = comrak::markdown_to_html(&data, &opt);
-        let html = Template::new(include_str!("../../data/web/template/writing.html"))
+        let html = Template::new(WRITING)
             .template("VERSION", crate::VERSION)
             .template("DOCUMENT", doc_render)
+            .template("AUTHOR", &doc.author)
             .template("PATH", &doc.path)
             .template("DATE", &doc.date)
+            .template("DISC", &doc.description)
+            .template("TAGS", &doc.tags.join(", "))
             .build();
 
         MiddleRequest::Send(Response::new().text(html).content(Content::HTML))
