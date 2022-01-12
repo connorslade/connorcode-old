@@ -1,0 +1,8 @@
+@use 'vars';
+
+@import 'common';
+
+.content {
+  text-align: center;
+  color: vars.$font-color;
+}

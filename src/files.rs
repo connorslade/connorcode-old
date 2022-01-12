@@ -132,7 +132,7 @@ impl Files {
                 Response::new()
                     .text(
                         Template::new(
-                            fs::read_to_string("./data/template/files.html")
+                            fs::read_to_string("./data/web/template/files.html")
                                 .unwrap_or_else(|_| "{{FILES}}".to_owned()),
                         )
                         .template("PATH", path.file_name()?.to_str()?)

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta property="og:title" content="Connor's Website!" />
+    <meta name="description" content="Sigma76's Website!" />
+    <link rel="shortcut icon" type="image/png" href="/assets/SigmaLogo.png" />
+    <meta property="og:title" content="Sigma76's Website!" />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/assets/SigmaLogo.png" />
+    <meta property="og:description" content="Sigma76's Website!" />
+    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/index.css" />
+    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
+    <script src="/index.js"></script>
+    <title>ConnorCode — Home</title>
+  </head>
+  <body>
+    <div class="container">
+      <div class="title">
+        <p>Connor Code</p>
+      </div>
+
+      <div class="nav-container">
+        <div class="nav">
+          <a href="/" class="this">Home</a>
+          <a href="/writing">Writing</a>
+          <a href="/about">About</a>
+          <a
+            href="https://github.com/basicprogrammer10/connorcode/"
+            target="_blank"
+          >
+            Source <i class="fa fa-external-link"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="projects">
+        {{ITEMS}}
+      </div>
+    </div>
+
+    <footer>
+      <a href="/contact" id="foot">
+        <span class="copyleft">©</span> Connor Slade · V{{VERSION}} ·
+        <a href="https://github.com/Basicprogrammer10/connorcode">
+          <i class="cat fa fa-github"></i> Github
+        </a>
+      </a>
+    </footer>
+  </body>
+</html>

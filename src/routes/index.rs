@@ -38,8 +38,8 @@ impl Project {
 
 pub fn attach(server: &mut Server) {
     let cfg = Config::new().file("data/config/projects.cfg").unwrap();
-    let base_page = fs::read_to_string("data/template/index.html").unwrap();
-    let base_template = fs::read_to_string("data/template/project.html").unwrap();
+    let base_page = fs::read_to_string("data/web/template/index.html").unwrap();
+    let base_template = fs::read_to_string("data/web/template/project.html").unwrap();
     let mut projects = Vec::new();
 
     for i in cfg.data {

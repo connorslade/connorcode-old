@@ -1,0 +1,62 @@
+@import "common";
+
+.content {
+  background: rgb(33, 38, 45);
+  border-radius: 10px;
+  width: max-content;
+  max-width: 95vw;
+  color: rgb(201, 209, 217);
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  border: solid;
+  border-width: 0 1px 0 1px;
+  border-color: #30363d;
+  margin-top: 10px;
+}
+
+.file {
+  border: solid;
+  border-width: 1px 0 1px 0;
+  padding: 5px;
+  border-color: #30363d;
+  display: grid;
+  grid-template-columns: 30px 300px 82px 125px;
+  grid-gap: 0 10px 10px 10px;
+
+  & .size {
+    margin: 0;
+  }
+
+  & .modified {
+    margin: 0 5px 0 0;
+    text-align: right;
+  }
+
+  & > a {
+    margin-right: 10px;
+  }
+
+  &:nth-child(even) {
+    border-width: 0;
+  }
+
+  &:nth-child(1) {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+  }
+
+  &:last-child {
+    border-bottom-left-radius: 5px;
+    border-bottom-right-radius: 5px;
+  }
+}
+
+.fa {
+  color: rgb(201, 209, 217);
+  padding: 0 10px 0 5px;
+}
+
+a {
+  color: rgb(201, 209, 217);
+}

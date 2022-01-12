@@ -62,7 +62,7 @@ fn not_found(path: &str) -> Response {
         .status(404)
         .text(
             Template::new(
-                fs::read_to_string("data/template/not_found.html")
+                fs::read_to_string("data/web/template/not_found.html")
                     .unwrap_or_else(|_| "Not Found :/".to_owned()),
             )
             .template("VERSION", VERSION)

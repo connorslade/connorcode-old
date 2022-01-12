@@ -143,7 +143,7 @@ impl Middleware for Markdown {
         opt.extension.autolink = true;
 
         let doc_render = comrak::markdown_to_html(&data, &opt);
-        let html = Template::new(include_str!("../../data/template/writing.html"))
+        let html = Template::new(include_str!("../../data/web/template/writing.html"))
             .template("VERSION", crate::VERSION)
             .template("DOCUMENT", doc_render)
             .template("PATH", &doc.path)
