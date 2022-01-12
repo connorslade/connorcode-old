@@ -1,4 +1,4 @@
-use simple_config_parser::Config;
+use simple_config_parser::{Config, ConfigError};
 
 static mut CONFIG: Config = Config { data: Vec::new() };
 
@@ -33,11 +33,16 @@ lazy_static! {
     pub static ref ONION_SITE: String = config!().get_str("onion_site").unwrap();
 }
 
-pub fn load(path: &str) -> Option<()> {
-    let cfg = Config::new().file(path).ok()?;
-    unsafe {
-        CONFIG = cfg;
-    }
+pub fn load(path: &str) -> Result<(), ConfigError> {
+    let cfg = Config::new().file(path);
 
-    Some(())
+    if let Ok(cfg) = cfg {
+        unsafe {
+            CONFIG = cfg;
+        }
+
+        return Ok(());
+    };
+
+    Err(cfg.err().unwrap())
 }

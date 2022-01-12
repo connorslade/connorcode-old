@@ -3,10 +3,8 @@ local/
 
 data/analytics/*.aan
 
-data/static/school/gamedesign/*
-!data/static/school/gamedesign/docs
-!data/static/school/gamedesign/mkdocs.yml
+data/web/static/school/gamedesign/*
+!data/web/static/school/gamedesign/docs
+!data/web/static/school/gamedesign/mkdocs.yml
 
-data/static/mc/docs/*
-!data/static/mc/docs/docs
-!data/static/mc/docs/mkdocs.yml
+data/web/static/mc/docs

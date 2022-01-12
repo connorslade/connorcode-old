@@ -1,3 +1,0 @@
-# Denali-MC-Help
-
-Docs for a Minecraft Server thing I made a while ago...

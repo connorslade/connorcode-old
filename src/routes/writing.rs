@@ -28,7 +28,6 @@ struct Document {
     author: String,
     tags: Vec<String>,
     hidden: bool,
-    // assets: PathBuf,
 }
 
 struct Markdown;
@@ -137,7 +136,6 @@ impl Document {
             author,
             hidden,
             tags,
-            // assets: PathBuf::from(cfg.get_str("@Assets").ok()?),
         })
     }
 
