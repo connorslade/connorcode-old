@@ -66,6 +66,11 @@
     padding: 10px;
     height: 21.25px;
     border-radius: 12px;
+
+    & .fa-refresh {
+      font-size: 19px;
+      margin-right: 5px;
+    }
   }
 }
 
