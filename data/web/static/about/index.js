@@ -7,4 +7,5 @@ function getGreeting() {
   if (hour >= 17) return "Good evening";
   if (hour >= 12) return "Good afternoon";
   if (hour >= 3) return "Good morning";
+  return "Good evening";
 }

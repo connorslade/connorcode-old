@@ -33,8 +33,6 @@ impl Middleware for ComponentManager {
                     MiddleResponse::Add(i) => res = i,
                     MiddleResponse::Send(i) => return MiddleResponse::Send(i),
                 }
-
-                dbg!(std::string::String::from_utf8(res.data.clone()).unwrap());
             }
         }
 
