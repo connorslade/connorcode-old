@@ -17,15 +17,13 @@ pub trait Component {
 }
 
 impl Middleware for ComponentManager {
-    fn post(&mut self, req: Request, res: Response) -> MiddleResponse {
-        let text = match String::from_utf8(res.data.clone()) {
-            Ok(i) => i,
-            Err(_) => return MiddleResponse::Continue,
-        };
-
-        let mut res = res;
-
+    fn post(&mut self, req: Request, mut res: Response) -> MiddleResponse {
         for i in &mut self.components {
+            let text = match String::from_utf8(res.data.clone()) {
+                Ok(i) => i,
+                Err(_) => return MiddleResponse::Continue,
+            };
+
             if Regex::new(&format!(r#"\{{\{{CMP:( )*{}\}}\}}"#, &i.0))
                 .expect("Error parseing Regex")
                 .is_match(&text)
@@ -35,6 +33,8 @@ impl Middleware for ComponentManager {
                     MiddleResponse::Add(i) => res = i,
                     MiddleResponse::Send(i) => return MiddleResponse::Send(i),
                 }
+
+                dbg!(std::string::String::from_utf8(res.data.clone()).unwrap());
             }
         }
 

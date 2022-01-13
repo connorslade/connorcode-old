@@ -11,11 +11,13 @@ use simple_config_parser::Config;
 
 use crate::assets::WRITING;
 use crate::color::{color, Color};
+use crate::config::{EXTERNAL_URI, WRITING_PATH};
 use crate::Template;
 
 lazy_static! {
-    static ref DOCS: Vec<Document> = Document::load_documents(PathBuf::from("./data/writing"));
+    static ref DOCS: Vec<Document> = Document::load_documents(PathBuf::from(&*WRITING_PATH));
     static ref DOCS_API: String = gen_api_data();
+    static ref DOCS_RSS: String = gen_rss_data();
 }
 
 #[derive(Debug, Clone)]
@@ -38,6 +40,10 @@ pub fn attach(server: &mut Server) {
     Markdown.attach(server);
     server.route(Method::GET, "/api/writing", |_req| {
         Response::new().text(&*DOCS_API).content(Content::JSON)
+    });
+
+    server.route(Method::GET, "/writing.rss", |_req| {
+        Response::new().text(&*DOCS_RSS).content(Content::XML)
     });
 }
 
@@ -145,6 +151,32 @@ impl Document {
             self.title, self.description, self.date, self.path
         )
     }
+
+    fn rssify(&self) -> String {
+        let parts = self.date.split("-").collect::<Vec<_>>();
+        let date = Utc
+            .ymd(
+                parts[2].parse().unwrap(),
+                parts[0].parse().unwrap(),
+                parts[1].parse().unwrap(),
+            )
+            .and_time(NaiveTime::from_hms(0, 0, 0))
+            .unwrap();
+
+        format!(
+            r#"<item>
+         <title>{}</title>
+         <description>{}</description>
+         <pubDate>{}</pubDate>
+         <link>{}/writing/{}</link>
+        </item>"#,
+            self.title,
+            self.description,
+            date.to_rfc2822(),
+            *EXTERNAL_URI,
+            self.path
+        )
+    }
 }
 
 impl Middleware for Markdown {
@@ -212,4 +244,37 @@ fn gen_api_data() -> String {
     out.pop();
 
     format!("[{}]", out)
+}
+
+fn gen_rss_data() -> String {
+    let mut out = String::new();
+
+    for i in &*DOCS {
+        if i.hidden {
+            continue;
+        }
+
+        out.push_str(i.rssify().as_str());
+        out.push_str("\n\n");
+    }
+    out.pop();
+    out.pop();
+
+    format!(
+        r#"<?xml version="1.0" encoding="UTF-8" ?>
+<rss version="2.0">
+<channel>
+ <title>ConnorCode</title>
+ <description>ConnorCode Articles</description>
+ <link>{}</link>
+ <copyright>Connor Slade</copyright>
+ <language>en</language>
+ <ttl>1800</ttl>
+
+ {}
+
+</channel>
+</rss>"#,
+        *EXTERNAL_URI, out
+    )
 }
