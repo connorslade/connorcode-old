@@ -14,6 +14,7 @@ mod color;
 mod analytics;
 mod assets;
 mod common;
+mod components;
 mod config;
 mod files;
 mod middleware;
@@ -62,6 +63,8 @@ fn main() {
             )
             .header(Header::new("Content-Type", "text/html"))
     });
+
+    components::attach(&mut server);
 
     // Serve Static Files
     serve_static::attach(&mut server);

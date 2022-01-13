@@ -193,6 +193,7 @@ dependencies = [
  "comrak",
  "lazy_static",
  "rand",
+ "regex",
  "serde",
  "sha2",
  "simple_config_parser",
