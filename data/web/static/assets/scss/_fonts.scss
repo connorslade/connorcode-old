@@ -11,3 +11,16 @@ $basement-grotesque: "Basement Grotesque";
     url("/assets/fonts/Aileron-SemiBold.woff2") format("woff2");
 }
 $aileron-semibold: "Aileron-SemiBold";
+
+@font-face {
+  font-family: "Inter-Regular";
+  src: url("/assets/fonts/Inter-Regular.woff") format("woff"),
+    url("/assets/fonts/Inter-Regular.woff2") format("woff2");
+}
+$inter-regular: "Inter-Regular";
+
+@font-face {
+  font-family: "JetBrainsMono-Regular";
+  src: url("/assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+}
+$jetbrains-mono: "JetBrainsMono-Regular";

@@ -1,3 +1,4 @@
+@use 'fonts';
 @use 'vars';
 
 @mixin center-h {
@@ -49,6 +50,7 @@ blockquote {
 }
 
 code {
+  font-family: fonts.$jetbrains-mono;
   padding: 2px 4px;
   color: #fff;
   background-color: #282c34;
