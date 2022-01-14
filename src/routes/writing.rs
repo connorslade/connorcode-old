@@ -1,5 +1,6 @@
+use std::borrow::Borrow;
 use std::fs::{self, DirEntry};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use afire::{
     middleware::{MiddleRequest, Middleware},
@@ -183,6 +184,31 @@ impl Middleware for Markdown {
     fn pre(&mut self, req: Request) -> MiddleRequest {
         if req.method != Method::GET || !req.path.starts_with("/writing/") {
             return MiddleRequest::Continue;
+        }
+
+        if req.path.starts_with("/writing/assets/") {
+            let file = req
+                .path
+                .strip_prefix("/writing/assets/")
+                .unwrap_or_default()
+                .replace("..", "");
+
+            let path = Path::new(&*WRITING_PATH).join("assets").join(&file);
+            let ext = path.extension().unwrap_or_default();
+            let ext = ext.borrow().to_str().unwrap_or_default();
+
+            let mime = match ext.to_lowercase().as_str() {
+                "png" => "image/png",
+                "jpg" => "image/jpeg",
+                "jpeg" => "image/jpeg",
+                _ => "",
+            };
+
+            if let Ok(data) = fs::read(path) {
+                return MiddleRequest::Send(
+                    Response::new().bytes(data).content(Content::Custom(mime)),
+                );
+            }
         }
 
         let code = req.path.strip_prefix("/writing/").unwrap_or_default();

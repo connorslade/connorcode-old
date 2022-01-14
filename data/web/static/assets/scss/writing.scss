@@ -40,6 +40,7 @@
 
     & .disc {
       font-weight: 200;
+      margin-left: 20px;
       color: inherit;
     }
 
@@ -117,6 +118,11 @@ pre code {
   font-size: 14px;
 }
 
+img {
+  max-width: 100%;
+  border-radius: 12px;
+}
+
 table {
   border-collapse: collapse;
 
@@ -150,9 +156,13 @@ footer {
     width: 100%;
 
     & .article {
-      grid-template-columns: 25px auto 95px;
+      grid-template-columns: 25px auto 80px;
 
       & .disc {
+        display: none;
+      }
+
+      & .date .fa {
         display: none;
       }
     }
