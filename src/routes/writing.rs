@@ -31,6 +31,7 @@ struct Document {
     author: String,
     tags: Vec<String>,
     hidden: bool,
+    words: usize,
 }
 
 struct Markdown;
@@ -117,6 +118,8 @@ impl Document {
             .text(parts.next().unwrap())
             .expect("Error Parseing a Writing Config");
 
+        let words = parts.next().unwrap().split(" ").count();
+
         let tags = cfg
             .get_str("@Tags")
             .unwrap_or_default()
@@ -140,6 +143,7 @@ impl Document {
             title: title?,
             date: date?,
             description: description?,
+            words,
             author,
             hidden,
             tags,
@@ -148,8 +152,12 @@ impl Document {
 
     fn jsonify(&self) -> String {
         format!(
-            r#"{{"name": "{}", "disc": "{}", "date": "{}", "link": "/writing/{}"}}"#,
-            self.title, self.description, self.date, self.path
+            r#"{{"name": "{}", "disc": "{}", "date": "{}", "link": "/writing/{}", "reading": "{}"}}"#,
+            self.title,
+            self.description,
+            self.date,
+            self.path,
+            (self.words as f64 / 3.5).round()
         )
     }
 
@@ -247,6 +255,7 @@ impl Middleware for Markdown {
             .template("AUTHOR", &doc.author)
             .template("PATH", &doc.path)
             .template("DATE", &doc.date)
+            .template("TIME", (doc.words as f64 / 3.5).round())
             .template("DISC", &doc.description)
             .template("TAGS", &doc.tags.join(", "))
             .build();

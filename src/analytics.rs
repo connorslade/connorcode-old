@@ -137,6 +137,12 @@ impl Analytics {
         // Update Last Dump time
         self.last_dump = SystemTime::now();
 
+        self.dump()?;
+
+        Some(())
+    }
+
+    pub fn dump(&mut self) -> Option<()> {
         // Create Path
         let folder = Path::new(&*ANALYTICS_PATH);
         if !folder.exists() {
@@ -177,7 +183,6 @@ impl Analytics {
 
         let new = bincode::serialize(&self.data).ok()?;
         fs::write(path, new).ok()?;
-
         Some(())
     }
 }
