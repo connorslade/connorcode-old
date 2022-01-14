@@ -49,10 +49,23 @@ fn main() {
         )
     );
 
+    // Init Database Stuff
     lazy_static::initialize(&DB);
-    DB.lock().unwrap().set("main", "working", true);
-    DB.lock().unwrap().save().unwrap();
 
+    ctrlc::set_handler(move || {
+        color_print!(Color::Cyan, "\n[*] Saveing Database");
+        DB.lock().unwrap().save().unwrap();
+        std::process::exit(0);
+    })
+    .expect("Error setting Ctrl-C handler");
+
+    std::thread::spawn(|| loop {
+        std::thread::sleep(Duration::from_secs(60 * 60));
+        println!("[*] Saveing Database");
+        DB.lock().unwrap().save().unwrap();
+    });
+
+    // Setup HTTP Server
     let mut server = Server::new(&*SERVER_HOST, *SERVER_PORT)
         // Set defult headers
         .default_header(Header::new("X-Content-Type-Options", "nosniff"))
@@ -76,14 +89,8 @@ fn main() {
     });
 
     components::attach(&mut server);
-
-    // Serve Static Files
     serve_static::attach(&mut server);
-
-    // Add Api Routes
     routes::attach(&mut server);
-
-    // Add Logger, Analytics, Onion Brodcast and Files
     Files::new().attach(&mut server);
     Onion::new().attach(&mut server);
     Analytics::new().attach(&mut server);
@@ -115,10 +122,10 @@ fn print_info() {
 fn init_db() -> Database {
     let path = std::path::Path::new("./data/data.db");
     let mut db = if path.exists() {
-        println!("[*] Loading Database");
+        color_print!(Color::Cyan, "[*] Loadine Database");
         database::Database::load(path).unwrap()
     } else {
-        println!("[*] Createing Database");
+        color_print!(Color::Cyan, "[*] Creating Database");
         database::Database::new(path)
     };
 

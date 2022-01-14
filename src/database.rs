@@ -7,7 +7,10 @@ type Data = HashMap<String, HashMap<String, String>>;
 #[derive(Debug, Clone, Copy)]
 pub enum DatabaseError {
     LoadError,
+    SaveError,
+
     ParseError,
+    SerializeError,
     NoItem,
 }
 
@@ -24,7 +27,7 @@ impl Database {
     {
         let data = match fs::read(&file) {
             Ok(i) => i,
-            Err(i) => return Err(DatabaseError::LoadError),
+            Err(_) => return Err(DatabaseError::LoadError),
         };
 
         let parsed: Data = match bincode::deserialize(&data) {
@@ -39,8 +42,15 @@ impl Database {
     }
 
     pub fn save(&self) -> Result<(), DatabaseError> {
-        let data = bincode::serialize(&self.data).unwrap();
-        fs::write(&self.file, data).unwrap();
+        let data = match bincode::serialize(&self.data) {
+            Ok(i) => i,
+            Err(_) => return Err(DatabaseError::SerializeError),
+        };
+
+        match fs::write(&self.file, data) {
+            Ok(i) => i,
+            Err(_) => return Err(DatabaseError::SaveError),
+        };
 
         Ok(())
     }
@@ -91,8 +101,7 @@ impl Database {
         V: std::fmt::Display,
     {
         self.data
-            .get_mut(&table.to_string())
-            .unwrap()
+            .get_mut(&table.to_string())?
             .insert(key.to_string(), value.to_string());
 
         Some(())
