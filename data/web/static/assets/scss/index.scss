@@ -60,7 +60,6 @@ body {
   width: 100%;
   border-top: none;
 
-
   .fa-external-link {
     margin-left: 5px;
   }
@@ -146,7 +145,9 @@ body {
   transition: all 0.3s;
   border-radius: 12px;
   display: block;
-  width: 100%;
+  background-color: #323546;
+  height: 325px;
+  width: 578px;
 }
 
 .js-tilt-glare {
@@ -229,6 +230,13 @@ a {
 
   .projects {
     grid-gap: 2.5vw;
+  }
+
+  .pre {
+    width: 87vw;
+
+    background-color: none;
+    height: inherit;
   }
 
   .item {

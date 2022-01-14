@@ -55,10 +55,16 @@
       >
         <div class="content">
           <div class="meta">
-            <div class="path" x-html="path"></div>
+            <div class="path" title="Article Path" x-html="path"></div>
             <div
               class="date"
+              title="Publish Date"
               x-html="`<i class='fa fa-calendar'></i> ${date}`"
+            ></div>
+            <div
+              class="time"
+              title="Estimated Reading Time"
+              x-html="`<i class='fa fa-eye'></i> ${time}`"
             ></div>
           </div>
 

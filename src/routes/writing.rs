@@ -9,6 +9,7 @@ use afire::{
 use chrono::prelude::*;
 use lazy_static::LazyStatic;
 use simple_config_parser::Config;
+use unindent::unindent;
 
 use crate::assets::WRITING;
 use crate::color::{color, Color};
@@ -172,18 +173,21 @@ impl Document {
             .and_time(NaiveTime::from_hms(0, 0, 0))
             .unwrap();
 
-        format!(
-            r#"<item>
-         <title>{}</title>
-         <description>{}</description>
-         <pubDate>{}</pubDate>
-         <link>{}/writing/{}</link>
-        </item>"#,
-            self.title,
-            self.description,
-            date.to_rfc2822(),
-            *EXTERNAL_URI,
-            self.path
+        unindent(
+            format!(
+                r#"<item>
+                     <title>{}</title>
+                     <description>{}</description>
+                     <pubDate>{}</pubDate>
+                     <link>{}/writing/{}</link>
+                 </item>"#,
+                self.title,
+                self.description,
+                date.to_rfc2822(),
+                *EXTERNAL_URI,
+                self.path
+            )
+            .as_str(),
         )
     }
 }
@@ -295,21 +299,24 @@ fn gen_rss_data() -> String {
     out.pop();
     out.pop();
 
-    format!(
-        r#"<?xml version="1.0" encoding="UTF-8" ?>
-<rss version="2.0">
-<channel>
- <title>ConnorCode</title>
- <description>ConnorCode Articles</description>
- <link>{}</link>
- <copyright>Connor Slade</copyright>
- <language>en</language>
- <ttl>1800</ttl>
+    unindent(
+        format!(
+            r#"<?xml version="1.0" encoding="UTF-8" ?>
+            <rss version="2.0">
+            <channel>
+             <title>ConnorCode</title>
+             <description>ConnorCode Articles</description>
+             <link>{}</link>
+             <copyright>Connor Slade</copyright>
+             <language>en</language>
+             <ttl>1800</ttl>
 
- {}
+             {}
 
-</channel>
-</rss>"#,
-        *EXTERNAL_URI, out
+            </channel>
+            </rss>"#,
+            *EXTERNAL_URI, out
+        )
+        .as_str(),
     )
 }

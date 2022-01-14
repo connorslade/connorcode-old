@@ -22,6 +22,7 @@ sha2 = "0.9.8"
 # Other
 lazy_static = "1.4.0"
 sys-info = "0.9.1"
+unindent = "0.1.7"
 chrono = "0.4.19"
 ctrlc = "3.2.1"
 regex = "1.5.4"
