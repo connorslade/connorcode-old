@@ -88,10 +88,10 @@ impl Database {
     where
         T: std::fmt::Display,
     {
-        Some(match self.data.insert(table.to_string(), HashMap::new()) {
-            Some(_) => true,
-            _ => false,
-        })
+        Some(matches!(
+            self.data.insert(table.to_string(), HashMap::new()),
+            Some(_)
+        ))
     }
 
     pub fn set<T, K, V>(&mut self, table: T, key: K, value: V) -> Option<()>
@@ -119,8 +119,8 @@ impl Database {
         };
 
         match item.parse() {
-            Ok(i) => return Ok(i),
-            Err(_) => return Err(DatabaseError::ParseError),
+            Ok(i) => Ok(i),
+            Err(_) => Err(DatabaseError::ParseError),
         }
     }
 

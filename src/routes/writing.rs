@@ -90,8 +90,8 @@ impl Document {
         }
 
         out.sort_unstable_by(|x, y| {
-            let x_parts = x.date.split("-").collect::<Vec<_>>();
-            let y_parts = y.date.split("-").collect::<Vec<_>>();
+            let x_parts = x.date.split('-').collect::<Vec<_>>();
+            let y_parts = y.date.split('-').collect::<Vec<_>>();
 
             let x = Utc.ymd(
                 x_parts[2].parse().unwrap(),
@@ -127,7 +127,7 @@ impl Document {
         let tags = cfg
             .get_str("@Tags")
             .unwrap_or_default()
-            .split(",")
+            .split(',')
             .map(|x| x.trim().to_owned())
             .collect();
 
@@ -172,7 +172,7 @@ impl Document {
     }
 
     fn rssify(&self) -> String {
-        let parts = self.date.split("-").collect::<Vec<_>>();
+        let parts = self.date.split('-').collect::<Vec<_>>();
         let date = Utc
             .ymd(
                 parts[2].parse().unwrap(),
@@ -222,6 +222,7 @@ impl Middleware for Markdown {
                 "png" => "image/png",
                 "jpg" => "image/jpeg",
                 "jpeg" => "image/jpeg",
+                "svg" => "image/svg+xml",
                 _ => "",
             };
 
@@ -263,7 +264,7 @@ impl Middleware for Markdown {
         opt.parse.smart = true;
         opt.render.unsafe_ = true;
 
-        let doc_render = comrak::markdown_to_html(&data, &opt);
+        let doc_render = comrak::markdown_to_html(data, &opt);
         let html = Template::new(WRITING)
             .template("VERSION", crate::VERSION)
             .template("DOCUMENT", doc_render)
