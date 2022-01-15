@@ -46,7 +46,7 @@
 
         <template x-cloak x-for="i in data">
           <div class="article">
-            <i class="fa fa-file-text-o"></i>
+            <i x-html="i.icon"></i>
             <a class="name" :href="i.link" x-text="i.name"></a>
             <a class="disc" :href="i.link" x-text="i.disc"></a>
             <a class="date" :href="i.link" x-html="i.date"></a>

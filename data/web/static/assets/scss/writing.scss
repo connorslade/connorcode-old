@@ -9,7 +9,7 @@
   padding: 24px;
 
   & .article {
-    grid-template-columns: 25px 210px auto 95px;
+    grid-template-columns: 25px 210px auto 90px;
     border-top: solid 1px #515e76;
     display: grid;
     background-color: #171924;
@@ -47,6 +47,10 @@
     & .date {
       text-align: right;
       color: #a1a7bb;
+
+      & .fa {
+        float: left;
+      }
     }
 
     &:nth-child(3) {
@@ -140,8 +144,12 @@ table {
     border-collapse: collapse;
   }
 
-  & tbody tr:nth-child(n):nth-child(even) {
-    background: #3235467f;
+  & tbody {
+    color: #fffc;
+
+    & tr:nth-child(n):nth-child(even) {
+      background: #3235467f;
+    }
   }
 }
 

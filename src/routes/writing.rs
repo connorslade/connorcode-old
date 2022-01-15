@@ -26,13 +26,16 @@ lazy_static! {
 struct Document {
     file_path: PathBuf,
     path: String,
+
     title: String,
     date: String,
-    description: String,
     author: String,
+    description: String,
+
     tags: Vec<String>,
     hidden: bool,
     words: usize,
+    icon: String,
 }
 
 struct Markdown;
@@ -128,6 +131,10 @@ impl Document {
             .map(|x| x.trim().to_owned())
             .collect();
 
+        let icon = cfg
+            .get_str("@Icon")
+            .unwrap_or_else(|_| "file-text-o".to_owned());
+
         let file_path = i.path();
         let path = safe_config!(cfg.get_str("@Path"), "Path", i.path());
         let title = safe_config!(cfg.get_str("@Title"), "Title", i.path());
@@ -148,15 +155,17 @@ impl Document {
             author,
             hidden,
             tags,
+            icon,
         })
     }
 
     fn jsonify(&self) -> String {
         format!(
-            r#"{{"name": "{}", "disc": "{}", "date": "{}", "link": "/writing/{}", "reading": "{}"}}"#,
+            r#"{{"name": "{}", "disc": "{}", "date": "{}", "icon": "{}", "link": "/writing/{}", "reading": "{}"}}"#,
             self.title,
             self.description,
             self.date,
+            self.icon,
             self.path,
             (self.words as f64 / 3.5).round()
         )

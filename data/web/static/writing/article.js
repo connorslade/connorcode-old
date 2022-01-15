@@ -19,9 +19,9 @@ function loadPath(path) {
 function loadTime(time) {
   for (let i = 0; i < TIME_UNITS.length; i++) {
     let unit = TIME_UNITS[i];
-    if (unit[1] == 0 || time < unit[1]) return `${Math.round(time)} ${unit[0]}`;
-    
+    if (time < unit[1]) return `${Math.round(time)}${unit[0]}`;
+
     time /= unit[1];
   }
-  return `${Math.round(time)} year`;
+  return `${Math.round(time)}h`;
 }
