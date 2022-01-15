@@ -145,9 +145,7 @@ body {
   transition: all 0.3s;
   border-radius: 12px;
   display: block;
-  background-color: #323546;
-  height: 325px;
-  width: 578px;
+  width: 100%;
 }
 
 .js-tilt-glare {
@@ -230,13 +228,6 @@ a {
 
   .projects {
     grid-gap: 2.5vw;
-  }
-
-  .pre {
-    width: 87vw;
-
-    background-color: none;
-    height: inherit;
   }
 
   .item {

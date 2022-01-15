@@ -119,7 +119,7 @@ impl Document {
             .text(parts.next().unwrap())
             .expect("Error Parseing a Writing Config");
 
-        let words = parts.next().unwrap().split(" ").count();
+        let words = parts.next().unwrap().split_whitespace().count();
 
         let tags = cfg
             .get_str("@Tags")
@@ -251,6 +251,8 @@ impl Middleware for Markdown {
         opt.extension.table = true;
         opt.extension.strikethrough = true;
         opt.extension.autolink = true;
+        opt.parse.smart = true;
+        opt.render.unsafe_ = true;
 
         let doc_render = comrak::markdown_to_html(&data, &opt);
         let html = Template::new(WRITING)
