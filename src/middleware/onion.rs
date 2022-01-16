@@ -7,11 +7,11 @@ use afire::{
 
 use crate::config::{BROADCAST_ONION, ONION_SITE};
 
-pub struct Onion();
+pub struct Onion;
 
 impl Onion {
     pub fn new() -> Self {
-        Onion()
+        Onion
     }
 }
 

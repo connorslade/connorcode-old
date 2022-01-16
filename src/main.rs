@@ -25,7 +25,6 @@ use color::Color;
 use config::{SERVER_HOST, SERVER_PORT};
 use database::Database;
 use files::Files;
-use middleware::Onion;
 use template::Template;
 
 pub const VERSION: &str = "6.0.1";
@@ -71,7 +70,6 @@ fn main() {
         .default_header(Header::new("X-Content-Type-Options", "nosniff"))
         .default_header(Header::new("X-Frame-Options", "DENY"))
         .default_header(Header::new("X-Version", format!("Connorcode/{}", VERSION)))
-        .default_header(Header::new("Cache-Control", "max-age=3600"))
         // Set other things
         .default_header(Header::new("X-Server", format!("afire/{}", afire::VERSION)))
         .socket_timeout(Duration::from_secs(5));
@@ -91,8 +89,8 @@ fn main() {
     components::attach(&mut server);
     serve_static::attach(&mut server);
     routes::attach(&mut server);
+    middleware::attach(&mut server);
     Files::new().attach(&mut server);
-    Onion::new().attach(&mut server);
     Analytics::new().attach(&mut server);
     Logger::new().attach(&mut server);
 
