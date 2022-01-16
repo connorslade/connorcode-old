@@ -21,13 +21,13 @@ impl Middleware for Cache {
             if STATIC_CACHE.contains(&i.1) {
                 return MiddleResponse::Add(res.header(Header::new(
                     "Cache-Control",
-                    format!("max-age={STATIC_CACHE_LEN}"),
+                    format!("max-age={}", STATIC_CACHE_LEN),
                 )));
             }
         }
 
         MiddleResponse::Add(
-            res.header(Header::new("Cache-Control", format!("max-age={CACHE_LEN}"))),
+            res.header(Header::new("Cache-Control", format!("max-age={}", CACHE_LEN))),
         )
     }
 }
