@@ -1,13 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     {{CMP: Header("My Articles...")}}
     <link rel="preload" href="/api/writing" as="fetch" />
-    <link
-      rel="preload"
-      href="https://cdn.jsdelivr.net/npm/alpinejs@3.7.0/dist/cdn.min.js"
-      as="script"
-    />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/alpinejs@3.7.0/dist/cdn.min.js" as="script" />
+
     <link href="/favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="/assets/css/writing.css" />
     <script src="/writing/index.js"></script>
@@ -18,6 +15,8 @@
     <title>ConnorCode — Writing</title>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to Content</a>
+
     <div class="container">
       <div class="title">
         <p>Connor Code</p>
@@ -30,6 +29,7 @@
           <a href="/about">About</a>
           <a
             href="https://github.com/basicprogrammer10/connorcode/"
+            rel="noopener"
             target="_blank"
           >
             Source <i class="fa fa-external-link"></i>
@@ -37,7 +37,7 @@
         </div>
       </div>
 
-      <div class="articles" x-data="data()" x-init="load()">
+      <div class="articles" x-data="data()" x-init="load()" id="main">
         <template x-if="data.length === 0">
           <div class="loading">
             <p><i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>Loading...</p>

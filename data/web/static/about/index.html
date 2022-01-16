@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {{CMP: Header("About Me, Connor Slade and my Privacy Policy")}}
     <link href="/favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="/assets/css/about.css" />
     <script defer src="/about/index.js"></script>
@@ -21,6 +20,7 @@
           <a href="/about" class="this">About</a>
           <a
             href="https://github.com/basicprogrammer10/connorcode/"
+            rel="noopener"
             target="_blank"
           >
             Source <i class="fa fa-external-link"></i>
@@ -62,13 +62,13 @@
           I care about digital privacy, that's why I'm not running Google
           Analytics or something like it. This website runs a
           <em>custom open source analytics system</em> I made. You can view the
-          source code for it
           <a
             href="https://github.com/Basicprogrammer10/connorcode/blob/master/src/analytics.rs"
-            >here</a
-          >. It is completly server side and can only see basic infomation about
-          your request. No tracking cookies are ever used and the analytics data
-          is never shared or sold with any third parties.
+            >source code</a
+          >
+          on GitHub. It is completly server side and can only see basic
+          infomation about your request. No tracking cookies are ever used and
+          the analytics data is never shared or sold with any third parties.
 
           <br /><br />
           The following information <em>is</em> collected:
@@ -86,7 +86,7 @@
           <ul>
             <li>
               Email:
-              <a id="email">XXX</a>
+              <a href="#" id="email">XXX</a>
             </li>
             <li>Discord: Sigma#8214</li>
           </ul>

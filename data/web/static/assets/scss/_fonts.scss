@@ -2,6 +2,7 @@
   font-family: "Basement Grotesque";
   src: url("/assets/fonts/BasementGrotesque-Black_v1.202.woff") format("woff"),
     url("/assets/fonts/BasementGrotesque-Black_v1.202.woff2") format("woff2");
+  font-display: swap;
 }
 $basement-grotesque: "Basement Grotesque";
 
@@ -9,6 +10,7 @@ $basement-grotesque: "Basement Grotesque";
   font-family: "Aileron-SemiBold";
   src: url("/assets/fonts/Aileron-SemiBold.woff") format("woff"),
     url("/assets/fonts/Aileron-SemiBold.woff2") format("woff2");
+  font-display: swap;
 }
 $aileron-semibold: "Aileron-SemiBold";
 
@@ -16,11 +18,13 @@ $aileron-semibold: "Aileron-SemiBold";
   font-family: "Inter-Regular";
   src: url("/assets/fonts/Inter-Regular.woff") format("woff"),
     url("/assets/fonts/Inter-Regular.woff2") format("woff2");
+  font-display: swap;
 }
 $inter-regular: "Inter-Regular";
 
 @font-face {
   font-family: "JetBrainsMono-Regular";
   src: url("/assets/fonts/JetBrainsMono-Regular.woff2") format("woff2");
+  font-display: swap;
 }
 $jetbrains-mono: "JetBrainsMono-Regular";

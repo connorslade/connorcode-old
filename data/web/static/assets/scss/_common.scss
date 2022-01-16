@@ -15,6 +15,21 @@
   display: none !important;
 }
 
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  border-radius: 0 0 12px 0;
+  background: #222531;
+  color: white;
+  padding: 10px;
+  z-index: 2;
+
+  &:focus {
+    top: 0;
+  }
+}
+
 body {
   background: vars.$background-color;
   font-family: Roboto, Helvetica, Arial, sans-serif;

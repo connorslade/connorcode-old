@@ -1,23 +1,31 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     {{CMP: Header("Main page for connorcode.com")}}
     <link rel="shortcut icon" type="image/png" href="/assets/SigmaLogo.png" />
     <meta property="og:title" content="ConnorCode" />
     <meta property="og:image" content="/assets/SigmaLogo.png" />
     <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+
     <link rel="preload" href="/assets/css/index.css" as="style" />
     <link rel="preload" href="/index.js" as="script" />
-
-    <link rel="prerender" href="/writing">
-    <link rel="prerender" href="/about">
+    <link rel="preload" href="/assets/fonts/BasementGrotesque-Black_v1.202.woff2" type="font"   />
+    <link rel="preload" href="/assets/fonts/Inter-Regular.woff2" type="font" />
+    <link rel="preload" href="/assets/fonts/Aileron-SemiBold.woff2" type="font" />
+    <link rel="prerender" href="/writing" />
+    <link rel="prerender" href="/about" />
 
     <link rel="stylesheet" type="text/css" href="/assets/css/index.css" />
-    <script src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"
+    ></script>
     <script src="/index.js"></script>
     <title>ConnorCode — Home</title>
   </head>
   <body>
+    <a class="skip-link" href="#main">Skip to Content</a>
+
     <div class="container">
       <div class="title">
         <p>Connor Code</p>
@@ -30,6 +38,7 @@
           <a href="/about">About</a>
           <a
             href="https://github.com/basicprogrammer10/connorcode/"
+            rel="noopener"
             target="_blank"
           >
             Source <i class="fa fa-external-link"></i>
@@ -37,7 +46,7 @@
         </div>
       </div>
 
-      <div class="projects">
+      <div class="projects" id="main">
         {{ITEMS}}
       </div>
     </div>

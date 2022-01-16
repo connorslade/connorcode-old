@@ -60,3 +60,17 @@
 a {
   color: rgb(201, 209, 217);
 }
+
+@media (max-width: 690px) {
+  .file {
+    grid-template-columns: 30px auto 125px;
+
+    & .size {
+      display: none;
+    }
+
+    // & .modified {
+    //   display: none;
+    // }
+  }
+}

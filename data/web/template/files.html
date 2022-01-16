@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    {{CMP: Header("Public Files")}}
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
@@ -12,7 +11,9 @@
     <title>Files - {{PATH}}</title>
   </head>
   <body>
-    <div class="content">
+    <a class="skip-link" href="#main">Skip to Content</a>
+
+    <div class="content" id="main">
       {{FILES}}
     </div>
 
