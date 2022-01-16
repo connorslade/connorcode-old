@@ -52,17 +52,16 @@ pub fn attach(server: &mut Server) {
             // Marge data to all_data
             for i in data {
                 let ip = i.0;
-                for data in i.1 {
+                let data = i.1;
 
                 if all_data.contains_key(&ip) {
                     let mut new = all_data.get(&ip).unwrap().to_vec();
-                    new.push(data);
+                    new.extend(data);
                     all_data.insert(ip.to_owned(), new);
                     continue;
                 }
 
-                all_data.insert(ip.to_owned(), vec![data]);
-                }
+                all_data.insert(ip.to_owned(), data);
             }
         }
 

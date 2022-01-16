@@ -159,16 +159,16 @@ impl Analytics {
             // Add New Data
             for i in self.data.clone() {
                 let ip = i.0;
-                for data in i.1 {
-                    if old.contains_key(&ip) {
-                        let mut new = old.get(&ip)?.to_vec();
-                        new.push(data);
-                        old.insert(ip.to_owned(), new);
-                        continue;
-                    }
+                let data = i.1;
 
-                    old.insert(ip.to_owned(), vec![data]);
+                if old.contains_key(&ip) {
+                    let mut new = old.get(&ip).unwrap().to_vec();
+                    new.extend(data);
+                    old.insert(ip.to_owned(), new);
+                    continue;
                 }
+
+                old.insert(ip.to_owned(), data);
             }
 
             // Reset In Memory Analytics Cache thing
