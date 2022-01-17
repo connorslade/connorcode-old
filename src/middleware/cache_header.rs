@@ -26,8 +26,9 @@ impl Middleware for Cache {
             }
         }
 
-        MiddleResponse::Add(
-            res.header(Header::new("Cache-Control", format!("max-age={}", CACHE_LEN))),
-        )
+        MiddleResponse::Add(res.header(Header::new(
+            "Cache-Control",
+            format!("max-age={}", CACHE_LEN),
+        )))
     }
 }

@@ -3,17 +3,20 @@
   <head>
     {{CMP: Header("Main page for connorcode.com")}}
     <link rel="shortcut icon" type="image/png" href="/assets/SigmaLogo.png" />
+    <meta name="theme-color" content="#17171a"/>
     <meta property="og:title" content="ConnorCode" />
     <meta property="og:image" content="/assets/SigmaLogo.png" />
     <link href="/favicon.ico" rel="icon" type="image/x-icon" />
 
+    <link rel="manifest" href="manifest.json" />
     <link rel="preload" href="/assets/css/index.css" as="style" />
     <link rel="preload" href="/index.js" as="script" />
+    <!-- prettier-ignore -->
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Black_v1.202.woff2" as="font" />
     <link rel="preload" href="/assets/fonts/Inter-Regular.woff2" as="font" />
     <link rel="preload" href="/assets/fonts/Aileron-SemiBold.woff2" as="font" />
-    <link rel="preconnect" href="https://api.github.com">
-    <link rel="preconnect" href="https://cdn.jsdelivr.net">
+    <link rel="preconnect" href="https://api.github.com" />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="prerender" href="/writing" />
     <link rel="prerender" href="/about" />
 
@@ -23,6 +26,7 @@
       src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"
     ></script>
     <script src="/index.js"></script>
+    <script src="/sw-loader.js"></script>
     <title>ConnorCode — Home</title>
   </head>
   <body>
