@@ -3,7 +3,7 @@ use afire::{
     Header, Request, Response,
 };
 
-const STATIC_CACHE: &[&str] = &["woff", "woff2", "png"];
+const STATIC_CACHE: &[&str] = &["woff", "woff2", "png", "webp"];
 const STATIC_CACHE_LEN: u32 = 31536000;
 const CACHE_LEN: u32 = 3600;
 
