@@ -24,12 +24,17 @@ pub fn attach(server: &mut Server) {
             }
         };
 
+        // Make sure Auth is not too long before hashing
+        if auth.len() > 100 {
+            return Response::new().status(403).text("Auth Header is *way* too long");
+        }
+
         let mut hasher = Sha256::new();
         hasher.update(auth.into_bytes());
         let result = hasher.finalize();
 
         if format!("{:02x}", result) != *PASS {
-            return Response::new().status(403).text("Invalid Pass Header");
+            return Response::new().status(403).text("Invalid Auth Header");
         }
 
         // Get Data From Disk

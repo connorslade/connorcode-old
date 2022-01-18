@@ -27,7 +27,7 @@ use database::Database;
 use files::Files;
 use template::Template;
 
-pub const VERSION: &str = "6.0.1";
+pub const VERSION: &str = "6.0.2";
 
 lazy_static! {
     pub static ref DB: Mutex<Database> = Mutex::new(init_db());
