@@ -103,16 +103,10 @@
         }
       }
 
-      & .time {
+      & .meta-item {
         color: #a1a7bb;
         float: right;
-        margin-right: 15px;
         margin-left: 15px;
-      }
-
-      & .date {
-        color: #a1a7bb;
-        float: right;
       }
     }
 
@@ -189,6 +183,27 @@ footer {
 
   .document {
     @include common.center-h;
+    margin-bottom: 10px;
     width: 100%;
+
+    & .content .meta {
+      height: auto;
+
+      & .path {
+        float: left;
+      }
+
+      & .meta-item {
+        color: #a1a7bb;
+        float: left;
+        margin-left: 0;
+        margin-right: 15px;
+        margin-top: 7px;
+      }
+    }
+  }
+
+  footer {
+    position: relative;
   }
 }

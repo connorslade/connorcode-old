@@ -273,6 +273,7 @@ impl Middleware for Markdown {
             .template("AUTHOR", &doc.author)
             .template("PATH", &doc.path)
             .template("DATE", &doc.date)
+            .template("VIEWS", 173)
             .template("TIME", (doc.words as f64 / 3.5).round())
             .template("DISC", &doc.description)
             .template("TAGS", &doc.tags.join(", "))

@@ -48,7 +48,7 @@
 
       <div
         class="document"
-        x-data="{path: '{{PATH}}', time: {{TIME}}, date: '{{DATE}}'}"
+        x-data="{path: '{{PATH}}', time: {{TIME}}, views: {{VIEWS}}, date: '{{DATE}}'}"
         x-init="
         path = loadPath(path);
         time = loadTime(time);
@@ -58,14 +58,19 @@
           <div class="meta">
             <div class="path" title="Article Path" x-html="path"></div>
             <div
-              class="date"
+              class="meta-item"
               title="Publish Date"
               x-html="`<i class='fa fa-calendar'></i> ${date}`"
             ></div>
             <div
-              class="time"
+              class="meta-item"
+              title="Views"
+              x-html="`<i class='fa fa-eye'></i> ${views}`"
+            ></div>
+            <div
+              class="meta-item"
               title="Estimated Reading Time"
-              x-html="`<i class='fa fa-eye'></i> ${time}`"
+              x-html="`<i class='fa fa-clock-o'></i> ${time}`"
             ></div>
           </div>
 
