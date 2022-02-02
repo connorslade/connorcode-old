@@ -8,6 +8,7 @@ use afire::{
 };
 use chrono::prelude::*;
 use lazy_static::LazyStatic;
+use rusqlite;
 use simple_config_parser::Config;
 use unindent::unindent;
 
@@ -106,6 +107,27 @@ impl Document {
 
             y.cmp(&x)
         });
+
+        let conn = rusqlite::Connection::open("data/data.db").unwrap();
+        conn.execute(
+            "CREATE TABLE IF NOT EXISTS article (
+              name  TEXT PRIMARY KEY,
+              views INTEGER NOT NULL,
+              UNIQUE(name)
+              )",
+            [],
+        )
+        .unwrap();
+
+        for i in &out {
+            conn.execute(
+                r#"INSERT OR IGNORE INTO article (name, views) VALUES (?1, ?2)"#,
+                [i.path.clone(), 0.to_string()],
+            )
+            .unwrap();
+        }
+
+        conn.close().unwrap();
 
         out
     }
@@ -257,6 +279,25 @@ impl Middleware for Markdown {
         };
         let data = data.split_once("---").unwrap().1;
 
+        let conn = rusqlite::Connection::open("data/data.db").unwrap();
+        let views: u32 = conn
+            .query_row(
+                "SELECT views from article where name = ? LIMIT 1",
+                [doc.path.clone()],
+                |row| row.get(0),
+            )
+            .unwrap();
+
+        let views = views + 1;
+
+        conn.execute(
+            "UPDATE article SET views = ?2 WHERE name = ?1",
+            rusqlite::params![doc.path.clone(), views],
+        )
+        .unwrap();
+
+        conn.close().unwrap();
+
         let mut opt = comrak::ComrakOptions::default();
         opt.extension.table = true;
         opt.extension.strikethrough = true;
@@ -273,7 +314,7 @@ impl Middleware for Markdown {
             .template("AUTHOR", &doc.author)
             .template("PATH", &doc.path)
             .template("DATE", &doc.date)
-            .template("VIEWS", 173)
+            .template("VIEWS", views)
             .template("TIME", (doc.words as f64 / 3.5).round())
             .template("DISC", &doc.description)
             .template("TAGS", &doc.tags.join(", "))

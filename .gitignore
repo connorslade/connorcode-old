@@ -1,6 +1,7 @@
 target/
 local/
 
+data/data.db
 data/analytics/*.aan
 
 data/web/static/school/gamedesign/*
