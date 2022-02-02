@@ -279,23 +279,25 @@ impl Middleware for Markdown {
         };
         let data = data.split_once("---").unwrap().1;
 
-        let conn = rusqlite::Connection::open("data/data.db").unwrap();
-        let views: u32 = conn
+        let mut conn = rusqlite::Connection::open("data/data.db").unwrap();
+        let tx = conn.transaction().unwrap();
+
+        let views: u32 = tx
             .query_row(
                 "SELECT views from article where name = ? LIMIT 1",
                 [doc.path.clone()],
                 |row| row.get(0),
             )
             .unwrap();
-
         let views = views + 1;
 
-        conn.execute(
+        tx.execute(
             "UPDATE article SET views = ?2 WHERE name = ?1",
             rusqlite::params![doc.path.clone(), views],
         )
         .unwrap();
 
+        tx.commit().unwrap();
         conn.close().unwrap();
 
         let mut opt = comrak::ComrakOptions::default();
