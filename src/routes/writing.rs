@@ -8,7 +8,6 @@ use afire::{
     Content, Method, Request, Response, Server,
 };
 use chrono::prelude::*;
-use lazy_static::LazyStatic;
 use rusqlite;
 use simple_config_parser::Config;
 use unindent::unindent;
@@ -17,12 +16,6 @@ use crate::assets::WRITING;
 use crate::color::{color, Color};
 use crate::config::{EXTERNAL_URI, WRITING_PATH};
 use crate::Template;
-
-lazy_static! {
-    static ref DOCS: Vec<Document> = Document::load_documents(PathBuf::from(&*WRITING_PATH));
-    static ref DOCS_API: String = gen_api_data();
-    static ref DOCS_RSS: String = gen_rss_data();
-}
 
 #[derive(Debug, Clone)]
 struct Document {
@@ -42,19 +35,16 @@ struct Document {
 
 struct Markdown {
     connection: rusqlite::Connection,
+    documents: Vec<Document>,
+
+    api_cache: String,
+    rss_cache: String,
 }
 
 pub fn attach(server: &mut Server) {
-    LazyStatic::initialize(&DOCS);
+    let docs = Document::load_documents(PathBuf::from(&*WRITING_PATH));
 
-    Markdown::new().attach(server);
-    server.route(Method::GET, "/api/writing", |_req| {
-        Response::new().text(&*DOCS_API).content(Content::JSON)
-    });
-
-    server.route(Method::GET, "/writing.rss", |_req| {
-        Response::new().text(&*DOCS_RSS).content(Content::XML)
-    });
+    Markdown::new(docs).attach(server);
 }
 
 macro_rules! safe_config {
@@ -207,10 +197,27 @@ impl Document {
 
 impl Middleware for Markdown {
     fn pre(&mut self, req: Request) -> MiddleRequest {
-        if req.method != Method::GET || !req.path.starts_with("/writing/") {
+        // For extra speed continue on non GET requests
+        if req.method != Method::GET {
             return MiddleRequest::Continue;
         }
 
+        // Match and serve cached API endpoints
+        match req.path.as_str() {
+            "/api/writing" => {
+                return MiddleRequest::Send(
+                    Response::new().text(&self.api_cache).content(Content::JSON),
+                )
+            }
+            "/writing.rss" => {
+                return MiddleRequest::Send(
+                    Response::new().text(&self.rss_cache).content(Content::XML),
+                )
+            }
+            _ => {}
+        }
+
+        // Handel writing asset reuqests
         if req.path.starts_with("/writing/assets/") {
             let file = req
                 .path
@@ -237,86 +244,92 @@ impl Middleware for Markdown {
             }
         }
 
-        let code = req.path.strip_prefix("/writing/").unwrap_or_default();
-        let doc = match (*DOCS).iter().find(|x| x.path == code) {
-            Some(i) => i,
-            None => return MiddleRequest::Continue,
-        };
+        // Handel requests for the base articles
+        if req.path.starts_with("/writing/") {
+            let code = req.path.strip_prefix("/writing/").unwrap_or_default();
+            let doc = match self.documents.iter().find(|x| x.path == code) {
+                Some(i) => i,
+                None => return MiddleRequest::Continue,
+            };
 
-        let data = match fs::read_to_string(&doc.file_path) {
-            Ok(i) => i,
-            Err(i) => {
-                return MiddleRequest::Send(
-                    Response::new()
-                        .status(500)
-                        .text(
-                            Template::new(crate::assets::ERROR_PAGE)
-                                .template("ERROR", i)
-                                .template("VERSION", crate::VERSION)
-                                .build(),
-                        )
-                        .content(Content::HTML),
+            let data = match fs::read_to_string(&doc.file_path) {
+                Ok(i) => i,
+                Err(i) => {
+                    return MiddleRequest::Send(
+                        Response::new()
+                            .status(500)
+                            .text(
+                                Template::new(crate::assets::ERROR_PAGE)
+                                    .template("ERROR", i)
+                                    .template("VERSION", crate::VERSION)
+                                    .build(),
+                            )
+                            .content(Content::HTML),
+                    )
+                }
+            };
+            let data = data.split_once("---").unwrap().1;
+
+            // Get real Client IP
+            let mut ip = remove_address_port(req.address);
+            if ip == "127.0.0.1" {
+                if let Some(i) = req.headers.iter().find(|x| x.name == "X-Forwarded-For") {
+                    ip = i.value.to_owned();
+                }
+            }
+
+            let trans = self.connection.transaction().unwrap();
+            // Add a vied to the article if it hasent been viewed before
+            trans
+                .execute(
+                    "INSERT OR IGNORE INTO article_views (name, ip) VALUES (?1, ?2)",
+                    rusqlite::params![doc.path, ip],
                 )
-            }
-        };
-        let data = data.split_once("---").unwrap().1;
+                .unwrap();
 
-        // Get real Client IP
-        let mut ip = remove_address_port(req.address);
-        if ip == "127.0.0.1" {
-            if let Some(i) = req.headers.iter().find(|x| x.name == "X-Forwarded-For") {
-                ip = i.value.to_owned();
-            }
+            // Get View Count
+            let views: usize = trans
+                .query_row(
+                    "SELECT COUNT(*) FROM article_views WHERE name = ?1",
+                    rusqlite::params![doc.path],
+                    |row| row.get(0),
+                )
+                .unwrap();
+
+            trans.commit().unwrap();
+
+            let mut opt = comrak::ComrakOptions::default();
+            opt.extension.table = true;
+            opt.extension.strikethrough = true;
+            opt.extension.autolink = true;
+            opt.extension.header_ids = Some("markdown-".to_owned());
+            opt.extension.footnotes = true;
+            opt.parse.smart = true;
+            opt.render.unsafe_ = true;
+
+            let doc_render = comrak::markdown_to_html(data, &opt);
+            let html = Template::new(WRITING)
+                .template("VERSION", crate::VERSION)
+                .template("DOCUMENT", doc_render)
+                .template("AUTHOR", &doc.author)
+                .template("PATH", &doc.path)
+                .template("DATE", &doc.date)
+                .template("VIEWS", views)
+                .template("TIME", (doc.words as f64 / 3.5).round())
+                .template("DISC", &doc.description)
+                .template("TAGS", &doc.tags.join(", "))
+                .build();
+
+            return MiddleRequest::Send(Response::new().text(html).content(Content::HTML));
         }
 
-        let trans = self.connection.transaction().unwrap();
-        // Add a vied to the article if it hasent been viewed before
-        trans
-            .execute(
-                "INSERT OR IGNORE INTO article_views (name, ip) VALUES (?1, ?2)",
-                rusqlite::params![doc.path, ip],
-            )
-            .unwrap();
-
-        // Get View Count
-        let views: usize = trans
-            .query_row(
-                "SELECT COUNT(*) FROM article_views WHERE name = ?1",
-                rusqlite::params![doc.path],
-                |row| row.get(0),
-            )
-            .unwrap();
-
-        trans.commit().unwrap();
-
-        let mut opt = comrak::ComrakOptions::default();
-        opt.extension.table = true;
-        opt.extension.strikethrough = true;
-        opt.extension.autolink = true;
-        opt.extension.header_ids = Some("markdown-".to_owned());
-        opt.extension.footnotes = true;
-        opt.parse.smart = true;
-        opt.render.unsafe_ = true;
-
-        let doc_render = comrak::markdown_to_html(data, &opt);
-        let html = Template::new(WRITING)
-            .template("VERSION", crate::VERSION)
-            .template("DOCUMENT", doc_render)
-            .template("AUTHOR", &doc.author)
-            .template("PATH", &doc.path)
-            .template("DATE", &doc.date)
-            .template("VIEWS", views)
-            .template("TIME", (doc.words as f64 / 3.5).round())
-            .template("DISC", &doc.description)
-            .template("TAGS", &doc.tags.join(", "))
-            .build();
-
-        MiddleRequest::Send(Response::new().text(html).content(Content::HTML))
+        // If no writing related path found, continue
+        MiddleRequest::Continue
     }
 }
 
 impl Markdown {
-    fn new() -> Self {
+    fn new(docs: Vec<Document>) -> Self {
         // Connect to Database
         let mut conn = rusqlite::Connection::open("data/data.db").unwrap();
 
@@ -339,14 +352,23 @@ impl Markdown {
         conn.pragma_update(None, "journal_mode", "WAL").unwrap();
         conn.pragma_update(None, "synchronous", "off").unwrap();
 
-        Self { connection: conn }
+        let api_cache = gen_api_data(&docs);
+        let rss_cache = gen_rss_data(&docs);
+
+        Self {
+            connection: conn,
+            documents: docs,
+
+            api_cache,
+            rss_cache,
+        }
     }
 }
 
-fn gen_api_data() -> String {
+fn gen_api_data(docs: &[Document]) -> String {
     let mut out = String::new();
 
-    for i in &*DOCS {
+    for i in docs {
         if i.hidden {
             continue;
         }
@@ -360,10 +382,10 @@ fn gen_api_data() -> String {
     format!("[{}]", out)
 }
 
-fn gen_rss_data() -> String {
+fn gen_rss_data(docs: &[Document]) -> String {
     let mut out = String::new();
 
-    for i in &*DOCS {
+    for i in docs {
         if i.hidden {
             continue;
         }
