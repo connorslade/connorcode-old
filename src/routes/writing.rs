@@ -3,6 +3,7 @@ use std::fs::{self, DirEntry};
 use std::path::{Path, PathBuf};
 
 use afire::{
+    internal::common::remove_address_port,
     middleware::{MiddleRequest, Middleware},
     Content, Method, Request, Response, Server,
 };
@@ -46,7 +47,7 @@ struct Markdown {
 pub fn attach(server: &mut Server) {
     LazyStatic::initialize(&DOCS);
 
-    Markdown::new(&DOCS).attach(server);
+    Markdown::new().attach(server);
     server.route(Method::GET, "/api/writing", |_req| {
         Response::new().text(&*DOCS_API).content(Content::JSON)
     });
@@ -260,20 +261,29 @@ impl Middleware for Markdown {
         };
         let data = data.split_once("---").unwrap().1;
 
-        let trans = self.connection.transaction().unwrap();
-        let views: u32 = trans
-            .query_row(
-                "SELECT views from article where name = ?1 LIMIT 1",
-                [doc.path.clone()],
-                |row| row.get(0),
-            )
-            .unwrap();
-        let views = views + 1;
+        // Get real Client IP
+        let mut ip = remove_address_port(req.address);
+        if ip == "127.0.0.1" {
+            if let Some(i) = req.headers.iter().find(|x| x.name == "X-Forwarded-For") {
+                ip = i.value.to_owned();
+            }
+        }
 
+        let trans = self.connection.transaction().unwrap();
+        // Add a vied to the article if it hasent been viewed before
         trans
             .execute(
-                "UPDATE article SET views = ?2 WHERE name = ?1",
-                rusqlite::params![doc.path.clone(), views],
+                "INSERT OR IGNORE INTO article_views (name, ip) VALUES (?1, ?2)",
+                rusqlite::params![doc.path, ip],
+            )
+            .unwrap();
+
+        // Get View Count
+        let views: usize = trans
+            .query_row(
+                "SELECT COUNT(*) FROM article_views WHERE name = ?1",
+                rusqlite::params![doc.path],
+                |row| row.get(0),
             )
             .unwrap();
 
@@ -306,39 +316,26 @@ impl Middleware for Markdown {
 }
 
 impl Markdown {
-    fn new(docs: &[Document]) -> Self {
+    fn new() -> Self {
+        // Connect to Database
         let mut conn = rusqlite::Connection::open("data/data.db").unwrap();
 
         let trans = conn.transaction().unwrap();
+        // Init article table
         trans
             .execute(
-                "CREATE TABLE IF NOT EXISTS article (
-              name TEXT NOT NULL PRIMARY KEY,
-              views INTEGER NOT NULL,
-              UNIQUE(name)
+                "CREATE TABLE IF NOT EXISTS article_views (
+              name TEXT NOT NULL,
+              ip TEXT NOT NULL,
+              UNIQUE(name, ip)
               )",
-                [],
-            )
-            .unwrap();
-
-        for i in docs {
-            trans
-                .execute(
-                    r#"INSERT OR IGNORE INTO article (name, views) VALUES (?1, ?2)"#,
-                    [i.path.clone(), 0.to_string()],
-                )
-                .unwrap();
-        }
-
-        trans
-            .execute(
-                "CREATE UNIQUE INDEX IF NOT EXISTS articles_name_index ON article(name);",
                 [],
             )
             .unwrap();
 
         trans.commit().unwrap();
 
+        // Unsafe speed boost stuff
         conn.pragma_update(None, "journal_mode", "WAL").unwrap();
         conn.pragma_update(None, "synchronous", "off").unwrap();
 
