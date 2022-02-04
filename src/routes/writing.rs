@@ -39,12 +39,14 @@ struct Document {
     icon: String,
 }
 
-struct Markdown;
+struct Markdown {
+    connection: rusqlite::Connection,
+}
 
 pub fn attach(server: &mut Server) {
     LazyStatic::initialize(&DOCS);
 
-    Markdown.attach(server);
+    Markdown::new(&DOCS).attach(server);
     server.route(Method::GET, "/api/writing", |_req| {
         Response::new().text(&*DOCS_API).content(Content::JSON)
     });
@@ -107,27 +109,6 @@ impl Document {
 
             y.cmp(&x)
         });
-
-        let conn = rusqlite::Connection::open("data/data.db").unwrap();
-        conn.execute(
-            "CREATE TABLE IF NOT EXISTS article (
-              name  TEXT PRIMARY KEY,
-              views INTEGER NOT NULL,
-              UNIQUE(name)
-              )",
-            [],
-        )
-        .unwrap();
-
-        for i in &out {
-            conn.execute(
-                r#"INSERT OR IGNORE INTO article (name, views) VALUES (?1, ?2)"#,
-                [i.path.clone(), 0.to_string()],
-            )
-            .unwrap();
-        }
-
-        conn.close().unwrap();
 
         out
     }
@@ -279,26 +260,24 @@ impl Middleware for Markdown {
         };
         let data = data.split_once("---").unwrap().1;
 
-        let mut conn = rusqlite::Connection::open("data/data.db").unwrap();
-        let tx = conn.transaction().unwrap();
-
-        let views: u32 = tx
+        let trans = self.connection.transaction().unwrap();
+        let views: u32 = trans
             .query_row(
-                "SELECT views from article where name = ? LIMIT 1",
+                "SELECT views from article where name = ?1 LIMIT 1",
                 [doc.path.clone()],
                 |row| row.get(0),
             )
             .unwrap();
         let views = views + 1;
 
-        tx.execute(
-            "UPDATE article SET views = ?2 WHERE name = ?1",
-            rusqlite::params![doc.path.clone(), views],
-        )
-        .unwrap();
+        trans
+            .execute(
+                "UPDATE article SET views = ?2 WHERE name = ?1",
+                rusqlite::params![doc.path.clone(), views],
+            )
+            .unwrap();
 
-        tx.commit().unwrap();
-        conn.close().unwrap();
+        trans.commit().unwrap();
 
         let mut opt = comrak::ComrakOptions::default();
         opt.extension.table = true;
@@ -323,6 +302,47 @@ impl Middleware for Markdown {
             .build();
 
         MiddleRequest::Send(Response::new().text(html).content(Content::HTML))
+    }
+}
+
+impl Markdown {
+    fn new(docs: &[Document]) -> Self {
+        let mut conn = rusqlite::Connection::open("data/data.db").unwrap();
+
+        let trans = conn.transaction().unwrap();
+        trans
+            .execute(
+                "CREATE TABLE IF NOT EXISTS article (
+              name TEXT NOT NULL PRIMARY KEY,
+              views INTEGER NOT NULL,
+              UNIQUE(name)
+              )",
+                [],
+            )
+            .unwrap();
+
+        for i in docs {
+            trans
+                .execute(
+                    r#"INSERT OR IGNORE INTO article (name, views) VALUES (?1, ?2)"#,
+                    [i.path.clone(), 0.to_string()],
+                )
+                .unwrap();
+        }
+
+        trans
+            .execute(
+                "CREATE UNIQUE INDEX IF NOT EXISTS articles_name_index ON article(name);",
+                [],
+            )
+            .unwrap();
+
+        trans.commit().unwrap();
+
+        conn.pragma_update(None, "journal_mode", "WAL").unwrap();
+        conn.pragma_update(None, "synchronous", "off").unwrap();
+
+        Self { connection: conn }
     }
 }
 
