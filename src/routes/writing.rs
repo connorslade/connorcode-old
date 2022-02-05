@@ -199,7 +199,7 @@ impl Middleware for Markdown {
     fn pre(&mut self, req: Request) -> MiddleRequest {
         // Handel Like API requests
         if req.method == Method::POST && req.path == "/api/writing/like" {
-            match handle_like(&mut self.connection, &req) {
+            match handle_like(&mut self.connection, &self.documents, &req) {
                 Some(i) => return MiddleRequest::Send(i),
                 None => return MiddleRequest::Send(Response::new().status(400).text("Error :/")),
             }
@@ -432,13 +432,20 @@ fn gen_rss_data(docs: &[Document]) -> String {
     )
 }
 
-fn handle_like(connection: &mut rusqlite::Connection, req: &Request) -> Option<Response> {
+fn handle_like(
+    connection: &mut rusqlite::Connection,
+    docs: &[Document],
+    req: &Request,
+) -> Option<Response> {
     let ip = get_ip(&req);
     let body = req.body_string()?;
     let json: serde_json::Value = serde_json::from_str(&body).ok()?;
 
     let doc = json.get("doc")?.as_str()?;
     let like = json.get("like")?.as_bool()?;
+
+    // Make sure Document Exists
+    docs.iter().find(|x| x.path == doc)?;
 
     if like {
         connection
