@@ -3,7 +3,6 @@ use std::fs::{self, DirEntry};
 use std::path::{Path, PathBuf};
 
 use afire::{
-    internal::common::remove_address_port,
     middleware::{MiddleRequest, Middleware},
     Content, Method, Request, Response, Server,
 };
@@ -200,30 +199,10 @@ impl Middleware for Markdown {
     fn pre(&mut self, req: Request) -> MiddleRequest {
         // Handel Like API requests
         if req.method == Method::POST && req.path == "/api/writing/like" {
-            let ip = get_ip(&req);
-            let body = req.body_string().unwrap();
-            let json: serde_json::Value = serde_json::from_str(&body).unwrap();
-
-            let doc = json.get("doc").unwrap().as_str().unwrap();
-            let like = json.get("like").unwrap().as_bool().unwrap();
-
-            if like {
-                self.connection
-                    .execute(
-                        "INSERT OR IGNORE INTO article_likes (name, ip) VALUES (?1, ?2)",
-                        rusqlite::params![doc, ip],
-                    )
-                    .unwrap();
-                return MiddleRequest::Send(Response::new());
+            match handle_like(&mut self.connection, &req) {
+                Some(i) => return MiddleRequest::Send(i),
+                None => return MiddleRequest::Send(Response::new().status(400).text("Error :/")),
             }
-
-            self.connection
-                .execute(
-                    "DELETE FROM article_likes where name = ?1 AND ip = ?2",
-                    rusqlite::params![doc, ip],
-                )
-                .unwrap();
-            return MiddleRequest::Send(Response::new());
         }
 
         // For extra speed continue on non GET requests
@@ -451,4 +430,32 @@ fn gen_rss_data(docs: &[Document]) -> String {
         )
         .as_str(),
     )
+}
+
+fn handle_like(connection: &mut rusqlite::Connection, req: &Request) -> Option<Response> {
+    let ip = get_ip(&req);
+    let body = req.body_string()?;
+    let json: serde_json::Value = serde_json::from_str(&body).ok()?;
+
+    let doc = json.get("doc")?.as_str()?;
+    let like = json.get("like")?.as_bool()?;
+
+    if like {
+        connection
+            .execute(
+                "INSERT OR IGNORE INTO article_likes (name, ip) VALUES (?1, ?2)",
+                rusqlite::params![doc, ip],
+            )
+            .ok()?;
+        return Some(Response::new());
+    }
+
+    connection
+        .execute(
+            "DELETE FROM article_likes where name = ?1 AND ip = ?2",
+            rusqlite::params![doc, ip],
+        )
+        .ok()?;
+
+    return Some(Response::new());
 }
