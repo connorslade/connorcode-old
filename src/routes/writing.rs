@@ -296,7 +296,9 @@ impl Middleware for Markdown {
                 )
                 .unwrap();
 
+            let now = std::time::Instant::now();
             trans.commit().unwrap();
+            println!("{}us", now.elapsed().as_micros());
 
             let mut opt = comrak::ComrakOptions::default();
             opt.extension.table = true;
@@ -331,7 +333,16 @@ impl Middleware for Markdown {
 impl Markdown {
     fn new(docs: Vec<Document>) -> Self {
         // Connect to Database
-        let mut conn = rusqlite::Connection::open("data/data.db").unwrap();
+        let mut conn = if cfg!(unix) {
+            rusqlite::Connection::open_with_flags_and_vfs(
+                "data/data.db",
+                rusqlite::OpenFlags::default(),
+                "unix-excl",
+            )
+        } else {
+            rusqlite::Connection::open("data/data.db")
+        }
+        .unwrap();
 
         let trans = conn.transaction().unwrap();
         // Init article table
@@ -348,9 +359,8 @@ impl Markdown {
 
         trans.commit().unwrap();
 
-        // Unsafe speed boost stuff
         conn.pragma_update(None, "journal_mode", "WAL").unwrap();
-        conn.pragma_update(None, "synchronous", "off").unwrap();
+        conn.pragma_update(None, "synchronous", "NORMAL").unwrap();
 
         let api_cache = gen_api_data(&docs);
         let rss_cache = gen_rss_data(&docs);
@@ -368,14 +378,11 @@ impl Markdown {
 fn gen_api_data(docs: &[Document]) -> String {
     let mut out = String::new();
 
-    for i in docs {
-        if i.hidden {
-            continue;
-        }
-
+    for i in docs.iter().filter(|x| !x.hidden) {
         out.push_str(i.jsonify().as_str());
         out.push_str(", ");
     }
+
     out.pop();
     out.pop();
 
@@ -385,14 +392,11 @@ fn gen_api_data(docs: &[Document]) -> String {
 fn gen_rss_data(docs: &[Document]) -> String {
     let mut out = String::new();
 
-    for i in docs {
-        if i.hidden {
-            continue;
-        }
-
+    for i in docs.iter().filter(|x| !x.hidden) {
         out.push_str(i.rssify().as_str());
         out.push_str("\n\n");
     }
+
     out.pop();
     out.pop();
 

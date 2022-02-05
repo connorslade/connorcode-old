@@ -85,6 +85,25 @@
   margin-bottom: 57px;
   padding: 24px;
 
+  .like {
+    height: 35px;
+    background: #323546;
+    width: 55px;
+    border-radius: 12px;
+    position: absolute;
+    right: 24px;
+    cursor: pointer;
+
+    & .like-content {
+      position: relative;
+      top: 50%;
+      transform: translateY(-50%) translateX(-50%);
+      width: max-content;
+      left: 50%;
+      color: #a1a7bb;
+    }
+  }
+
   & .content {
     @include common.center-h;
     max-width: 620px;

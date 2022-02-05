@@ -6,10 +6,10 @@ const TIME_UNITS = [
 
 function loadPath(path) {
   let out = `<a href="/writing">writing</a> `;
-  let point = "/writing/";
+  let point = "/writing";
 
   path.split("/").forEach((item) => {
-    point += `${item}/`;
+    point += `/${item}`;
     out += ` <i class='fa fa-angle-right'></i> <a href="${point}">${item}</a>`;
   });
 
