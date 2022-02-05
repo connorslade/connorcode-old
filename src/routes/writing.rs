@@ -278,7 +278,6 @@ impl Middleware for Markdown {
                 }
             }
 
-            let now = std::time::Instant::now();
             let trans = self.connection.transaction().unwrap();
             // Add a vied to the article if it hasent been viewed before
             trans
@@ -298,7 +297,9 @@ impl Middleware for Markdown {
                 .unwrap();
 
             trans.commit().unwrap();
-            println!("{}us", now.elapsed().as_micros());
+
+            let likes = 19;
+            let liked = false;
 
             let mut opt = comrak::ComrakOptions::default();
             opt.extension.table = true;
@@ -317,6 +318,8 @@ impl Middleware for Markdown {
                 .template("PATH", &doc.path)
                 .template("DATE", &doc.date)
                 .template("VIEWS", views)
+                .template("LIKES", likes)
+                .template("LIKED", liked)
                 .template("TIME", (doc.words as f64 / 3.5).round())
                 .template("DISC", &doc.description)
                 .template("TAGS", &doc.tags.join(", "))

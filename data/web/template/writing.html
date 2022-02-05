@@ -46,17 +46,15 @@
 
       <div
         class="document"
-        x-data="{path: '{{PATH}}', time: {{TIME}}, views: {{VIEWS}}, date: '{{DATE}}'}"
+        x-data="{path: '{{PATH}}', time: {{TIME}}, views: {{VIEWS}}, likes: {{LIKES}}, liked: {{LIKED}}, date: '{{DATE}}'}"
         x-init="
         path = loadPath(path);
         time = loadTime(time);
+        setLikes(likes, liked);
         hljs.highlightAll();"
       >
-        <div class="like">
-          <div class="like-content">
-            <i class="icon fa fa-heart-o" style="font-weight: bold;"></i>
-            <p>99</p>
-          </div>
+        <div class="like" like-button>
+          <div class="like-content"></div>
         </div>
         <div class="content" id="main">
           <div class="meta">

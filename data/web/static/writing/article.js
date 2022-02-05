@@ -4,6 +4,8 @@ const TIME_UNITS = [
   ["h", 24],
 ];
 
+let isLiked = false;
+
 function loadPath(path) {
   let out = `<a href="/writing">writing</a> `;
   let point = "/writing";
@@ -24,4 +26,28 @@ function loadTime(time) {
     time /= unit[1];
   }
   return `${Math.round(time)}h`;
+}
+
+function setLikes(likes, liked) {
+  isLiked = liked;
+  let likeButton = document.querySelector("[like-button]");
+  let likeContent = document.querySelector(".like-content");
+
+  updateLikes(likes, isLiked);
+  likeButton.addEventListener("click", () => {
+    isLiked = !isLiked;
+    updateLikes(likes, isLiked);
+  });
+}
+
+function updateLikes(likes, isLiked) {
+  let likeContent = document.querySelector(".like-content");
+  isLiked = !isLiked;
+
+  if (isLiked)
+    likeContent.innerHTML = `<i class="icon fa fa-heart-o" style="font-weight: bold;"></i> <p>${likes}</p>`;
+  else
+    likeContent.innerHTML = `<i class="icon fa fa-heart" style="font-weight: bold;"></i> <p>${
+      likes + 1
+    }</p>`;
 }
