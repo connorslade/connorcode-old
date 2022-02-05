@@ -5,12 +5,14 @@ const TIME_UNITS = [
 ];
 
 let isLiked = false;
+let doc = "";
 
 function loadPath(path) {
   let out = `<a href="/writing">writing</a> `;
   let point = "/writing";
 
-  path.split("/").forEach((item) => {
+  let pathParts = path.split("/");
+  pathParts.forEach((item) => {
     point += `/${item}`;
     out += ` <i class='fa fa-angle-right'></i> <a href="${point}">${item}</a>`;
   });
@@ -37,6 +39,7 @@ function setLikes(likes, ogLiked) {
   likeButton.addEventListener("click", () => {
     isLiked = !isLiked;
     updateLikesUI(likes, ogLiked);
+    updateLikesApi(isLiked);
   });
 }
 
@@ -50,4 +53,18 @@ function updateLikesUI(likes, ogLiked) {
     likeContent.innerHTML = `<i class="icon fa fa-heart" style="font-weight: bold;"></i> <p>${likes}</p>`;
   else
     likeContent.innerHTML = `<i class="icon fa fa-heart-o" style="font-weight: bold;"></i> <p>${likes}</p>`;
+}
+
+function updateLikesApi(isLiked) {
+  let doc = window.location.pathname.split("/writing/");
+  doc.shift();
+  doc = doc.join("/writing/");
+
+  fetch("/api/writing/like", {
+    method: "POST",
+    body: JSON.stringify({ doc, like: isLiked }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
 }

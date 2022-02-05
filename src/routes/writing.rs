@@ -14,6 +14,7 @@ use unindent::unindent;
 
 use crate::assets::WRITING;
 use crate::color::{color, Color};
+use crate::common::get_ip;
 use crate::config::{DATABASE_PATH, EXTERNAL_URI, WRITING_PATH};
 use crate::Template;
 
@@ -197,6 +198,34 @@ impl Document {
 
 impl Middleware for Markdown {
     fn pre(&mut self, req: Request) -> MiddleRequest {
+        // Handel Like API requests
+        if req.method == Method::POST && req.path == "/api/writing/like" {
+            let ip = get_ip(&req);
+            let body = req.body_string().unwrap();
+            let json: serde_json::Value = serde_json::from_str(&body).unwrap();
+
+            let doc = json.get("doc").unwrap().as_str().unwrap();
+            let like = json.get("like").unwrap().as_bool().unwrap();
+
+            if like {
+                self.connection
+                    .execute(
+                        "INSERT OR IGNORE INTO article_likes (name, ip) VALUES (?1, ?2)",
+                        rusqlite::params![doc, ip],
+                    )
+                    .unwrap();
+                return MiddleRequest::Send(Response::new());
+            }
+
+            self.connection
+                .execute(
+                    "DELETE FROM article_likes where name = ?1 AND ip = ?2",
+                    rusqlite::params![doc, ip],
+                )
+                .unwrap();
+            return MiddleRequest::Send(Response::new());
+        }
+
         // For extra speed continue on non GET requests
         if req.method != Method::GET {
             return MiddleRequest::Continue;
@@ -271,12 +300,7 @@ impl Middleware for Markdown {
             let data = data.split_once("---").unwrap().1;
 
             // Get real Client IP
-            let mut ip = remove_address_port(req.address);
-            if ip == "127.0.0.1" {
-                if let Some(i) = req.headers.iter().find(|x| x.name == "X-Forwarded-For") {
-                    ip = i.value.to_owned();
-                }
-            }
+            let ip = get_ip(&req);
 
             let trans = self.connection.transaction().unwrap();
             // Add a vied to the article if it hasent been viewed before

@@ -1,4 +1,4 @@
-use afire::Header;
+use afire::{internal::common::remove_address_port, Header, Request};
 
 const FILE_SIZES: &[&str] = &["B", "KB", "MB", "GB", "TB", "PB"];
 const TIME_UNITS: &[(&str, u16)] = &[
@@ -50,4 +50,15 @@ pub fn best_time(secs: u64) -> String {
     }
 
     format!("{} years", secs.round())
+}
+
+pub fn get_ip(req: &Request) -> String {
+    let mut ip = remove_address_port(&req.address);
+    if ip == "127.0.0.1" {
+        if let Some(i) = req.headers.iter().find(|x| x.name == "X-Forwarded-For") {
+            ip = i.value.to_owned();
+        }
+    }
+
+    ip
 }
