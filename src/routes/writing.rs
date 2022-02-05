@@ -14,7 +14,7 @@ use unindent::unindent;
 
 use crate::assets::WRITING;
 use crate::color::{color, Color};
-use crate::config::{EXTERNAL_URI, WRITING_PATH};
+use crate::config::{DATABASE_PATH, EXTERNAL_URI, WRITING_PATH};
 use crate::Template;
 
 #[derive(Debug, Clone)]
@@ -278,6 +278,7 @@ impl Middleware for Markdown {
                 }
             }
 
+            let now = std::time::Instant::now();
             let trans = self.connection.transaction().unwrap();
             // Add a vied to the article if it hasent been viewed before
             trans
@@ -296,7 +297,6 @@ impl Middleware for Markdown {
                 )
                 .unwrap();
 
-            let now = std::time::Instant::now();
             trans.commit().unwrap();
             println!("{}us", now.elapsed().as_micros());
 
@@ -333,35 +333,20 @@ impl Middleware for Markdown {
 impl Markdown {
     fn new(docs: Vec<Document>) -> Self {
         // Connect to Database
-        let mut conn = if cfg!(unix) {
-            rusqlite::Connection::open_with_flags_and_vfs(
-                "data/data.db",
-                rusqlite::OpenFlags::default(),
-                "unix-excl",
-            )
-        } else {
-            rusqlite::Connection::open("data/data.db")
-        }
-        .unwrap();
-
-        let trans = conn.transaction().unwrap();
-        // Init article table
-        trans
-            .execute(
-                "CREATE TABLE IF NOT EXISTS article_views (
-              name TEXT NOT NULL,
-              ip TEXT NOT NULL,
-              UNIQUE(name, ip)
-              )",
-                [],
-            )
-            .unwrap();
-
-        trans.commit().unwrap();
+        let mut conn = rusqlite::Connection::open(&*DATABASE_PATH).unwrap();
 
         conn.pragma_update(None, "journal_mode", "WAL").unwrap();
         conn.pragma_update(None, "synchronous", "NORMAL").unwrap();
 
+        let trans = conn.transaction().unwrap();
+        // Init article table
+        trans
+            .execute(include_str!("../sql/create_article_views.sql"), [])
+            .unwrap();
+
+        trans.commit().unwrap();
+
+        // Init Caches
         let api_cache = gen_api_data(&docs);
         let rss_cache = gen_rss_data(&docs);
 

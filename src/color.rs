@@ -20,6 +20,7 @@ impl Color {
     #[rustfmt::skip]
     pub fn code(self) -> u32 {
         match self {
+            Color::Reset   => 0,
             Color::Black   => 30,
             Color::Red     => 31,
             Color::Green   => 32,
@@ -28,7 +29,6 @@ impl Color {
             Color::Magenta => 35,
             Color::Cyan    => 36,
             Color::White   => 37,
-            Color::Reset   => 0,
         }
     }
 }

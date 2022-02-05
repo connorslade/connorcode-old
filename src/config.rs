@@ -1,3 +1,4 @@
+use lazy_static::initialize;
 use simple_config_parser::{Config, ConfigError};
 
 static mut CONFIG: Config = Config { data: Vec::new() };
@@ -6,6 +7,12 @@ macro_rules! config {
     () => {{
         unsafe { &CONFIG }
     }};
+}
+
+macro_rules! init_lazy {
+    ($($exp:expr),+) => {
+        $(initialize(&$exp);)*
+    };
 }
 
 lazy_static! {
@@ -34,20 +41,25 @@ lazy_static! {
     pub static ref PASS: String = config!().get_str("pass").unwrap();
 
     // Other
+    pub static ref DATABASE_PATH: String = config!().get_str("database_path").unwrap();
     pub static ref BROADCAST_ONION: bool = config!().get::<bool>("onion_brodcast").unwrap();
     pub static ref ONION_SITE: String = config!().get_str("onion_site").unwrap();
 }
 
 pub fn load(path: &str) -> Result<(), ConfigError> {
-    let cfg = Config::new().file(path);
+    let cfg = Config::new().file(path)?;
 
-    if let Ok(cfg) = cfg {
-        unsafe {
-            CONFIG = cfg;
-        }
+    unsafe {
+        CONFIG = cfg;
+    }
 
-        return Ok(());
-    };
+    // Init the lazy config values
+    init_lazy! {
+        SERVER_HOST, SERVER_PORT, EXTERNAL_URI, DATA_DIR, FILE_SERVE,
+        FILE_SERVE_PATH, WRITING_PATH, ANALYTICS_ENABLED, ANALYTICS_SERVE,
+        ANALYTICS_PATH, DUMP_PEROID, STATUS_SERVE, PASS, DATABASE_PATH,
+        BROADCAST_ONION, ONION_SITE
+    }
 
-    Err(cfg.err().unwrap())
+    Ok(())
 }
