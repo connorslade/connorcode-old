@@ -95,6 +95,11 @@
     cursor: pointer;
 
     & .like-content {
+      & .icon {
+        font-weight: bold;
+        margin-right: 3px;
+      }
+
       position: relative;
       top: 50%;
       transform: translateY(-50%) translateX(-50%);
@@ -136,6 +141,20 @@
   }
 }
 
+[id] {
+  scroll-margin-top: 49px + 20px;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin-left: -1em;
+  padding-left: 1em;
+
+  &:hover .anchor:before {
+    content: "¶";
+    margin-left: -1em;
+  }
+}
+
 code {
   font-size: 14px;
 }
@@ -149,6 +168,11 @@ pre code {
 img {
   max-width: 100%;
   border-radius: 12px;
+}
+
+hr {
+  border: 0;
+  border-bottom: 2px dashed #808080;
 }
 
 table {

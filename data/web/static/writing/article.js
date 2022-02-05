@@ -50,9 +50,9 @@ function updateLikesUI(likes, ogLiked) {
   if (!isLiked && ogLiked) likes = likes - 1;
 
   if (isLiked)
-    likeContent.innerHTML = `<i class="icon fa fa-heart" style="font-weight: bold;"></i> <p>${likes}</p>`;
+    likeContent.innerHTML = `<i class="icon fa fa-heart"></i> <p>${likes}</p>`;
   else
-    likeContent.innerHTML = `<i class="icon fa fa-heart-o" style="font-weight: bold;"></i> <p>${likes}</p>`;
+    likeContent.innerHTML = `<i class="icon fa fa-heart-o"></i> <p>${likes}</p>`;
 }
 
 function updateLikesApi(isLiked) {

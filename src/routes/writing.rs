@@ -323,7 +323,7 @@ impl Middleware for Markdown {
             opt.extension.table = true;
             opt.extension.strikethrough = true;
             opt.extension.autolink = true;
-            opt.extension.header_ids = Some("markdown-".to_owned());
+            opt.extension.header_ids = Some("".to_owned());
             opt.extension.footnotes = true;
             opt.parse.smart = true;
             opt.render.unsafe_ = true;
