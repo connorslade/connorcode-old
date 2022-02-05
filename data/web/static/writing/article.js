@@ -28,26 +28,26 @@ function loadTime(time) {
   return `${Math.round(time)}h`;
 }
 
-function setLikes(likes, liked) {
-  isLiked = liked;
-  let likeButton = document.querySelector("[like-button]");
+function setLikes(likes, ogLiked) {
+  isLiked = ogLiked;
+  let likeButton = document.querySelector(".like");
   let likeContent = document.querySelector(".like-content");
 
-  updateLikes(likes, isLiked);
+  updateLikesUI(likes, ogLiked);
   likeButton.addEventListener("click", () => {
     isLiked = !isLiked;
-    updateLikes(likes, isLiked);
+    updateLikesUI(likes, ogLiked);
   });
 }
 
-function updateLikes(likes, isLiked) {
+function updateLikesUI(likes, ogLiked) {
   let likeContent = document.querySelector(".like-content");
-  isLiked = !isLiked;
+
+  if (isLiked && !ogLiked) likes = likes + 1;
+  if (!isLiked && ogLiked) likes = likes - 1;
 
   if (isLiked)
-    likeContent.innerHTML = `<i class="icon fa fa-heart-o" style="font-weight: bold;"></i> <p>${likes}</p>`;
+    likeContent.innerHTML = `<i class="icon fa fa-heart" style="font-weight: bold;"></i> <p>${likes}</p>`;
   else
-    likeContent.innerHTML = `<i class="icon fa fa-heart" style="font-weight: bold;"></i> <p>${
-      likes + 1
-    }</p>`;
+    likeContent.innerHTML = `<i class="icon fa fa-heart-o" style="font-weight: bold;"></i> <p>${likes}</p>`;
 }

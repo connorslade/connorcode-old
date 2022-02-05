@@ -296,10 +296,25 @@ impl Middleware for Markdown {
                 )
                 .unwrap();
 
-            trans.commit().unwrap();
+            // Get Total Liked
+            let likes: usize = trans
+                .query_row(
+                    "SELECT COUNT(*) FROM article_likes WHERE name = ?1",
+                    rusqlite::params![doc.path],
+                    |row| row.get(0),
+                )
+                .unwrap();
 
-            let likes = 19;
-            let liked = false;
+            // Get if this ip has like the post
+            let liked: usize = trans
+                .query_row(
+                    "SELECT COUNT(*) FROM article_likes WHERE name = ?1 AND ip = ?2",
+                    rusqlite::params![doc.path, ip],
+                    |row| row.get(0),
+                )
+                .unwrap();
+
+            trans.commit().unwrap();
 
             let mut opt = comrak::ComrakOptions::default();
             opt.extension.table = true;
@@ -319,7 +334,7 @@ impl Middleware for Markdown {
                 .template("DATE", &doc.date)
                 .template("VIEWS", views)
                 .template("LIKES", likes)
-                .template("LIKED", liked)
+                .template("LIKED", liked >= 1)
                 .template("TIME", (doc.words as f64 / 3.5).round())
                 .template("DISC", &doc.description)
                 .template("TAGS", &doc.tags.join(", "))
@@ -345,6 +360,10 @@ impl Markdown {
         // Init article table
         trans
             .execute(include_str!("../sql/create_article_views.sql"), [])
+            .unwrap();
+
+        trans
+            .execute(include_str!("../sql/create_article_likes.sql"), [])
             .unwrap();
 
         trans.commit().unwrap();
