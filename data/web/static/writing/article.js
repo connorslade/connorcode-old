@@ -33,7 +33,7 @@ function loadTime(time) {
 function setLikes(likes, ogLiked) {
   isLiked = ogLiked;
   let likeButton = document.querySelector(".like");
-  let likeContent = document.querySelector(".like-content");
+  if (likes == null) return;
 
   updateLikesUI(likes, ogLiked);
   likeButton.addEventListener("click", () => {

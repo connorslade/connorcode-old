@@ -2,6 +2,10 @@
 @use 'index';
 @use 'vars';
 
+.container {
+  margin-bottom: 36px;
+}
+
 .articles {
   background: vars.$tile-color;
   color: vars.$font-color;
@@ -22,7 +26,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      text-decoration: none;
+      text-decoration: none;  
     }
 
     & .fa-file-text-o {
