@@ -90,14 +90,18 @@
     background: #323546;
     width: 4rem;
     border-radius: 12px;
-    position: absolute;
     right: 24px;
     cursor: pointer;
+    margin-top: 8px;
 
     & .like-content {
       & .icon {
         font-weight: bold;
         margin-right: 3px;
+      }
+
+      & p {
+        display: inline-block;
       }
 
       position: relative;
@@ -123,7 +127,7 @@
 
       & .path {
         margin-right: auto;
-        margin-bottom: 5px;
+        margin-bottom: 8px;
 
         & a {
           color: #a1a7bb;

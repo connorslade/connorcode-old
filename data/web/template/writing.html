@@ -53,9 +53,6 @@
         setLikes(likes, liked);
         hljs.highlightAll();"
       >
-        <div class="like">
-          <div class="like-content"></div>
-        </div>
         <div class="content" id="main">
           <div class="meta">
             <div class="path" title="Article Path" x-html="path"></div>
@@ -78,7 +75,13 @@
             </div>
           </div>
 
-          {{DOCUMENT}}
+          <div class="like">
+            <div class="like-content"></div>
+          </div>
+
+          <article>
+            {{DOCUMENT}}
+          </article>
         </div>
       </div>
     </div>
