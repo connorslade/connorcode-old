@@ -15,6 +15,15 @@
   display: none !important;
 }
 
+::selection {
+  background: #7fdbff;
+}
+
+a::selection {
+  color: white;
+  background: #8092FF;
+}
+
 .skip-link {
   position: absolute;
   top: -40px;

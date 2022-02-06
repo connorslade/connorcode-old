@@ -24,7 +24,7 @@ use config::{SERVER_HOST, SERVER_PORT};
 use files::Files;
 use template::Template;
 
-pub const VERSION: &str = "6.0.2";
+pub const VERSION: &str = "6.0.3";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
