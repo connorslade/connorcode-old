@@ -5,6 +5,7 @@ use afire::{
 use regex::Regex;
 
 mod footer;
+mod footer_rss;
 mod header;
 
 struct ComponentManager {
@@ -55,6 +56,7 @@ impl ComponentManager {
 pub fn attach(server: &mut Server) {
     let mut cmp = ComponentManager::new();
     cmp.add(Box::new(footer::Footer));
+    cmp.add(Box::new(footer_rss::FooterRss));
     cmp.add(Box::new(header::Header));
 
     cmp.attach(server);

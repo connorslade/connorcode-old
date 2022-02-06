@@ -7,6 +7,8 @@
 body {
   overflow-y: scroll;
   font-family: fonts.$inter-regular;
+  display: flex;
+  flex-direction: column;
 }
 
 .container {
@@ -220,9 +222,10 @@ a {
 
   .title {
     width: 95vw;
+    height: 2em;
 
     & p {
-      font-size: calc(12vw - 8px);
+      font-size: min(1em, 11vw);
     }
   }
 

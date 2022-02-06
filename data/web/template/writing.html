@@ -59,21 +59,23 @@
         <div class="content" id="main">
           <div class="meta">
             <div class="path" title="Article Path" x-html="path"></div>
-            <div
-              class="meta-item"
-              title="Publish Date"
-              x-html="`<i class='fa fa-calendar'></i> ${date}`"
-            ></div>
-            <div
-              class="meta-item"
-              title="Views"
-              x-html="`<i class='fa fa-eye'></i> ${views}`"
-            ></div>
-            <div
-              class="meta-item"
-              title="Estimated Reading Time"
-              x-html="`<i class='fa fa-clock-o'></i> ${time}`"
-            ></div>
+            <div class="stats">
+              <div
+                class="meta-item"
+                title="Views"
+                x-html="`<i class='fa fa-eye'></i> ${views}`"
+              ></div>
+              <div
+                class="meta-item"
+                title="Estimated Reading Time"
+                x-html="`<i class='fa fa-clock-o'></i> ${time}`"
+              ></div>
+              <div
+                class="meta-item"
+                title="Publish Date"
+                x-html="`<i class='fa fa-calendar'></i> ${date}`"
+              ></div>
+            </div>
           </div>
 
           {{DOCUMENT}}
@@ -81,6 +83,6 @@
       </div>
     </div>
 
-    {{CMP: Footer}}
+    {{CMP: FooterRss}}
   </body>
 </html>
