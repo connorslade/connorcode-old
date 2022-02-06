@@ -285,7 +285,7 @@ impl Middleware for Markdown {
             // Add a vied to the article if it hasent been viewed before
             trans
                 .execute(
-                    "INSERT OR IGNORE INTO article_views (name, ip) VALUES (?1, ?2)",
+                    "INSERT OR IGNORE INTO article_views (name, ip, date) VALUES (?1, ?2, strftime('%s','now'))",
                     rusqlite::params![doc.path, ip],
                 )
                 .unwrap();
@@ -450,7 +450,7 @@ fn handle_like(
     if like {
         connection
             .execute(
-                "INSERT OR IGNORE INTO article_likes (name, ip) VALUES (?1, ?2)",
+                "INSERT OR IGNORE INTO article_likes (name, ip, date) VALUES (?1, ?2, strftime('%s','now'))",
                 rusqlite::params![doc, ip],
             )
             .ok()?;
