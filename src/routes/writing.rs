@@ -338,7 +338,7 @@ impl Middleware for Markdown {
                 .template("VIEWS", views)
                 .template("LIKES", likes)
                 .template("LIKED", liked >= 1)
-                .template("TIME", (doc.words as f64 / 3.5).round())
+                .template("TIME", (doc.words as f64 / 3.0).round())
                 .template("DISC", &doc.description)
                 .template("TAGS", &doc.tags.join(", "))
                 .build();

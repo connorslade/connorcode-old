@@ -3,7 +3,7 @@ use afire::{internal::common::remove_address_port, Header, Request};
 const FILE_SIZES: &[&str] = &["B", "KB", "MB", "GB", "TB", "PB"];
 const TIME_UNITS: &[(&str, u16)] = &[
     ("second", 60),
-    ("minutes", 60),
+    ("minute", 60),
     ("hour", 24),
     ("day", 30),
     ("month", 12),
