@@ -1,7 +1,7 @@
 use std::env;
 use std::time::Duration;
 
-use afire::{Header, Logger, Middleware, Response, Server};
+use afire::{Header, Middleware, Response, Server};
 #[macro_use]
 extern crate lazy_static;
 
@@ -17,6 +17,7 @@ mod common;
 mod components;
 mod config;
 mod files;
+mod logger;
 mod middleware;
 use analytics::Analytics;
 use color::Color;
@@ -69,7 +70,7 @@ fn main() {
     middleware::attach(&mut server);
     Files::new().attach(&mut server);
     Analytics::new().attach(&mut server);
-    Logger::new().attach(&mut server);
+    logger::Logger.attach(&mut server);
 
     print_info();
     color_print!(

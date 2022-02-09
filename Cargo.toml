@@ -3,12 +3,9 @@ name = "connorcode"
 version = "0.1.0"
 edition = "2021"
 
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
-
 [dependencies]
 # My Crates :P
-# afire = "0.2.0"
-afire = { version = "0.3.0", features = ["serve_static", "logging"] }
+afire = { version = "0.3.0", features = ["serve_static"] }
 simple_config_parser = "1.0.0"
 
 # (En / De)codeing
