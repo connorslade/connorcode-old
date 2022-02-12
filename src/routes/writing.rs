@@ -7,7 +7,6 @@ use afire::{
     Content, Method, Request, Response, Server,
 };
 use chrono::prelude::*;
-use rusqlite;
 use simple_config_parser::Config;
 use unindent::unindent;
 
@@ -437,7 +436,7 @@ fn handle_like(
     docs: &[Document],
     req: &Request,
 ) -> Option<Response> {
-    let ip = get_ip(&req);
+    let ip = get_ip(req);
     let body = req.body_string()?;
     let json: serde_json::Value = serde_json::from_str(&body).ok()?;
 
@@ -464,5 +463,5 @@ fn handle_like(
         )
         .ok()?;
 
-    return Some(Response::new());
+    Some(Response::new())
 }

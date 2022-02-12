@@ -5,8 +5,8 @@ edition = "2021"
 
 [dependencies]
 # My Crates :P
-# afire = { git = "https://github.com/Basicprogrammer10/afire.git", branch = "0.3.1", features = ["serve_static", "logging"] }
-afire = { version = "0.3.0", features = ["serve_static", "logging"] }
+afire = { git = "https://github.com/Basicprogrammer10/afire.git", branch = "0.3.1", features = ["serve_static", "logging"] }
+# afire = { version = "0.3.0", features = ["serve_static", "logging"] }
 simple_config_parser = "1.0.0"
 
 # (En / De)codeing

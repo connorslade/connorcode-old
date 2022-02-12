@@ -33,7 +33,7 @@ pub fn best_size(bytes: u64) -> String {
     format!(
         "{} {}",
         (bytes * 10.0).round() / 10.0,
-        FILE_SIZES.last().unwrap()
+        FILE_SIZES.last().expect("File Size Array is Empty!")
     )
 }
 

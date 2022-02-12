@@ -12,7 +12,8 @@ const DONT_SERVE_PATH: &str = "data/config/dont_serve.txt";
 lazy_static! {
     static ref DONT_SERVE: Vec<String> = {
         let mut working = Vec::new();
-        let dont_serve = fs::read_to_string(DONT_SERVE_PATH).unwrap();
+        let dont_serve =
+            fs::read_to_string(DONT_SERVE_PATH).expect("Error reading DONT_SERVE file");
         for line in dont_serve.lines() {
             if line.is_empty() || line.starts_with('#') || line.starts_with(';') {
                 continue;

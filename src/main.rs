@@ -80,7 +80,7 @@ fn main() {
         SERVER_PORT
     );
 
-    server.start().unwrap();
+    server.start().expect("Server Port In Use");
 }
 
 #[rustfmt::skip]

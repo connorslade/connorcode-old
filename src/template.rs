@@ -18,10 +18,9 @@ impl Template {
         M: std::fmt::Display,
     {
         Self {
-            data: self.data.replace(
-                &format!("{{{{{}}}}}", key.to_string()),
-                value.to_string().as_str(),
-            ),
+            data: self
+                .data
+                .replace(&format!("{{{{{}}}}}", key), value.to_string().as_str()),
         }
     }
 

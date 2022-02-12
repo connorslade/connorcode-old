@@ -94,7 +94,7 @@ impl Analytics {
     fn save(&mut self, req: &Request) -> Option<()> {
         let time = SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .unwrap()
+            .expect("Cant get time: Time went backwards!")
             .as_secs();
         let mut ip = internal::common::remove_address_port(req.address.to_owned());
 
@@ -128,7 +128,13 @@ impl Analytics {
     }
 
     fn check_dump(&mut self) -> Option<()> {
-        if self.last_dump.elapsed().unwrap().as_secs() < *DUMP_PEROID {
+        if self
+            .last_dump
+            .elapsed()
+            .expect("Cant get elapsed time: Time went backwards!")
+            .as_secs()
+            < *DUMP_PEROID
+        {
             return Some(());
         }
 
@@ -161,8 +167,8 @@ impl Analytics {
                 let ip = i.0;
                 let data = i.1;
 
-                if old.contains_key(&ip) {
-                    let mut new = old.get(&ip).unwrap().to_vec();
+                if let Some(new) = old.get(&ip) {
+                    let mut new = new.to_vec();
                     new.extend(data);
                     old.insert(ip.to_owned(), new);
                     continue;
@@ -225,7 +231,7 @@ impl fmt::Debug for Stats {
         let out = format!(
             r#"[ ({}) {} "{}" {} {} ]"#,
             self.time,
-            self.method.to_string(),
+            self.method,
             self.path,
             self.referer.clone().unwrap_or_else(|| "".to_owned()),
             self.user_agent.clone().unwrap_or_else(|| "".to_owned())

@@ -12,10 +12,11 @@ use crate::config::DATA_DIR;
 lazy_static! {
     static ref NOSES: Vec<PathBuf> = {
         let mut working = Vec::new();
-        let all_noses = fs::read_dir(format!("{}/assets/Noses", *DATA_DIR)).unwrap();
+        let all_noses =
+            fs::read_dir(format!("{}/assets/Noses", *DATA_DIR)).expect("Error Reading Nose Dir");
 
         for nose in all_noses {
-            let nose = nose.unwrap().path();
+            let nose = nose.expect("Error getting subfiles").path();
 
             if nose.is_file() {
                 working.push(nose);
@@ -28,12 +29,17 @@ lazy_static! {
 
 pub fn attach(server: &mut Server) {
     server.route(Method::GET, "/api/randomnose", |_req| {
-        let random_nose = NOSES.choose(&mut rand::thread_rng()).unwrap();
-        let random_nose_str = random_nose.to_str().unwrap().replace('\\', "");
-        let random_nose_str = random_nose_str.split('/').last().unwrap();
+        let random_nose = NOSES
+            .choose(&mut rand::thread_rng())
+            .expect("Error Picking Nose");
+        let random_nose_str = random_nose.to_string_lossy().replace('\\', "");
+        let random_nose_str = random_nose_str
+            .split('/')
+            .last()
+            .expect("Error Spliting on Slash");
 
         Response::new()
-            .bytes(fs::read(random_nose).unwrap())
+            .bytes(fs::read(random_nose).expect("Error Reading Nose"))
             .header(Header::new("Content-Type", get_type(random_nose_str)))
             .header(Header::new("X-Nose-ID", random_nose_str))
     });

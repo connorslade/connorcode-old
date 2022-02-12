@@ -37,15 +37,22 @@ impl Project {
 }
 
 pub fn attach(server: &mut Server) {
-    let cfg = Config::new().file("data/config/projects.cfg").unwrap();
-    let base_page = fs::read_to_string("data/web/template/index.html").unwrap();
-    let base_template = fs::read_to_string("data/web/template/project.html").unwrap();
+    let cfg = Config::new()
+        .file("data/config/projects.cfg")
+        .expect("Error Reading Project Config");
+    let base_page =
+        fs::read_to_string("data/web/template/index.html").expect("Error Reading BasePage");
+    let base_template = fs::read_to_string("data/web/template/project.html")
+        .expect("Error Reading Project Template");
     let mut projects = Vec::new();
 
     for i in cfg.data {
         if i[0].starts_with("project_") {
             let parts: Vec<String> = i[1].split(',').map(|x| x.to_string()).collect();
-            let id = i[0].split("project_").nth(1).unwrap();
+            let id = i[0]
+                .split("project_")
+                .nth(1)
+                .expect("Error Parsing Project line");
 
             projects.push(Project {
                 id: id.to_owned(),

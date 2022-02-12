@@ -10,7 +10,8 @@ use crate::config::DATA_DIR;
 
 lazy_static! {
     static ref WORDS: Vec<String> = {
-        let raw = fs::read_to_string(format!("{}/colornamegen/words.txt", *DATA_DIR)).unwrap();
+        let raw = fs::read_to_string(format!("{}/colornamegen/words.txt", *DATA_DIR))
+            .expect("Error Reading Words File");
         raw.lines().map(|x| x.to_owned()).collect()
     };
 }
@@ -21,8 +22,12 @@ const COLORS: [&str; 11] = [
 
 pub fn attach(server: &mut Server) {
     server.route(Method::GET, "/api/randomcolor", |_req| {
-        let random_name = WORDS.choose(&mut rand::thread_rng()).unwrap();
-        let random_color = COLORS.choose(&mut rand::thread_rng()).unwrap();
+        let random_name = WORDS
+            .choose(&mut rand::thread_rng())
+            .expect("Error Picking Word");
+        let random_color = COLORS
+            .choose(&mut rand::thread_rng())
+            .expect("Error Picking Color");
 
         Response::new()
             .text(format!("{} {}", random_name, random_color))

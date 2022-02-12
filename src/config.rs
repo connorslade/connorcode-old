@@ -3,10 +3,12 @@ use simple_config_parser::{Config, ConfigError};
 
 static mut CONFIG: Config = Config { data: Vec::new() };
 
-macro_rules! config {
-    () => {{
+macro_rules! get_config {
+    ($name:expr) => {
         unsafe { &CONFIG }
-    }};
+            .get($name)
+            .expect(concat!("Error getting `", $name, "` from Config"))
+    };
 }
 
 macro_rules! init_lazy {
@@ -17,33 +19,33 @@ macro_rules! init_lazy {
 
 lazy_static! {
     // Server Config
-    pub static ref SERVER_HOST: String = config!().get_str("ip").unwrap();
-    pub static ref SERVER_PORT: u16 = config!().get::<u16>("port").unwrap();
-    pub static ref EXTERNAL_URI: String = config!().get_str("external_uri").unwrap();
-    pub static ref DATA_DIR: String = config!().get_str("data_dir").unwrap();
+    pub static ref SERVER_HOST: String = get_config!("ip");
+    pub static ref SERVER_PORT: u16 = get_config!("port");
+    pub static ref EXTERNAL_URI: String = get_config!("external_uri");
+    pub static ref DATA_DIR: String = get_config!("data_dir");
 
     // File Serve
-    pub static ref FILE_SERVE: bool = config!().get::<bool>("file_serve").unwrap();
-    pub static ref FILE_SERVE_PATH: String = config!().get_str("file_serve_path").unwrap();
+    pub static ref FILE_SERVE: bool = get_config!("file_serve");
+    pub static ref FILE_SERVE_PATH: String = get_config!("file_serve_path");
 
     // Writing
-    pub static ref WRITING_PATH: String = config!().get_str("writing_path").unwrap();
+    pub static ref WRITING_PATH: String = get_config!("writing_path");
 
 
     // Analytics Config
-    pub static ref ANALYTICS_ENABLED: bool = config!().get::<bool>("analytics_enabled").unwrap();
-    pub static ref ANALYTICS_SERVE: bool = config!().get::<bool>("analytics_serve").unwrap();
-    pub static ref ANALYTICS_PATH: String = config!().get_str("analytics_path").unwrap();
-    pub static ref DUMP_PEROID: u64 = config!().get::<u64>("dump_peroid").unwrap();
+    pub static ref ANALYTICS_ENABLED: bool = get_config!("analytics_enabled");
+    pub static ref ANALYTICS_SERVE: bool = get_config!("analytics_serve");
+    pub static ref ANALYTICS_PATH: String = get_config!("analytics_path");
+    pub static ref DUMP_PEROID: u64 = get_config!("dump_peroid");
 
     // Admin Other
-    pub static ref STATUS_SERVE: bool = config!().get::<bool>("status_serve").unwrap();
-    pub static ref PASS: String = config!().get_str("pass").unwrap();
+    pub static ref STATUS_SERVE: bool = get_config!("status_serve");
+    pub static ref PASS: String = get_config!("pass");
 
     // Other
-    pub static ref DATABASE_PATH: String = config!().get_str("database_path").unwrap();
-    pub static ref BROADCAST_ONION: bool = config!().get::<bool>("onion_brodcast").unwrap();
-    pub static ref ONION_SITE: String = config!().get_str("onion_site").unwrap();
+    pub static ref DATABASE_PATH: String = get_config!("database_path");
+    pub static ref BROADCAST_ONION: bool = get_config!("onion_brodcast");
+    pub static ref ONION_SITE: String = get_config!("onion_site");
 }
 
 pub fn load(path: &str) -> Result<(), ConfigError> {

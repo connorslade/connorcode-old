@@ -8,7 +8,8 @@ use super::Component;
 lazy_static! {
     static ref HEADER: String =
         fs::read_to_string("data/web/components/header.html").expect("Error Reading Header");
-    static ref HEADER_REGEX: Regex = Regex::new(r#"\{\{CMP:( )*Header\(".*"\)\}\}"#).unwrap();
+    static ref HEADER_REGEX: Regex =
+        Regex::new(r#"\{\{CMP:( )*Header\(".*"\)\}\}"#).expect("Error Initalizing Regex");
 }
 
 pub struct Header;

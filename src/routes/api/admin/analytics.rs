@@ -44,7 +44,7 @@ pub fn attach(server: &mut Server) {
 
         for i in files {
             // Read file
-            let file = i.unwrap();
+            let file = i.expect("Error getting analytics file");
             if !file.path().is_file() || file.path().extension() != Some(OsStr::new("aan")) {
                 continue;
             }
@@ -59,8 +59,8 @@ pub fn attach(server: &mut Server) {
                 let ip = i.0;
                 let data = i.1;
 
-                if all_data.contains_key(&ip) {
-                    let mut new = all_data.get(&ip).unwrap().to_vec();
+                if let Some(new) = all_data.get(&ip) {
+                    let mut new = new.to_vec();
                     new.extend(data);
                     all_data.insert(ip.to_owned(), new);
                     continue;
