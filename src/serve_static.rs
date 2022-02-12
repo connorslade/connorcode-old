@@ -57,7 +57,7 @@ fn is_disabled(req_path: &str) -> Option<()> {
     None
 }
 
-fn not_found(path: &str) -> Response {
+pub fn not_found(path: &str) -> Response {
     Response::new()
         .status(404)
         .text(

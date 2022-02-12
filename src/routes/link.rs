@@ -2,6 +2,8 @@ use std::fs;
 
 use afire::{Header, Method, Response, Server};
 
+use crate::serve_static::not_found;
+
 lazy_static! {
     static ref LINKS: Vec<[String; 2]> =
         load_links("data/config/link.cfg").expect("Error Loading Links");
@@ -13,19 +15,17 @@ pub fn attach(server: &mut Server) {
     server.route(Method::GET, "/r/{code}", |req| {
         let code = req.path_param("code").unwrap();
 
-        for i in (*LINKS).clone() {
-            if i[0].to_lowercase() == code {
-                let link = &i[1];
-                return Response::new()
-                    .status(308)
-                    .reason("Permanent Redirect")
-                    .text(format!(r#"<a href={link}>{link}</a>"#, link = link))
-                    .header(Header::new("Content-Type", "text/html"))
-                    .header(Header::new("Location", link));
-            }
-        }
+        let link = match LINKS.iter().find(|x| x[0].to_lowercase() == code) {
+            Some(i) => i,
+            None => return not_found(&req.path),
+        };
 
         Response::new()
+            .status(308)
+            .reason("Permanent Redirect")
+            .text(format!(r#"<a href={link}>{link}</a>"#, link = &link[1]))
+            .header(Header::new("Content-Type", "text/html"))
+            .header(Header::new("Location", &link[1]))
     });
 }
 
