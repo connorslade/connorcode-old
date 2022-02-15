@@ -12,6 +12,20 @@ use crate::config::{FILE_SERVE, FILE_SERVE_PATH};
 use crate::Template;
 use crate::VERSION;
 
+#[rustfmt::skip]
+const FILE_ICONS: &[(&str, &[&str])] = &[
+    ("file-code-o",       &["rs", "python", "lua", "scriptable", "js", "html", "css", "scss"]),
+    ("file-audio-o",      &["mp3", "wav", "flac"]),
+    ("file-video-o",      &["mp4", "mov"]),
+    ("file-image-o",      &["png", "jpg", "jpeg", "gif"]),
+    ("file-archive-o",    &["zip", "7z", "rar", "tar", "gz"]),
+    ("file-text-o",       &["txt", "md"]),
+    ("file-powerpoint-o", &["pptx", "ppt"]),
+    ("file-exel-o",       &["xlsx", "xls"]),
+    ("file-word-o",       &["docx", "doc"]),
+    ("file-pdf-o",        &["pdf"]),
+];
+
 pub struct Files;
 
 impl Middleware for Files {
@@ -38,7 +52,7 @@ impl Middleware for Files {
             .to_owned();
 
         while file_path.starts_with('/') {
-            file_path = file_path.replacen("/", "", 1);
+            file_path.remove(0);
         }
 
         let path = PathBuf::from(FILE_SERVE_PATH.clone()).join(&file_path);
@@ -88,10 +102,7 @@ impl Middleware for Files {
 
                 out.push_str(&format!(
                     r#"<div class="file"><i class="fa fa-{}"></i><a href="/files{}">{}</a><p class="size">{}</p><p class="modified">{} ago</p></div>"#,
-                    match i.is_file() {
-                        true => "file",
-                        _ => "folder",
-                    },
+                    path_icon(&i),
                     url,
                     name.strip_prefix('/')
                         .unwrap_or(&name)
@@ -176,4 +187,27 @@ fn show_response(file: PathBuf) -> Option<Response> {
     };
 
     Some(Response::new().header(Header::new("Content-Type", content_type)))
+}
+
+fn path_icon(path: &PathBuf) -> String {
+    if path.is_dir() {
+        return "folder".to_owned();
+    }
+
+    for i in FILE_ICONS {
+        for j in i.1 {
+            let path = path
+                .extension()
+                .unwrap_or_default()
+                .to_string_lossy()
+                .into_owned()
+                .to_lowercase();
+
+            if *j == path {
+                return i.0.to_owned();
+            }
+        }
+    }
+
+    "file".to_owned()
 }
