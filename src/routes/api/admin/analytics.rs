@@ -3,7 +3,7 @@ use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
-use afire::{ Method, Response, Server};
+use afire::{Method, Response, Server};
 use sha2::{Digest, Sha256};
 
 use crate::analytics::Stats;

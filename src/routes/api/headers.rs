@@ -1,4 +1,3 @@
-
 use afire::Method;
 use afire::Response;
 use afire::Server;

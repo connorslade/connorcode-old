@@ -2,7 +2,7 @@ use std::cell::RefCell;
 
 use afire::{
     middleware::{MiddleResponse, Middleware},
-     Request, Response, Server,
+    Request, Response, Server,
 };
 
 use crate::config::{BROADCAST_ONION, ONION_SITE};
@@ -17,10 +17,7 @@ impl Onion {
 
 impl Middleware for Onion {
     fn post(&mut self, req: Request, res: Response) -> MiddleResponse {
-        MiddleResponse::Add(res.header(
-            "Onion-Location",
-            format!("{}{}", *ONION_SITE, req.path),
-        ))
+        MiddleResponse::Add(res.header("Onion-Location", format!("{}{}", *ONION_SITE, req.path)))
     }
 
     fn attach(self, server: &mut Server) {

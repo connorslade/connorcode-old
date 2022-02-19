@@ -1,4 +1,4 @@
-use afire::{ Method, Response, Server};
+use afire::{Method, Response, Server};
 
 pub fn attach(server: &mut Server) {
     server.route(Method::GET, "/api/rawhttp", |req| {

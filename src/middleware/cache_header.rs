@@ -1,6 +1,6 @@
 use afire::{
     middleware::{MiddleResponse, Middleware},
-     Request, Response,
+    Request, Response,
 };
 
 const STATIC_CACHE: &[&str] = &["woff", "woff2", "png", "webp"];

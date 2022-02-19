@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{ Method, Response, Server};
+use afire::{Method, Response, Server};
 
 use crate::serve_static::not_found;
 

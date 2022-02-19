@@ -1,7 +1,6 @@
 use std::fs;
 use std::path::PathBuf;
 
-
 use afire::Method;
 use afire::Response;
 use afire::Server;

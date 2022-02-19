@@ -1,6 +1,5 @@
 use std::fs;
 
-
 use afire::Method;
 use afire::Response;
 use afire::Server;

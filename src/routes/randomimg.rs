@@ -1,7 +1,6 @@
 use std::io::Read;
 use std::time::Duration;
 
-
 use afire::Method;
 use afire::Response;
 use afire::Server;
