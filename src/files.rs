@@ -1,10 +1,10 @@
 use std::cell::RefCell;
 use std::fs;
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 
 use afire::{
     middleware::{MiddleRequest, Middleware},
-    Header, Method, Request, Response, Server,
+    Method, Request, Response, Server,
 };
 
 use crate::common::{best_size, best_time};
@@ -125,7 +125,7 @@ impl Middleware for Files {
                         .template("VERSION", VERSION)
                         .build(),
                     )
-                    .header(Header::new("Content-Type", "text/html; charset=utf-8")),
+                    .header("Content-Type", "text/html; charset=utf-8"),
             );
         }
 
@@ -144,14 +144,14 @@ impl Middleware for Files {
             return MiddleRequest::Send(
                 Response::new()
                     .bytes(file)
-                    .header(Header::new("Content-Type", "application/octet-stream")),
+                    .header("Content-Type", "text/html; charset=utf-8"),
             );
         }
 
         MiddleRequest::Send(
             show_response(path)
                 .unwrap_or_else(|| {
-                    Response::new().header(Header::new("Content-Type", "application/octet-stream"))
+                    Response::new().header("Content-Type", "text/html; charset=utf-8")
                 })
                 .bytes(file),
         )
@@ -165,7 +165,7 @@ impl Files {
 }
 
 fn show_response(file: PathBuf) -> Option<Response> {
-    let content_type = match file.extension()?.to_str()?.to_lowercase().as_str() {
+    let _content_type = match file.extension()?.to_str()?.to_lowercase().as_str() {
         "txt" => "text/plain; charset=utf-8",
         "html" => "text/html; charset=utf-8",
         "css" => "text/css; charset=utf-8",
@@ -186,10 +186,10 @@ fn show_response(file: PathBuf) -> Option<Response> {
         _ => "application/octet-stream",
     };
 
-    Some(Response::new().header(Header::new("Content-Type", content_type)))
+    Some(Response::new().header("Content-Type", "text/html; charset=utf-8"))
 }
 
-fn path_icon(path: &PathBuf) -> String {
+fn path_icon(path: &Path) -> String {
     if path.is_dir() {
         return "folder".to_owned();
     }

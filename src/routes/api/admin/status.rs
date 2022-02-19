@@ -1,4 +1,4 @@
-use afire::{Header, Method, Response, Server};
+use afire::{ Method, Response, Server};
 use sha2::{Digest, Sha256};
 
 use crate::common::get_header;
@@ -51,6 +51,6 @@ pub fn attach(server: &mut Server) {
                     .template("OS_RELEASE", os_rel)
                     .build(),
             )
-            .header(Header::new("Content-Type", "application/json"))
+            .header("Content-Type", "application/json")
     });
 }

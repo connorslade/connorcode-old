@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{Content, Header, Method, Response, Server};
+use afire::{Content, Method, Response, Server};
 use simple_config_parser::Config;
 
 use crate::VERSION;
@@ -103,6 +103,6 @@ pub fn attach(server: &mut Server) {
 
         Response::new()
             .text(format!("[{}]", json))
-            .header(Header::new("Content-Type", "application/json"))
+            .header("Content-Type", "application/json")
     });
 }

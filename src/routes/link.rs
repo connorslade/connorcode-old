@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{Header, Method, Response, Server};
+use afire::{ Method, Response, Server};
 
 use crate::serve_static::not_found;
 
@@ -24,8 +24,8 @@ pub fn attach(server: &mut Server) {
             .status(308)
             .reason("Permanent Redirect")
             .text(format!(r#"<a href={link}>{link}</a>"#, link = &link[1]))
-            .header(Header::new("Content-Type", "text/html"))
-            .header(Header::new("Location", &link[1]))
+            .header("Content-Type", "text/html")
+            .header("Location", &link[1])
     });
 }
 

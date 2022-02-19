@@ -1,7 +1,7 @@
 use std::env;
 use std::time::Duration;
 
-use afire::{Header, Middleware, Response, Server};
+use afire::{Middleware, Response, Server};
 #[macro_use]
 extern crate lazy_static;
 
@@ -45,11 +45,11 @@ fn main() {
     // Setup HTTP Server
     let mut server = Server::new(&*SERVER_HOST, *SERVER_PORT)
         // Set defult headers
-        .default_header(Header::new("X-Content-Type-Options", "nosniff"))
-        .default_header(Header::new("X-Frame-Options", "DENY"))
-        .default_header(Header::new("X-Version", format!("Connorcode/{}", VERSION)))
+        .default_header("X-Content-Type-Options", "nosniff")
+        .default_header("X-Content-Type-Options", "nosniff")
+        .default_header("X-Content-Type-Options", "nosniff")
         // Set other things
-        .default_header(Header::new("X-Server", format!("afire/{}", afire::VERSION)))
+        .default_header("X-Content-Type-Options", "nosniff")
         .socket_timeout(Duration::from_secs(5));
 
     server.error_handler(|_req, err| {
@@ -61,7 +61,7 @@ fn main() {
                     .template("ERROR", err)
                     .build(),
             )
-            .header(Header::new("Content-Type", "text/html"))
+            .header("X-Content-Type-Options", "nosniff")
     });
 
     components::attach(&mut server);

@@ -1,7 +1,7 @@
 use std::io::Read;
 use std::time::Duration;
 
-use afire::Header;
+
 use afire::Method;
 use afire::Response;
 use afire::Server;
@@ -15,8 +15,8 @@ pub fn attach(server: &mut Server) {
             if let Some((i, j)) = get_random_image() {
                 return Response::new()
                     .bytes(i)
-                    .header(Header::new("Content-Type", "image/png"))
-                    .header(Header::new("X-Image-Id", j));
+                    .header("Content-Type", "image/png")
+                    .header("X-Image-Id", j);
             }
         }
 

@@ -1,4 +1,4 @@
-use afire::{Header, Method, Response, Server};
+use afire::{ Method, Response, Server};
 
 pub fn attach(server: &mut Server) {
     server.route(Method::GET, "/api/ip", |req| {
@@ -16,7 +16,7 @@ pub fn attach(server: &mut Server) {
 
         Response::new()
             .text(ip)
-            .header(Header::new("Content-Type", "text/plain"))
+            .header("Content-Type", "text/plain")
     });
 }
 

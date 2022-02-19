@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{Header, Response, ServeStatic, Server};
+use afire::{ Response, ServeStatic, Server};
 
 use crate::config::DATA_DIR;
 use crate::Template;
@@ -70,5 +70,5 @@ pub fn not_found(path: &str) -> Response {
             .template("PAGE", path)
             .build(),
         )
-        .header(Header::new("Content-Type", "text/html"))
+        .header("Content-Type", "text/html")
 }

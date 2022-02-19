@@ -1,7 +1,7 @@
 use std::fs;
 use std::path::PathBuf;
 
-use afire::Header;
+
 use afire::Method;
 use afire::Response;
 use afire::Server;
@@ -40,8 +40,8 @@ pub fn attach(server: &mut Server) {
 
         Response::new()
             .bytes(fs::read(random_nose).expect("Error Reading Nose"))
-            .header(Header::new("Content-Type", get_type(random_nose_str)))
-            .header(Header::new("X-Nose-ID", random_nose_str))
+            .header("Content-Type", get_type(random_nose_str))
+            .header("X-Nose-ID", random_nose_str)
     });
 }
 

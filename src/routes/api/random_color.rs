@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::Header;
+
 use afire::Method;
 use afire::Response;
 use afire::Server;
@@ -31,6 +31,6 @@ pub fn attach(server: &mut Server) {
 
         Response::new()
             .text(format!("{} {}", random_name, random_color))
-            .header(Header::new("Content-Type", "text/plain"))
+            .header("Content-Type", "text/plain")
     });
 }

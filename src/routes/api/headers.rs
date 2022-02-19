@@ -1,4 +1,4 @@
-use afire::Header;
+
 use afire::Method;
 use afire::Response;
 use afire::Server;
@@ -14,6 +14,6 @@ pub fn attach(server: &mut Server) {
 
         Response::new()
             .text(resp)
-            .header(Header::new("Content-Type", "text/plain; charset=utf-8"))
+            .header("Content-Type", "text/plain; charset=utf-8")
     });
 }

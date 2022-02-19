@@ -3,7 +3,7 @@ use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
-use afire::{Header, Method, Response, Server};
+use afire::{ Method, Response, Server};
 use sha2::{Digest, Sha256};
 
 use crate::analytics::Stats;
@@ -75,7 +75,7 @@ pub fn attach(server: &mut Server) {
                 .status(425)
                 .reason("Too Early")
                 .text(r#"{"error": "No Data Yet"}"#)
-                .header(Header::new("Content-Type", "application/json"));
+                .header("Content-Type", "application/json");
         }
 
         let mut working = String::new();
@@ -110,6 +110,6 @@ pub fn attach(server: &mut Server) {
 
         Response::new()
             .text(format!("{{{}}}", working))
-            .header(Header::new("Content-Type", "application/json"))
+            .header("Content-Type", "application/json")
     });
 }
