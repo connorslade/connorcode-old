@@ -214,6 +214,10 @@ table {
     border-collapse: collapse;
   }
 
+  & thead tr th {
+    padding: 5px 10px 5px 10px;
+  }
+
   & tbody {
     color: #fffc;
 
