@@ -179,8 +179,10 @@ h6 {
   padding-left: 1em;
 
   &:hover .anchor:before {
-    content: "¶";
+    position: absolute;
     margin-left: -1em;
+    text-decoration: underline;
+    content: "¶";
   }
 }
 
