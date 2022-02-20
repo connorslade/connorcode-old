@@ -189,6 +189,7 @@ p {
 
 a {
   color: vars.$a-font-color;
+  text-decoration-style: dashed;
 }
 
 @media (max-width: 1280px) {
