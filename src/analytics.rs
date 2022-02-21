@@ -1,14 +1,15 @@
-use std::cell::RefCell;
+use std::any::type_name;
 use std::collections::HashMap;
 use std::fmt;
 use std::fs;
 use std::path::Path;
+use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use afire::{
     internal,
     middleware::{MiddleRequest, Middleware},
-    Header, Request, Server,
+    trace, Header, Request, Server,
 };
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -28,8 +29,8 @@ pub struct Stats {
 
 #[derive(Debug, Serialize, Deserialize)]
 pub struct Analytics {
-    data: HashMap<Ip, Vec<Stats>>,
-    last_dump: SystemTime,
+    data: Mutex<HashMap<Ip, Vec<Stats>>>,
+    last_dump: Mutex<SystemTime>,
 }
 
 #[derive(Clone, Serialize, Deserialize)]
@@ -46,7 +47,7 @@ pub enum Method {
 }
 
 impl Middleware for Analytics {
-    fn pre(&mut self, req: Request) -> MiddleRequest {
+    fn pre(&self, req: Request) -> MiddleRequest {
         self.save(&req);
         self.check_dump();
 
@@ -61,7 +62,9 @@ impl Middleware for Analytics {
             return;
         }
 
-        server.middleware.push(Box::new(RefCell::new(self)));
+        trace!("📦 Adding Middleware {}", type_name::<Self>());
+
+        server.middleware.push(Box::new(self));
     }
 }
 
@@ -86,12 +89,12 @@ impl Stats {
 impl Analytics {
     pub fn new() -> Self {
         Analytics {
-            data: HashMap::new(),
-            last_dump: SystemTime::now(),
+            data: Mutex::new(HashMap::new()),
+            last_dump: Mutex::new(SystemTime::now()),
         }
     }
 
-    fn save(&mut self, req: &Request) -> Option<()> {
+    fn save(&self, req: &Request) -> Option<()> {
         let time = SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .expect("Cant get time: Time went backwards!")
@@ -117,19 +120,20 @@ impl Analytics {
             referer,
         );
 
-        if self.data.contains_key(&ip) {
-            let mut new = self.data.get(&ip)?.to_vec();
+        let mut this = self.data.lock().unwrap();
+        if this.contains_key(&ip) {
+            let mut new = this.get(&ip)?.to_vec();
             new.push(stats);
-            self.data.insert(ip, new);
+            this.insert(ip, new);
             return Some(());
         }
-        self.data.insert(ip, vec![stats]);
+        this.insert(ip, vec![stats]);
         Some(())
     }
 
-    fn check_dump(&mut self) -> Option<()> {
-        if self
-            .last_dump
+    fn check_dump(&self) -> Option<()> {
+        let mut time = self.last_dump.lock().unwrap();
+        if time
             .elapsed()
             .expect("Cant get elapsed time: Time went backwards!")
             .as_secs()
@@ -141,14 +145,14 @@ impl Analytics {
         println!("[*] Saveing Analytics");
 
         // Update Last Dump time
-        self.last_dump = SystemTime::now();
+        *time = SystemTime::now();
 
         self.dump()?;
 
         Some(())
     }
 
-    pub fn dump(&mut self) -> Option<()> {
+    pub fn dump(&self) -> Option<()> {
         // Create Path
         let folder = Path::new(&*ANALYTICS_PATH);
         if !folder.exists() {
@@ -163,7 +167,8 @@ impl Analytics {
             let mut old: HashMap<Ip, Vec<Stats>> = bincode::deserialize(&old).ok()?;
 
             // Add New Data
-            for i in self.data.clone() {
+            let mut data = self.data.lock().unwrap();
+            for i in data.clone() {
                 let ip = i.0;
                 let data = i.1;
 
@@ -178,7 +183,7 @@ impl Analytics {
             }
 
             // Reset In Memory Analytics Cache thing
-            self.data.clear();
+            data.clear();
             let new = bincode::serialize(&old).ok()?;
 
             // Write New File

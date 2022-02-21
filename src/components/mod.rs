@@ -1,3 +1,5 @@
+use std::sync::Mutex;
+
 use afire::{
     middleware::{MiddleResponse, Middleware},
     Request, Response, Server,
@@ -9,7 +11,7 @@ mod footer_rss;
 mod header;
 
 struct ComponentManager {
-    components: Vec<(String, Box<dyn Component>)>,
+    components: Mutex<Vec<(String, Box<dyn Component + Send + Sync>)>>,
 }
 
 pub trait Component {
@@ -18,8 +20,10 @@ pub trait Component {
 }
 
 impl Middleware for ComponentManager {
-    fn post(&mut self, req: Request, mut res: Response) -> MiddleResponse {
-        for i in &mut self.components {
+    fn post(&self, req: Request, mut res: Response) -> MiddleResponse {
+        let mut components = self.components.lock().unwrap();
+
+        for i in components.iter_mut() {
             let text = match String::from_utf8(res.data.clone()) {
                 Ok(i) => i,
                 Err(_) => return MiddleResponse::Continue,
@@ -44,17 +48,17 @@ impl Middleware for ComponentManager {
 impl ComponentManager {
     fn new() -> Self {
         ComponentManager {
-            components: Vec::new(),
+            components: Mutex::new(Vec::new()),
         }
     }
 
-    fn add(&mut self, mut cmp: Box<dyn Component>) {
-        self.components.push((cmp.name(), cmp));
+    fn add(&self, mut cmp: Box<dyn Component + Send + Sync>) {
+        self.components.lock().unwrap().push((cmp.name(), cmp));
     }
 }
 
 pub fn attach(server: &mut Server) {
-    let mut cmp = ComponentManager::new();
+    let cmp = ComponentManager::new();
     cmp.add(Box::new(footer::Footer));
     cmp.add(Box::new(footer_rss::FooterRss));
     cmp.add(Box::new(header::Header));

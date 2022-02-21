@@ -1,10 +1,10 @@
-use std::cell::RefCell;
+use std::any::type_name;
 use std::fs;
 use std::path::{Path, PathBuf};
 
 use afire::{
     middleware::{MiddleRequest, Middleware},
-    Method, Request, Response, Server,
+    trace, Method, Request, Response, Server,
 };
 
 use crate::common::{best_size, best_time};
@@ -37,10 +37,12 @@ impl Middleware for Files {
             return;
         }
 
-        server.middleware.push(Box::new(RefCell::new(self)));
+        trace!("📦 Adding Middleware {}", type_name::<Self>());
+
+        server.middleware.push(Box::new(self));
     }
 
-    fn pre(&mut self, req: Request) -> MiddleRequest {
+    fn pre(&self, req: Request) -> MiddleRequest {
         if !req.path.starts_with("/files") || req.method != Method::GET {
             return MiddleRequest::Continue;
         }

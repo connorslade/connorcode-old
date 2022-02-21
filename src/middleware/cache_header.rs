@@ -16,7 +16,7 @@ impl Cache {
 }
 
 impl Middleware for Cache {
-    fn post(&mut self, req: Request, res: Response) -> MiddleResponse {
+    fn post(&self, req: Request, res: Response) -> MiddleResponse {
         if let Some(i) = req.path.rsplit_once('.') {
             if STATIC_CACHE.contains(&i.1) {
                 return MiddleResponse::Add(

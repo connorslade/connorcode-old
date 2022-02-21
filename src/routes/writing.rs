@@ -1,6 +1,7 @@
 use std::borrow::Borrow;
 use std::fs::{self, DirEntry};
 use std::path::{Path, PathBuf};
+use std::sync::Mutex;
 
 use afire::{
     middleware::{MiddleRequest, Middleware},
@@ -33,7 +34,7 @@ struct Document {
 }
 
 struct Markdown {
-    connection: rusqlite::Connection,
+    connection: Mutex<rusqlite::Connection>,
     documents: Vec<Document>,
 
     api_cache: String,
@@ -195,10 +196,10 @@ impl Document {
 }
 
 impl Middleware for Markdown {
-    fn pre(&mut self, req: Request) -> MiddleRequest {
+    fn pre(&self, req: Request) -> MiddleRequest {
         // Handel Like API requests
         if req.method == Method::POST && req.path == "/api/writing/like" {
-            match handle_like(&mut self.connection, &self.documents, &req) {
+            match handle_like(&mut self.connection.lock().unwrap(), &self.documents, &req) {
                 Some(i) => return MiddleRequest::Send(i),
                 None => return MiddleRequest::Send(Response::new().status(400).text("Error :/")),
             }
@@ -280,7 +281,8 @@ impl Middleware for Markdown {
             // Get real Client IP
             let ip = get_ip(&req);
 
-            let trans = self.connection.transaction().unwrap();
+            let mut conn = self.connection.lock().unwrap();
+            let trans = conn.transaction().unwrap();
             // Add a vied to the article if it hasent been viewed before
             trans
                 .execute(
@@ -375,7 +377,7 @@ impl Markdown {
         let rss_cache = gen_rss_data(&docs);
 
         Self {
-            connection: conn,
+            connection: Mutex::new(conn),
             documents: docs,
 
             api_cache,

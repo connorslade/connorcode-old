@@ -46,10 +46,10 @@ fn main() {
     let mut server = Server::new(&*SERVER_HOST, *SERVER_PORT)
         // Set defult headers
         .default_header("X-Content-Type-Options", "nosniff")
-        .default_header("X-Content-Type-Options", "nosniff")
-        .default_header("X-Content-Type-Options", "nosniff")
+        .default_header("X-Frame-Options", "DENY")
+        .default_header("X-Version", format!("Connorcode/{}", VERSION))
+        .default_header("X-Server", format!("afire/{}", afire::VERSION))
         // Set other things
-        .default_header("X-Content-Type-Options", "nosniff")
         .socket_timeout(Duration::from_secs(5));
 
     server.error_handler(|_req, err| {

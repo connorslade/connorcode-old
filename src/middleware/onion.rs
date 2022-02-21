@@ -1,8 +1,8 @@
-use std::cell::RefCell;
+use std::any::type_name;
 
 use afire::{
     middleware::{MiddleResponse, Middleware},
-    Request, Response, Server,
+    trace, Request, Response, Server,
 };
 
 use crate::config::{BROADCAST_ONION, ONION_SITE};
@@ -16,7 +16,7 @@ impl Onion {
 }
 
 impl Middleware for Onion {
-    fn post(&mut self, req: Request, res: Response) -> MiddleResponse {
+    fn post(&self, req: Request, res: Response) -> MiddleResponse {
         MiddleResponse::Add(res.header("Onion-Location", format!("{}{}", *ONION_SITE, req.path)))
     }
 
@@ -25,6 +25,8 @@ impl Middleware for Onion {
             return;
         }
 
-        server.middleware.push(Box::new(RefCell::new(self)));
+        trace!("📦 Adding Middleware {}", type_name::<Self>());
+
+        server.middleware.push(Box::new(self));
     }
 }
