@@ -363,11 +363,11 @@ impl Markdown {
         let trans = conn.transaction().unwrap();
         // Init article table
         trans
-            .execute(include_str!("../sql/create_article_views.sql"), [])
+            .execute(include_str!("sql/create_article_views.sql"), [])
             .unwrap();
 
         trans
-            .execute(include_str!("../sql/create_article_likes.sql"), [])
+            .execute(include_str!("sql/create_article_likes.sql"), [])
             .unwrap();
 
         trans.commit().unwrap();

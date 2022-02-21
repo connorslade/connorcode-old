@@ -19,6 +19,7 @@ mod config;
 mod files;
 mod logger;
 mod middleware;
+mod writing;
 use analytics::Analytics;
 use color::Color;
 use config::{SERVER_HOST, SERVER_PORT};
@@ -68,6 +69,7 @@ fn main() {
     serve_static::attach(&mut server);
     routes::attach(&mut server);
     middleware::attach(&mut server);
+    writing::attach(&mut server);
     Files::new().attach(&mut server);
     Analytics::new().attach(&mut server);
     logger::Logger.attach(&mut server);
