@@ -33,7 +33,7 @@ struct Document {
     icon: String,
 }
 
-struct Markdown {
+struct Writing {
     connection: Mutex<rusqlite::Connection>,
     documents: Vec<Document>,
 
@@ -44,7 +44,7 @@ struct Markdown {
 pub fn attach(server: &mut Server) {
     let docs = Document::load_documents(PathBuf::from(&*WRITING_PATH));
 
-    Markdown::new(docs).attach(server);
+    Writing::new(docs).attach(server);
 }
 
 macro_rules! safe_config {
@@ -195,7 +195,7 @@ impl Document {
     }
 }
 
-impl Middleware for Markdown {
+impl Middleware for Writing {
     fn pre(&self, req: Request) -> MiddleRequest {
         // Handel Like API requests
         if req.method == Method::POST && req.path == "/api/writing/like" {
@@ -352,7 +352,7 @@ impl Middleware for Markdown {
     }
 }
 
-impl Markdown {
+impl Writing {
     fn new(docs: Vec<Document>) -> Self {
         // Connect to Database
         let mut conn = rusqlite::Connection::open(&*DATABASE_PATH).unwrap();
