@@ -2,19 +2,50 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/index.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/error.css" />
     <script defer src="/common/common.js"></script>
-    <title>Page Not Found</title>
+    <title>🐌 Page Not Found</title>
   </head>
   <body>
-    <div class="content">
-      <h1>😅 Page not Found 🍞</h1>
-      <p>The page <code>{{PAGE}}</code> was not found!</p>
+    <a class="skip-link" href="#main">Skip to Content</a>
+
+    <div class="container">
+      <div class="title">
+        <p>Connor Code</p>
+      </div>
+
+      <div class="nav-container">
+        <div class="nav">
+          <a href="/">Home</a>
+          <a href="/writing">Writing</a>
+          <a href="/about">About</a>
+          <a
+            href="https://github.com/basicprogrammer10/connorcode/"
+            rel="noopener"
+            target="_blank"
+          >
+            Source <i class="fa fa-external-link"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="content">
+        <h1>😅 Page not Found 🍞</h1>
+        <p>The page <code>{{PAGE}}</code> was not found!</p>
+        <p note-start>
+          I'm gonna be honest, this is prolly your fault.
+        </p>
+        <p>
+          If you still feel like blameing someone else, submit an error
+          <a
+            href="https://github.com/Basicprogrammer10/connorcode/issues/new?title=Page+Not+Found&body=The+page+`{{PAGE}}`+was+not+found"
+            >here</a
+          >.
+        </p>
+      </div>
     </div>
 
-    <footer>
-      <button id="homeButton">Home</button>
-      <p>© Connor Slade || V{{VERSION}}</p>
-    </footer>
+    {{CMP: Footer}}
   </body>
 </html>

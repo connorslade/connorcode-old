@@ -2,20 +2,50 @@
 <html lang="en" dir="ltr">
   <head>
     <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/index.css" />
     <link rel="stylesheet" type="text/css" href="/assets/css/error.css" />
     <script defer src="/common/common.js"></script>
-    <title>Internal Error</title>
+    <title>💥 Internal Error</title>
   </head>
   <body>
-    <div class="content">
-      <h1>Internal Server Error</h1>
-      <p>Sorwy</p>
-      <p><strong>Error:</strong> <code>{{ERROR}}</code></p>
+    <a class="skip-link" href="#main">Skip to Content</a>
+
+    <div class="container">
+      <div class="title">
+        <p>Connor Code</p>
+      </div>
+
+      <div class="nav-container">
+        <div class="nav">
+          <a href="/">Home</a>
+          <a href="/writing">Writing</a>
+          <a href="/about">About</a>
+          <a
+            href="https://github.com/basicprogrammer10/connorcode/"
+            rel="noopener"
+            target="_blank"
+          >
+            Source <i class="fa fa-external-link"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="content">
+        <h1>😅 Internal Server Error 🧨</h1>
+        <p><strong>Error:</strong> <code>{{ERROR}}</code></p>
+        <p note-start>
+          Looks like im not as good at programming as I thought!
+        </p>
+        <p>
+          If you want, you can report this error
+          <a
+            href="https://github.com/Basicprogrammer10/connorcode/issues/new?title=Internal+Server+Error&body={{ERROR_BODY}}"
+            >here</a
+          >.
+        </p>
+      </div>
     </div>
 
-    <footer>
-      <button id="homeButton">Home</button>
-      <p>© Connor Slade || V{{VERSION}}</p>
-    </footer>
+    {{CMP: Footer}}
   </body>
 </html>

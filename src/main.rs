@@ -1,7 +1,7 @@
 use std::env;
 use std::time::Duration;
 
-use afire::{Middleware, Response, Server};
+use afire::{Content, Middleware, Response, Server};
 #[macro_use]
 extern crate lazy_static;
 
@@ -26,7 +26,7 @@ use config::{SERVER_HOST, SERVER_PORT};
 use files::Files;
 use template::Template;
 
-pub const VERSION: &str = "6.0.4";
+pub const VERSION: &str = "6.5.0";
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -59,10 +59,11 @@ fn main() {
             .text(
                 Template::new(assets::ERROR_PAGE)
                     .template("VERSION", VERSION)
-                    .template("ERROR", err)
+                    .template("ERROR", &err)
+                    .template("ERROR_BODY", err.replace(' ', "+"))
                     .build(),
             )
-            .header("X-Content-Type-Options", "nosniff")
+            .content(Content::HTML)
     });
 
     components::attach(&mut server);

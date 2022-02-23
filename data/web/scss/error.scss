@@ -1,8 +1,24 @@
 @use 'vars';
+@use 'common';
 
-@import 'common';
+@import "common";
 
 .content {
   text-align: center;
+  background: vars.$tile-color;
   color: vars.$font-color;
+  border-radius: 12px;
+  padding: 24px;
+
+  & h1 {
+    margin-top: 0;
+  }
+
+  & p {
+    margin: 7px auto 7px auto;
+  }
+
+  & [note-start] {
+    margin-top: 15px;
+  }
 }
