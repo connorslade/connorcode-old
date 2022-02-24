@@ -100,31 +100,56 @@
   margin-bottom: 57px;
   padding: 24px;
 
-  .like {
-    height: 35px;
+  & .button-container {
+    display: flex;
+
+    & .meta-button {
+      height: 35px;
+      background: #323546;
+      width: 4rem;
+      border-radius: 12px;
+      right: 24px;
+      cursor: pointer;
+      margin-top: 8px;
+      margin-right: 5px;
+
+      & .content {
+        & .icon {
+          font-weight: bold;
+          margin-right: 3px;
+          pointer-events: none;
+        }
+
+        & p {
+          display: inline-block;
+        }
+
+        position: relative;
+        top: 50%;
+        transform: translateY(-50%) translateX(-50%);
+        width: max-content;
+        left: 50%;
+        color: #a1a7bb;
+      }
+    }
+  }
+
+  & .contents {
+    box-shadow: 0 5px 10px 3px #00000080;
     background: #323546;
-    width: 4rem;
     border-radius: 12px;
-    right: 24px;
-    cursor: pointer;
+    position: absolute;
     margin-top: 8px;
+    padding: 10px;
 
-    & .like-content {
-      & .icon {
-        font-weight: bold;
-        margin-right: 3px;
+    & div {
+      padding: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+
+      &:hover {
+        background: #272937;
       }
-
-      & p {
-        display: inline-block;
-      }
-
-      position: relative;
-      top: 50%;
-      transform: translateY(-50%) translateX(-50%);
-      width: max-content;
-      left: 50%;
-      color: #a1a7bb;
     }
   }
 
@@ -200,6 +225,10 @@
 
 [id] {
   scroll-margin-top: 49px + 20px;
+}
+
+.hidden {
+  display: none;
 }
 
 h1,

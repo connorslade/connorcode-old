@@ -51,6 +51,7 @@
         path = loadPath(path);
         time = loadTime(time);
         setLikes(likes, liked);
+        initContents();
         hljs.highlightAll();"
       >
         <div class="content" id="main">
@@ -75,9 +76,19 @@
             </div>
           </div>
 
-          <div class="like">
-            <div class="like-content"></div>
+          <div class="button-container">
+            <div class="meta-button" contents-button>
+              <div class="content" contents-button-icon>
+                <i class="icon fa fa-bars"></i>
+              </div>
+            </div>
+
+            <div class="meta-button" like-button>
+              <div class="content" like-content></div>
+            </div>
           </div>
+
+          <div class="contents hidden" contents-dropdown></div>
 
           <article>
             {{DOCUMENT}}
