@@ -1,0 +1,7 @@
+.git
+
+target/
+local/
+
+data/data.*
+data/analytics/*.aan

@@ -1,0 +1,6 @@
+services:
+  webServer:
+    image: connorcode
+    build: .
+    volumes:
+      - "./data:/connorcode/data"
