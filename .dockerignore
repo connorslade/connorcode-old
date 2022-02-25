@@ -1,7 +1,5 @@
 .git
-
-target/
-local/
-
-data/data.*
-data/analytics/*.aan
+target
+local
+data/*
+!data/web/template

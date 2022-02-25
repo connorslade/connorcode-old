@@ -1,6 +1,8 @@
 services:
-  webServer:
+  web-server:
     image: connorcode
     build: .
+    ports:
+      - "8080:8080"
     volumes:
       - "./data:/connorcode/data"
