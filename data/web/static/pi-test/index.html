@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    {{CMP: Header("Test how much pi you know!")}}
+    <link rel="shortcut icon" type="image/png" href="/assets/SigmaLogo.png" />
+    <link href="/favicon.ico" rel="icon" type="image/x-icon" />
+    <link rel="stylesheet" type="text/css" href="/assets/css/pitest.css" />
+    <title>ConnorCode — Pi Test</title>
+    <script src="/pi-test/index.js" charset="utf-8"></script>
+    <script
+      defer
+      src="https://cdn.jsdelivr.net/npm/alpinejs@3.7.0/dist/cdn.min.js"
+    ></script>
+  </head>
+  <body>
+    <div score>
+      0
+    </div>
+
+    <div high-score>
+      0
+    </div>
+
+
+    <div
+      class="container"
+      x-data="init()"
+      @keydown.r.document="
+        index = -1;
+        $root.style.left = 'calc(50vw - 550px)';
+        Array.from(document.querySelectorAll('[number]')).slice(2).forEach((e) => e.style.background = '#a1b0c6');
+        Array.from(document.querySelectorAll('p')).slice(2).forEach((e) => {
+          e.innerText = '?';
+          e.style.filter = 'blur(20px)'
+        });
+        "
+      @keydown.document=" 
+        if (!running) return;
+        if (checkValidInc($event, index) == 2) {
+          index++;
+          $root.style.left = `calc(50vw - 110px - 220px * (2 + ${index}))`;
+
+          let score = 1 + index;
+          document.querySelector('[score]').innerText = score;
+          if (score > highScore) {
+            document.querySelector('[high-score]').innerText = score;
+            localStorage.setItem('pi-test:high-score', score);
+          }
+          return;
+        }
+
+      if (checkValidInc($event, index) == 1) {
+        let nextChr = document.querySelectorAll('p')[3 + index];
+        nextChr.innerText = pi[1 + index];
+        nextChr.style.filter = 'blur(0)';
+        document.querySelectorAll('[number]')[3 + index].style.background = '#db1f48';
+        running = false;
+      }
+      "
+    >
+      <div correct number><p>3</p></div>
+      <div correct number><p>.</p></div>
+      <template x-for="(e, i) in pi">
+        <div>
+          <template x-if="i > index">
+            <div guess number><p>?</p></div>
+          </template>
+
+          <template x-if="i <= index">
+            <div correct number><p x-text="e"></p></div>
+          </template>
+        </div>
+      </template>
+    </div>
+
+    {{CMP: Footer}}
+  </body>
+</html>
