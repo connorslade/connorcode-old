@@ -5,10 +5,6 @@ use simple_config_parser::Config;
 
 use crate::VERSION;
 
-static mut PROJECTS: Vec<Project> = Vec::new();
-static mut BASE_PAGE: String = String::new();
-static mut BASE: String = String::new();
-
 #[derive(Clone)]
 struct Project {
     id: String,
@@ -40,10 +36,13 @@ pub fn attach(server: &mut Server) {
     let cfg = Config::new()
         .file("data/config/projects.cfg")
         .expect("Error Reading Project Config");
+
     let base_page =
         fs::read_to_string("data/web/template/index.html").expect("Error Reading BasePage");
+
     let base_template = fs::read_to_string("data/web/template/project.html")
         .expect("Error Reading Project Template");
+
     let mut projects = Vec::new();
 
     for i in cfg.data {
@@ -64,45 +63,30 @@ pub fn attach(server: &mut Server) {
         }
     }
 
-    unsafe {
-        PROJECTS = projects;
-        BASE_PAGE = base_page;
-        BASE = base_template;
+    let mut projects_html = String::new();
+    let mut projects_json = String::new();
+
+    for i in projects {
+        projects_html.push_str(&i.format(&base_template));
+        projects_html.push('\n');
+
+        projects_json.push_str(&i.jsonify());
+        projects_json.push_str(", ");
     }
 
+    projects_json.truncate(projects_json.len() - 2);
+
+    let projects_html = base_page
+        .replace("{{ITEMS}}", &projects_html)
+        .replace("{{VERSION}}", VERSION);
+    let projects_json = format!("[{}]", projects_json);
+
     // Serve Main Page
-    server.route(Method::GET, "/", |_req| {
-        let base = unsafe { BASE_PAGE.clone() };
-        let raw_projects = unsafe { PROJECTS.clone() };
-        let template = unsafe { BASE.clone() };
-
-        let mut projects = String::new();
-        for i in raw_projects {
-            projects.push_str(&i.format(&template));
-            projects.push('\n');
-        }
-
-        Response::new()
-            .text(
-                base.replace("{{ITEMS}}", &projects)
-                    .replace("{{VERSION}}", VERSION),
-            )
-            .content(Content::HTML)
+    server.route(Method::GET, "/", move |_req| {
+        Response::new().text(&projects_html).content(Content::HTML)
     });
 
-    server.route(Method::GET, "/api/projects", |_req| {
-        let projects = unsafe { PROJECTS.clone() };
-        let mut json = String::new();
-
-        for i in projects {
-            json.push_str(&i.jsonify());
-            json.push_str(", ");
-        }
-
-        json.truncate(json.len() - 2);
-
-        Response::new()
-            .text(format!("[{}]", json))
-            .header("Content-Type", "application/json")
+    server.route(Method::GET, "/api/projects", move |_req| {
+        Response::new().text(&projects_json).content(Content::JSON)
     });
 }
