@@ -47,8 +47,12 @@ impl Middleware for Files {
             return MiddleRequest::Continue;
         }
 
-        let file_path = req.path.replace("/..", "");
-        let mut file_path = file_path
+        let mut file_path = req.path;
+        while file_path.contains("/..") {
+            file_path = file_path.replace("/..", "");
+        }
+
+        file_path = file_path
             .strip_prefix("/files")
             .expect("Error Striping /files prefix")
             .to_owned();
