@@ -84,7 +84,9 @@ function initContents() {
 
       let ele = document.createElement("div");
       ele.innerText = e.innerText;
-      ele.style.paddingLeft = `${2 * offset}em`;
+
+      if (offset === 0) ele.style.paddingLeft = '10px';
+      else ele.style.paddingLeft = `${2 * offset}em`;
 
       ele.addEventListener("click", () => {
         window.location = e.children[0].href;
