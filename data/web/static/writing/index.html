@@ -45,11 +45,11 @@
         </template>
 
         <template x-cloak x-for="i in data">
-          <div class="article">
-            <i x-html="i.icon"></i>
-            <a class="name" :href="i.link" x-text="i.name"></a>
-            <a class="disc" :href="i.link" x-text="i.disc"></a>
-            <a class="date" :href="i.link" x-html="i.date"></a>
+          <div class="article" @click="location=i.link">
+            <i class="icon" x-html="i.icon"></i>
+            <p class="name" x-text="i.name"></p>
+            <p class="disc" x-text="i.disc"></p>
+            <p class="date" x-html="i.date"></p>
           </div>
         </template>
       </div>

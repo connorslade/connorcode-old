@@ -1,6 +1,7 @@
-@use 'common';
-@use 'index';
-@use 'vars';
+@use "common";
+@use "index";
+@use "vars";
+@use "fonts";
 
 @mixin admonition($name, $color, $char) {
   & [#{$name}] {
@@ -24,12 +25,17 @@
   padding: 24px;
 
   & .article {
-    grid-template-columns: 25px 210px auto 90px;
-    border-top: solid 1px #515e76;
+    cursor: pointer;
+    grid-template-columns: 25px 210px auto 97px;
+    border-top: solid 2px #222531;
     display: grid;
     background-color: #171924;
     padding: 10px;
     height: 21.25px;
+
+    &:hover {
+      background: lighten(#171924, 3);
+    }
 
     & p,
     a {
@@ -49,8 +55,13 @@
       margin-right: 10px;
     }
 
+    & .icon {
+      display: flex;
+    }
+
     & .name {
       color: inherit;
+      font-family: fonts.$inter-regular;
     }
 
     & .disc {
@@ -62,9 +73,11 @@
     & .date {
       text-align: right;
       color: #a1a7bb;
+      font-family: fonts.$jetbrains-mono;
 
       & .fa {
         float: left;
+        margin-right: 5px;
       }
     }
 
