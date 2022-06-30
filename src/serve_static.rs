@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{Response, ServeStatic, Server};
+use afire::{extension::ServeStatic, Middleware, Response, Server};
 
 use crate::config::DATA_DIR;
 use crate::Template;

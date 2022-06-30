@@ -4,6 +4,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Mutex;
 
 use afire::{
+    error::Result,
     middleware::{MiddleRequest, Middleware},
     Content, Method, Request, Response, Server,
 };
@@ -196,7 +197,12 @@ impl Document {
 }
 
 impl Middleware for Writing {
-    fn pre(&self, req: Request) -> MiddleRequest {
+    fn pre(&self, req: &Result<Request>) -> MiddleRequest {
+        let req = match req {
+            Ok(i) => i,
+            Err(_) => return MiddleRequest::Continue,
+        };
+
         // Handel Like API requests
         if req.method == Method::POST && req.path == "/api/writing/like" {
             match handle_like(&mut self.connection.lock().unwrap(), &self.documents, &req) {

@@ -7,9 +7,10 @@ use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use afire::{
-    internal,
+    error::Result,
+    internal::{self, common::trace},
     middleware::{MiddleRequest, Middleware},
-    trace, Header, Request, Server,
+    Header, Request, Server,
 };
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
@@ -47,22 +48,25 @@ pub enum Method {
 }
 
 impl Middleware for Analytics {
-    fn pre(&self, req: Request) -> MiddleRequest {
-        self.save(&req);
-        self.check_dump();
+    fn pre(&self, req: &Result<Request>) -> MiddleRequest {
+        if let Ok(req) = req {
+            self.save(req);
+            self.check_dump();
+        }
 
         MiddleRequest::Continue
     }
 
-    fn attach(self, server: &mut Server)
+    fn attach<State>(self, server: &mut Server<State>)
     where
-        Self: Sized + 'static,
+        Self: 'static + Send + Sync + Sized,
+        State: 'static + Send + Sync,
     {
         if !*ANALYTICS_ENABLED {
             return;
         }
 
-        trace!("📦 Adding Middleware {}", type_name::<Self>());
+        trace(format!("📦 Adding Middleware {}", type_name::<Self>()));
 
         server.middleware.push(Box::new(self));
     }

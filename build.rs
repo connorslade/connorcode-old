@@ -13,7 +13,7 @@ fn main() {
         "cargo:rustc-env=GIT_INFO={} {}{}",
         commit_hash.unwrap_or_default(),
         branch.unwrap_or_default(),
-        show_dirty(dirty)
+        if dirty { "*" } else { "" }
     );
 }
 
@@ -24,11 +24,4 @@ fn quick_cmd(cmd: &str, args: &[&str]) -> Option<String> {
             .replace('\n', "")
             .replace('\r', ""),
     )
-}
-
-fn show_dirty(dirty: bool) -> &'static str {
-    if dirty {
-        return "*";
-    }
-    ""
 }

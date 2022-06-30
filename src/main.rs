@@ -90,10 +90,10 @@ fn main() {
 fn print_info() {
     color_print!(Color::Magenta, "[=] Config");
     color_print!(Color::Magenta, " ├── Analytics");
-    color_print!(Color::Magenta, " │   ├── Enabled: {}", config::ANALYTICS_ENABLED);
-    color_print!(Color::Magenta, " │   ├── Peroid: {}", config::DUMP_PEROID);
-    color_print!(Color::Magenta, " │   └── Serve: {}", config::ANALYTICS_SERVE);
+    color_print!(Color::Magenta, " │   ├── Enabled: {}", config::ANALYTICS_ENABLED);
+    color_print!(Color::Magenta, " │   ├── Peroid: {}", config::DUMP_PEROID);
+    color_print!(Color::Magenta, " │   └── Serve: {}", config::ANALYTICS_SERVE);
     color_print!(Color::Magenta, " └── Other");
-    color_print!(Color::Magenta, "     ├── Status Serve: {}", config::STATUS_SERVE);
-    color_print!(Color::Magenta, "     └── Onion Brodcast: {}", config::BROADCAST_ONION);
+    color_print!(Color::Magenta, "     ├── Status Serve: {}", config::STATUS_SERVE);
+    color_print!(Color::Magenta, "     └── Onion Brodcast: {}", config::BROADCAST_ONION);
 }

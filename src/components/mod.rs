@@ -1,6 +1,7 @@
 use std::sync::Mutex;
 
 use afire::{
+    error::Result,
     middleware::{MiddleResponse, Middleware},
     Request, Response, Server,
 };
@@ -20,7 +21,16 @@ pub trait Component {
 }
 
 impl Middleware for ComponentManager {
-    fn post(&self, req: Request, mut res: Response) -> MiddleResponse {
+    fn post(&self, req: &Result<Request>, res: &Result<Response>) -> MiddleResponse {
+        let req = match req {
+            Ok(i) => i.to_owned(),
+            Err(_) => return MiddleResponse::Continue,
+        };
+        let mut res = match res {
+            Ok(i) => i.to_owned(),
+            Err(_) => return MiddleResponse::Continue,
+        };
+
         let mut components = self.components.lock().unwrap();
 
         for i in components.iter_mut() {
@@ -41,7 +51,7 @@ impl Middleware for ComponentManager {
             }
         }
 
-        MiddleResponse::Add(res)
+        MiddleResponse::Add(res.to_owned())
     }
 }
 

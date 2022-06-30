@@ -3,8 +3,10 @@ use std::fs;
 use std::path::{Path, PathBuf};
 
 use afire::{
+    error::Result,
+    internal::common::trace,
     middleware::{MiddleRequest, Middleware},
-    trace, Method, Request, Response, Server,
+    Method, Request, Response, Server,
 };
 
 use crate::common::{best_size, best_time};
@@ -29,25 +31,31 @@ const FILE_ICONS: &[(&str, &[&str])] = &[
 pub struct Files;
 
 impl Middleware for Files {
-    fn attach(self, server: &mut Server)
+    fn attach<State>(self, server: &mut Server<State>)
     where
-        Self: Sized + 'static,
+        Self: 'static + Send + Sync + Sized,
+        State: 'static + Send + Sync,
     {
         if !*FILE_SERVE {
             return;
         }
 
-        trace!("📦 Adding Middleware {}", type_name::<Self>());
+        trace(format!("📦 Adding Middleware {}", type_name::<Self>()));
 
         server.middleware.push(Box::new(self));
     }
 
-    fn pre(&self, req: Request) -> MiddleRequest {
+    fn pre(&self, req: &Result<Request>) -> MiddleRequest {
+        let req = match req {
+            Ok(i) => i,
+            Err(_) => return MiddleRequest::Continue,
+        };
+
         if !req.path.starts_with("/files") || req.method != Method::GET {
             return MiddleRequest::Continue;
         }
 
-        let mut file_path = req.path;
+        let mut file_path = req.path.to_owned();
         while file_path.contains("/..") {
             file_path = file_path.replace("/..", "");
         }
