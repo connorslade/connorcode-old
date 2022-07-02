@@ -46,6 +46,8 @@ lazy_static! {
     pub static ref DATABASE_PATH: String = get_config!("database_path");
     pub static ref BROADCAST_ONION: bool = get_config!("onion_brodcast");
     pub static ref ONION_SITE: String = get_config!("onion_site");
+    pub static ref TEMPEST_STATION: String = get_config!("tempest_station");
+    pub static ref TEMPEST_TOKEN: String = get_config!("tempest_token");
 }
 
 pub fn load(path: &str) -> Result<(), ConfigError> {
@@ -60,7 +62,7 @@ pub fn load(path: &str) -> Result<(), ConfigError> {
         SERVER_HOST, SERVER_PORT, EXTERNAL_URI, DATA_DIR, FILE_SERVE,
         FILE_SERVE_PATH, WRITING_PATH, ANALYTICS_ENABLED, ANALYTICS_SERVE,
         ANALYTICS_PATH, DUMP_PEROID, STATUS_SERVE, PASS, DATABASE_PATH,
-        BROADCAST_ONION, ONION_SITE
+        BROADCAST_ONION, ONION_SITE, TEMPEST_STATION, TEMPEST_TOKEN
     }
 
     Ok(())
