@@ -179,7 +179,7 @@ impl Files {
 }
 
 fn show_response(file: PathBuf) -> Option<Response> {
-    let _content_type = match file.extension()?.to_str()?.to_lowercase().as_str() {
+    let content_type = match file.extension()?.to_str()?.to_lowercase().as_str() {
         "txt" => "text/plain; charset=utf-8",
         "html" => "text/html; charset=utf-8",
         "css" => "text/css; charset=utf-8",
@@ -200,7 +200,7 @@ fn show_response(file: PathBuf) -> Option<Response> {
         _ => "application/octet-stream",
     };
 
-    Some(Response::new().header("Content-Type", "text/html; charset=utf-8"))
+    Some(Response::new().header("Content-Type", content_type))
 }
 
 fn path_icon(path: &Path) -> String {
