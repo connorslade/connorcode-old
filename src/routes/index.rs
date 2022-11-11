@@ -1,11 +1,13 @@
 use std::fs;
 
 use afire::{Content, Method, Response, Server};
+use serde::Serialize;
+use serde_json::json;
 use simple_config_parser::Config;
 
 use crate::{app::App, VERSION};
 
-#[derive(Clone)]
+#[derive(Clone, Serialize)]
 struct Project {
     id: String,
     name: String,
@@ -22,13 +24,6 @@ impl Project {
             .replace("{{DATE}}", &self.date)
             .replace("{{LINK}}", &self.link)
             .replace("{{IMAGE}}", &self.image)
-    }
-
-    fn jsonify(&self) -> String {
-        format!(
-            r#"{{"id": "{}", "name": "{}", "date": "{}", "link": "{}", "image": "{}"}}"#,
-            self.id, self.name, self.date, self.link, self.image
-        )
     }
 }
 
@@ -70,7 +65,7 @@ pub fn attach(server: &mut Server<App>) {
         projects_html.push_str(&i.format(&base_template));
         projects_html.push('\n');
 
-        projects_json.push_str(&i.jsonify());
+        projects_json.push_str(&json!(i).to_string());
         projects_json.push_str(", ");
     }
 

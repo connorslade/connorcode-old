@@ -7,12 +7,14 @@ use rusqlite::Connection;
 use crate::{analytics::Stats, config::Config};
 
 pub struct App {
+    // == App Styff ==
     /// App Config
     pub config: Config,
 
     /// Databse Connection
     pub database: Mutex<Connection>,
 
+    // ==  MISC ==
     /// Current analytics_data (cleared on dump)
     pub analytics_data: Mutex<HashMap<String, Vec<Stats>>>,
 }

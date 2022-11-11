@@ -1,11 +1,9 @@
 use afire::{Content, Method, Response, Server};
+use serde_json::json;
 use sha2::{Digest, Sha256};
 
 use crate::app::App;
 use crate::common::get_header;
-use crate::template::Template;
-
-const OUT_FORMAT: &str = r#"{"os": {"type": "{{OS_TYPE}}", "release": "{{OS_RELEASE}}"}, "disk": {"total": {{DISK_TOTAL}}, "free": {{DISK_FREE}}}, "memory": {"total": {{MEM_TOTAL}}, "free": {{MEM_FREE}}}, "load": {"1m": {{LOAD_1}}, "5m": {{LOAD_5}}, "15m": {{LOAD_15}}}, "processes": {{PROC}}}"#;
 
 pub fn attach(server: &mut Server<App>) {
     if !server.state.as_ref().unwrap().config.status_serve {
@@ -37,20 +35,26 @@ pub fn attach(server: &mut Server<App>) {
         let os_rel = sys_info::os_release().expect("Error getting OS info");
 
         Response::new()
-            .text(
-                Template::new(OUT_FORMAT)
-                    .template("DISK_TOTAL", disk.total)
-                    .template("DISK_FREE", disk.free)
-                    .template("MEM_TOTAL", mem.total)
-                    .template("MEM_FREE", mem.free)
-                    .template("LOAD_1", load.one)
-                    .template("LOAD_5", load.five)
-                    .template("LOAD_15", load.fifteen)
-                    .template("PROC", proc)
-                    .template("OS_TYPE", os)
-                    .template("OS_RELEASE", os_rel)
-                    .build(),
-            )
+            .text(json!({
+             "os": {
+                 "type": os,
+                 "release": os_rel
+             },
+             "disk": {
+                 "total": disk.total,
+                 "free": disk.free
+             },
+             "memory": {
+                 "total": mem.total,
+                 "free": mem.free,
+             },
+             "load": {
+                 "1m": load.one,
+                 "5m": load.five,
+                 "15m": load.fifteen,
+             },
+             "processes": proc
+            }))
             .content(Content::JSON)
     });
 }

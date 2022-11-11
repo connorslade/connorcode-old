@@ -4,6 +4,7 @@ use std::path::Path;
 
 use afire::{Method, Response, Server};
 use ahash::{HashMap, HashMapExt};
+use serde_json::json;
 use sha2::{Digest, Sha256};
 
 use crate::analytics::Stats;
@@ -26,7 +27,9 @@ pub fn attach(server: &mut Server<App>) {
 
         // Make sure Auth is not too long before hashing
         if auth.len() > 100 {
-            return Response::new().status(403).text("Auth Header is *way* too long");
+            return Response::new()
+                .status(403)
+                .text("Auth Header is *way* too long");
         }
 
         let mut hasher = Sha256::new();
@@ -52,7 +55,8 @@ pub fn attach(server: &mut Server<App>) {
             let data = fs::read(file.path()).expect("Error Reading Analytics File");
 
             // Parse Data
-            let data = bincode::deserialize::<HashMap<String, Vec<Stats>>>(&data).expect("Error Deserializeing Data");
+            let data = bincode::deserialize::<HashMap<String, Vec<Stats>>>(&data)
+                .expect("Error Deserializeing Data");
 
             // Marge data to all_data
             for (ip, data) in data {
@@ -87,38 +91,8 @@ pub fn attach(server: &mut Server<App>) {
                 .header("Content-Type", "application/json");
         }
 
-        let mut working = String::new();
-
-        for i in all_data {
-            let data = i.1;
-            let mut segment = String::new();
-
-            for i in data {
-                segment.push_str(&format!(
-                    r#"{{"time": {}, "method": "{}", "path": "{}", "agent": "{}", "referer": "{}"}}, "#,
-                    i.time,
-                    i.method.to_string().replace('\"', "\\\""),
-                    i.path.replace('\"', "\\\""),
-                    i.user_agent.clone().unwrap_or_else(|| "".to_owned()).replace('\"', "\\\""),
-                    i.referer.clone().unwrap_or_else(|| "".to_owned()).replace('\"', "\\\"")
-                ))
-            }
-
-            if segment.len() >= 2 {
-                segment.pop();
-                segment.pop();
-            }
-
-            working.push_str(&format!(r#""{}": ["#, i.0));
-            working.push_str(&segment);
-            working.push_str("], ");
-        }
-
-        working.pop();
-        working.pop();
-
         Response::new()
-            .text(format!("{{{}}}", working))
+            .text(json!(all_data))
             .header("Content-Type", "application/json")
     });
 }

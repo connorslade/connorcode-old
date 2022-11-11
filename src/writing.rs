@@ -9,6 +9,7 @@ use afire::{
     Content, Method, Request, Response, Server,
 };
 use chrono::prelude::*;
+use serde_json::json;
 use simple_config_parser::Config;
 use unindent::unindent;
 
@@ -157,15 +158,15 @@ impl Document {
     }
 
     fn jsonify(&self) -> String {
-        format!(
-            r#"{{"name": "{}", "disc": "{}", "date": "{}", "icon": "{}", "link": "/writing/{}", "reading": "{}"}}"#,
-            self.title,
-            self.description,
-            self.date,
-            self.icon,
-            self.path,
-            (self.words as f64 / 3.5).round()
-        )
+        json!({
+            "name": self.title,
+            "disc": self.description,
+            "date": self.date,
+            "icon": self.icon,
+            "link": "/writing/{}".to_owned() + &self.path,
+            "reading": (self.words as f64 / 3.5).round()
+        })
+        .to_string()
     }
 
     fn rssify(&self, external_uri: &str) -> String {

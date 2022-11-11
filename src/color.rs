@@ -1,6 +1,3 @@
-// At this rate I should jst make this colorprint stuff a crate..
-// I copy it to almost every project I make now...
-
 /// Define Text Colors
 #[allow(dead_code)]
 pub enum Color {
