@@ -65,11 +65,12 @@ fn main() {
     });
 
     let app = server.state.as_ref().unwrap().clone();
+    app.reload_articles();
+
     components::attach(&mut server);
     serve_static::attach(&mut server);
     routes::attach(&mut server);
     middleware::attach(&mut server);
-    writing::attach(&mut server);
     Files(app.clone()).attach(&mut server);
     Analytics::new(app.clone()).attach(&mut server);
     logger::Logger.attach(&mut server);

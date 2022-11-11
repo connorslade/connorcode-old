@@ -3,7 +3,7 @@ use unindent::unindent;
 
 use crate::app::App;
 
-pub fn attatch(server: &mut Server<App>) {
+pub fn attach(server: &mut Server<App>) {
     server.stateful_route(Method::GET, "/writing.rss", |app, _req| {
         let articles = app.articles.read();
         let mut article_vec = articles.iter().map(|x| x.1).collect::<Vec<_>>();

@@ -4,11 +4,7 @@ use ahash::{HashMap, HashMapExt};
 use parking_lot::{Mutex, RwLock};
 use rusqlite::Connection;
 
-use crate::{
-    analytics::Stats,
-    config::Config,
-    writing::{self, Article},
-};
+use crate::{analytics::Stats, config::Config, writing::Article};
 
 pub struct App {
     // == App Styff ==
@@ -52,6 +48,9 @@ impl App {
         }
     }
 
+    // TODO: Make a new WritinCache struct to hold writing api and page caches
+    // Will be able to be refreshed from here
+
     /// Reload articles from disk
     pub fn reload_articles(&self) {
         let mut articles = self.articles.write();
@@ -60,7 +59,10 @@ impl App {
             let insert = articles.insert(path.to_owned(), i);
 
             if insert.is_some() {
-                println!("[-] Article with path `{}` already defined. Overwriting.", path)
+                println!(
+                    "[-] Article with path `{}` already defined. Overwriting.",
+                    path
+                )
             }
         }
     }
