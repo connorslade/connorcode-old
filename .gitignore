@@ -2,7 +2,7 @@ target/
 local/
 
 data/data.*
-data/analytics/*.aan
+data/analytics/**/*.aan
 
 data/web/static/school/gamedesign/*
 !data/web/static/school/gamedesign/docs

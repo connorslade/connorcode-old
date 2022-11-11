@@ -62,11 +62,11 @@ where
 /// ```
 macro_rules! color_print {
     ($color:expr, $text:expr) => (
-        println!("{}", color::color($text, $color))
+        println!("{}", crate::color::color($text, $color))
     );
     ($color:expr, $($exp:expr),+) => (
         let mut text: String = "{}".to_string();
         $(text = text.replacen("{}", &$exp.to_string(), 1);)*
-        println!("{}", color::color(&text, $color))
+        println!("{}", crate::color::color(&text, $color))
     );
 }

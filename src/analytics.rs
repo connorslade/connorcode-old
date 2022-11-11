@@ -156,50 +156,54 @@ impl Analytics {
         Some(())
     }
 
-    pub fn dump(&self) -> Option<()> {
-        // Create Path
-        let folder = Path::new(&self.app.config.analytics_path);
-        if !folder.exists() {
-            fs::create_dir_all(folder).ok()?;
-        }
-        let filename = Local::now().format("Analytics-%Y-%m-%d.aan").to_string();
-        let path = folder.join(filename);
+    fn dump(&self) -> Option<()> {
+        dump(self.app.clone())
+    }
+}
 
-        // Load Prev Data
-        if path.exists() {
-            let old = fs::read(path.clone()).ok()?;
-            let mut old: HashMap<Ip, Vec<Stats>> = bincode::deserialize(&old).ok()?;
+pub fn dump(app: Arc<App>) -> Option<()> {
+    // Create Path
+    let folder = Path::new(&app.config.analytics_path);
+    if !folder.exists() {
+        fs::create_dir_all(folder).ok()?;
+    }
+    let filename = Local::now().format("Analytics-%Y-%m-%d.aan").to_string();
+    let path = folder.join(filename);
 
-            // Add New Data
-            let mut data = self.app.analytics_data.lock();
-            for i in data.clone() {
-                let ip = i.0;
-                let data = i.1;
+    // Load Prev Data
+    if path.exists() {
+        let old = fs::read(path.clone()).ok()?;
+        let mut old: HashMap<Ip, Vec<Stats>> = bincode::deserialize(&old).ok()?;
 
-                if let Some(new) = old.get(&ip) {
-                    let mut new = new.to_vec();
-                    new.extend(data);
-                    old.insert(ip.to_owned(), new);
-                    continue;
-                }
+        // Add New Data
+        let mut data = app.analytics_data.lock();
+        for i in data.clone() {
+            let ip = i.0;
+            let data = i.1;
 
-                old.insert(ip.to_owned(), data);
+            if let Some(new) = old.get(&ip) {
+                let mut new = new.to_vec();
+                new.extend(data);
+                old.insert(ip.to_owned(), new);
+                continue;
             }
 
-            // Reset In Memory Analytics Cache thing
-            data.clear();
-            let new = bincode::serialize(&old).ok()?;
-
-            // Write New File
-            fs::write(path, new).ok()?;
-
-            return Some(());
+            old.insert(ip.to_owned(), data);
         }
 
-        let new = bincode::serialize(&*self.app.analytics_data.lock()).ok()?;
+        // Reset In Memory Analytics Cache thing
+        data.clear();
+        let new = bincode::serialize(&old).ok()?;
+
+        // Write New File
         fs::write(path, new).ok()?;
-        Some(())
+
+        return Some(());
     }
+
+    let new = bincode::serialize(&*app.analytics_data.lock()).ok()?;
+    fs::write(path, new).ok()?;
+    Some(())
 }
 
 impl Method {

@@ -15,6 +15,7 @@ mod assets;
 mod common;
 mod components;
 mod config;
+mod ctrlc;
 mod files;
 mod logger;
 mod middleware;
@@ -40,6 +41,7 @@ fn main() {
     let app = App::new();
     let host = app.config.server_host.clone();
     let port = app.config.server_port;
+    let threads = app.config.threads;
 
     // Setup HTTP Server
     let mut server = Server::new(&host, port)
@@ -75,10 +77,11 @@ fn main() {
     Analytics::new(app.clone()).attach(&mut server);
     logger::Logger.attach(&mut server);
 
+    ctrlc::init(app.clone());
     print_info(app);
     color_print!(Color::Blue, "[*] Starting server on {}:{}\n", &host, port);
 
-    server.start().expect("Server Port In Use");
+    server.start_threaded(threads).expect("Server Port In Use");
 }
 
 #[rustfmt::skip]

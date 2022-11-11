@@ -6,6 +6,7 @@ pub struct Config {
     // Server Config
     pub server_host: String,
     pub server_port: u16,
+    pub threads: usize,
     pub external_uri: String,
     pub data_dir: String,
 
@@ -41,6 +42,7 @@ impl Config {
         Self {
             server_host: get_config(&cfg, "ip"),
             server_port: get_config(&cfg, "port"),
+            threads: get_config(&cfg, "threads"),
             external_uri: get_config(&cfg, "external_uri"),
             data_dir: get_config(&cfg, "data_dir"),
             file_serve: get_config(&cfg, "file_serve"),

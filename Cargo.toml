@@ -31,6 +31,7 @@ rand_seeder = "0.2.3"
 rand_pcg = "0.3.1"
 parking_lot = "0.12.1"
 ahash = "0.8.2"
+ctrlc = "3.2.3"
 
 [features]
 default = [
