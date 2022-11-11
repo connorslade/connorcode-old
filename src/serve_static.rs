@@ -3,7 +3,6 @@ use std::fs;
 use afire::{extension::ServeStatic, Middleware, Response, Server};
 
 use crate::app::App;
-use crate::Template;
 use crate::VERSION;
 
 /// Files not to serve
@@ -63,13 +62,10 @@ pub fn not_found(path: &str) -> Response {
     Response::new()
         .status(404)
         .text(
-            Template::new(
-                fs::read_to_string("data/web/template/not_found.html")
-                    .unwrap_or_else(|_| "Not Found :/".to_owned()),
-            )
-            .template("VERSION", VERSION)
-            .template("PAGE", path)
-            .build(),
+            fs::read_to_string("data/web/template/not_found.html")
+                .unwrap_or_else(|_| "Not Found :/".to_owned())
+                .replace("{{VERSION}}", VERSION)
+                .replace("{{PAGE}}", path),
         )
         .header("Content-Type", "text/html")
 }

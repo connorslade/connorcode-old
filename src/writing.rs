@@ -14,10 +14,9 @@ use simple_config_parser::Config;
 use unindent::unindent;
 
 use crate::app::App;
-use crate::assets::{WRITING, WRITING_HOME};
+use crate::assets::{self, WRITING, WRITING_HOME};
 use crate::color::{color, Color};
 use crate::common::get_ip;
-use crate::Template;
 
 #[derive(Debug, Clone)]
 struct Document {
@@ -285,10 +284,9 @@ impl Middleware for Writing {
                         Response::new()
                             .status(500)
                             .text(
-                                Template::new(crate::assets::ERROR_PAGE)
-                                    .template("ERROR", i)
-                                    .template("VERSION", crate::VERSION)
-                                    .build(),
+                                assets::ERROR_PAGE
+                                    .replace("{{ERROR}}", i.to_string().as_str())
+                                    .replace("{{VERSION}}", crate::VERSION),
                             )
                             .content(Content::HTML),
                     )
@@ -348,20 +346,18 @@ impl Middleware for Writing {
             opt.render.unsafe_ = true;
 
             let doc_render = comrak::markdown_to_html(data, &opt);
-            let html = Template::new(WRITING)
-                .template("VERSION", crate::VERSION)
-                .template("DOCUMENT", doc_render)
-                .template("AUTHOR", &doc.author)
-                .template("PATH", &doc.path)
-                .template("DATE", &doc.date)
-                .template("VIEWS", views)
-                .template("LIKES", likes)
-                .template("LIKED", liked >= 1)
-                .template("TIME", (doc.words as f64 / 3.0).round())
-                .template("DISC", &doc.description)
-                .template("TAGS", &doc.tags.join(", "))
-                .build();
-
+            let html = WRITING
+                .replace("{{VERSION}}", crate::VERSION)
+                .replace("{{DOCUMENT}}", &doc_render)
+                .replace("{{AUTHOR}}", &doc.author)
+                .replace("{{PATH}}", &doc.path)
+                .replace("{{DATE}}", &doc.date)
+                .replace("{{VIEWS}}", &views.to_string())
+                .replace("{{LIKES}}", &likes.to_string())
+                .replace("{{LIKED}}", &(liked >= 1).to_string())
+                .replace("{{TIME}}", &(doc.words as f64 / 3.0).round().to_string())
+                .replace("{{DISC}}", &doc.description)
+                .replace("{{TAGS}}", &doc.tags.join(", "));
             return MiddleRequest::Send(Response::new().text(html).content(Content::HTML));
         }
 

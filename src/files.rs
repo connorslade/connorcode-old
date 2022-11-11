@@ -12,7 +12,6 @@ use afire::{
 
 use crate::app::App;
 use crate::common::{best_size, best_time};
-use crate::Template;
 use crate::VERSION;
 
 #[rustfmt::skip]
@@ -135,14 +134,11 @@ impl Middleware for Files {
             return MiddleRequest::Send(
                 Response::new()
                     .text(
-                        Template::new(
-                            fs::read_to_string("./data/web/template/files.html")
-                                .unwrap_or_else(|_| "{{FILES}}".to_owned()),
-                        )
-                        .template("PATH", path.file_name().unwrap().to_str().unwrap())
-                        .template("FILES", out)
-                        .template("VERSION", VERSION)
-                        .build(),
+                        fs::read_to_string("./data/web/template/files.html")
+                            .unwrap_or_else(|_| "{{FILES}}".to_owned())
+                            .replace("{{PATH}}", path.file_name().unwrap().to_str().unwrap())
+                            .replace("{{FILES}}", &out)
+                            .replace("{{VERSION}}", VERSION),
                     )
                     .header("Content-Type", "text/html; charset=utf-8"),
             );

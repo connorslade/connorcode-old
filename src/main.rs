@@ -6,7 +6,6 @@ extern crate lazy_static;
 
 mod routes;
 mod serve_static;
-mod template;
 #[macro_use]
 mod color;
 mod analytics;
@@ -24,7 +23,6 @@ use analytics::Analytics;
 use app::App;
 use color::Color;
 use files::Files;
-use template::Template;
 
 pub const VERSION: &str = "7.0.0";
 
@@ -58,11 +56,10 @@ fn main() {
         Response::new()
             .status(500)
             .text(
-                Template::new(assets::ERROR_PAGE)
-                    .template("VERSION", VERSION)
-                    .template("ERROR", &err)
-                    .template("ERROR_BODY", err.replace(' ', "+"))
-                    .build(),
+                assets::ERROR_PAGE
+                    .replace("{{VERSION}}", VERSION)
+                    .replace("{{ERROR}}", &err)
+                    .replace("{{ERROR_BODY}}", &urlencoding::encode(&err)),
             )
             .content(Content::HTML)
     });
