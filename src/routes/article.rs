@@ -19,7 +19,7 @@ impl Middleware for Article {
             Err(_) => return MiddleRequest::Continue,
         };
 
-        // For extra speed continue on non GET requests
+        // Continue on non GET requests
         if req.method != Method::GET {
             return MiddleRequest::Continue;
         }
@@ -83,7 +83,7 @@ impl Middleware for Article {
 
             let mut conn = self.0.database.lock();
             let trans = conn.transaction().unwrap();
-            // Add a vied to the article if it hasent been viewed before
+            // Add a view to the article if it hasent been viewed before
             trans
                 .execute(
                     "INSERT OR IGNORE INTO article_views (name, ip, date) VALUES (?1, ?2, strftime('%s','now'))",
@@ -92,11 +92,11 @@ impl Middleware for Article {
                 .unwrap();
 
             // Get View Count
-            let views: usize = trans
+            let views = trans
                 .query_row(
                     "SELECT COUNT(*) FROM article_views WHERE name = ?1",
                     rusqlite::params![doc.path],
-                    |row| row.get(0),
+                    |row| row.get::<_, usize>(0),
                 )
                 .unwrap();
 
@@ -110,11 +110,11 @@ impl Middleware for Article {
                 .unwrap();
 
             // Get if this ip has like the post
-            let liked: usize = trans
+            let liked = trans
                 .query_row(
                     "SELECT COUNT(*) FROM article_likes WHERE name = ?1 AND ip = ?2",
                     rusqlite::params![doc.path, ip],
-                    |row| row.get(0),
+                    |row| row.get::<_, usize>(0),
                 )
                 .unwrap();
 

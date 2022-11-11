@@ -41,7 +41,6 @@ pub fn attach(server: &mut Server<App>) {
 
 /// Get MIME type for common image formats
 fn get_type(path: &str) -> &str {
-    // TODO: Test this
     path.rsplit_once('.')
         .map(|x| match x.1 {
             "png" => "image/png",
