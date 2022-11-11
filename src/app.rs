@@ -1,10 +1,14 @@
-use std::env;
+use std::{env, path::PathBuf};
 
 use ahash::{HashMap, HashMapExt};
-use parking_lot::Mutex;
+use parking_lot::{Mutex, RwLock};
 use rusqlite::Connection;
 
-use crate::{analytics::Stats, config::Config};
+use crate::{
+    analytics::Stats,
+    config::Config,
+    writing::{self, Article},
+};
 
 pub struct App {
     // == App Styff ==
@@ -14,7 +18,9 @@ pub struct App {
     /// Databse Connection
     pub database: Mutex<Connection>,
 
-    // ==  MISC ==
+    /// Articles String -> Article
+    pub articles: RwLock<HashMap<String, Article>>,
+
     /// Current analytics_data (cleared on dump)
     pub analytics_data: Mutex<HashMap<String, Vec<Stats>>>,
 }
@@ -40,7 +46,22 @@ impl App {
         Self {
             config: cfg,
             database: Mutex::new(db),
+
+            articles: RwLock::new(HashMap::new()),
             analytics_data: Mutex::new(HashMap::new()),
+        }
+    }
+
+    /// Reload articles from disk
+    pub fn reload_articles(&self) {
+        let mut articles = self.articles.write();
+        for i in Article::load_documents(PathBuf::from(&self.config.writing_path)) {
+            let path = i.path.to_owned();
+            let insert = articles.insert(path.to_owned(), i);
+
+            if insert.is_some() {
+                println!("[-] Article with path `{}` already defined. Overwriting.", path)
+            }
         }
     }
 }

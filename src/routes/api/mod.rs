@@ -10,6 +10,7 @@ mod random;
 mod random_color;
 mod random_nose;
 mod raw_http;
+mod writing;
 
 pub fn attach(server: &mut Server<App>) {
     admin::attach(server);
@@ -20,4 +21,5 @@ pub fn attach(server: &mut Server<App>) {
     random::attach(server);
     random_nose::attach(server);
     raw_http::attach(server);
+    writing::attach(server);
 }
