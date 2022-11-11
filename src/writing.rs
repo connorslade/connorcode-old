@@ -12,7 +12,7 @@ use chrono::prelude::*;
 use simple_config_parser::Config;
 use unindent::unindent;
 
-use crate::assets::WRITING;
+use crate::assets::{WRITING, WRITING_HOME};
 use crate::color::{color, Color};
 use crate::common::get_ip;
 use crate::config::{DATABASE_PATH, EXTERNAL_URI, WRITING_PATH};
@@ -38,6 +38,7 @@ struct Writing {
     connection: Mutex<rusqlite::Connection>,
     documents: Vec<Document>,
 
+    writing_cache: String,
     api_cache: String,
     rss_cache: String,
 }
@@ -218,6 +219,13 @@ impl Middleware for Writing {
 
         // Match and serve cached API endpoints
         match req.path.as_str() {
+            "/writing" => {
+                return MiddleRequest::Send(
+                    Response::new()
+                        .text(&self.writing_cache)
+                        .content(Content::HTML),
+                )
+            }
             "/api/writing" => {
                 return MiddleRequest::Send(
                     Response::new().text(&self.api_cache).content(Content::JSON),
@@ -379,6 +387,7 @@ impl Writing {
         trans.commit().unwrap();
 
         // Init Caches
+        let writing_cache = gen_doc_data(&docs);
         let api_cache = gen_api_data(&docs);
         let rss_cache = gen_rss_data(&docs);
 
@@ -386,10 +395,29 @@ impl Writing {
             connection: Mutex::new(conn),
             documents: docs,
 
+            writing_cache,
             api_cache,
             rss_cache,
         }
     }
+}
+
+fn gen_doc_data(docs: &[Document]) -> String {
+    let mut documents = String::new();
+    for i in docs {
+        documents.push_str(&unindent(&format!(
+            r#"<div class="article">
+                <i class="icon"><i class="fa fa-{}"></i></i>
+                <p class="name">{}</p>
+                <p class="disc">{}</p>
+                <p class="date"><i class="fa fa-calendar"></i> {}</p>
+                <a href="/writing/{}"><span class="div-link"></span></a>
+            </div>"#,
+            i.icon, i.title, i.description, i.date, i.path
+        )));
+    }
+
+    WRITING_HOME.replace("{{ARTICLES}}", &documents)
 }
 
 fn gen_api_data(docs: &[Document]) -> String {

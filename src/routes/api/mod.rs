@@ -4,8 +4,8 @@ mod admin;
 mod git;
 mod headers;
 mod ip;
-mod random_color;
 mod random;
+mod random_color;
 mod random_nose;
 mod raw_http;
 

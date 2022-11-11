@@ -5,7 +5,6 @@ use std::sync::{
 use std::time::{SystemTime, UNIX_EPOCH};
 
 use afire::{Content, Method, Response, Server};
-use rand::distributions::Alphanumeric;
 use rand::prelude::*;
 use rand_pcg::Pcg64;
 use rand_seeder::Seeder;
