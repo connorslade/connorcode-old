@@ -1,8 +1,10 @@
-use afire::{Method, Response, Server};
+use afire::{internal::common::remove_address_port, Content, Method, Response, Server};
 
-pub fn attach(server: &mut Server) {
+use crate::app::App;
+
+pub fn attach(server: &mut Server<App>) {
     server.route(Method::GET, "/api/ip", |req| {
-        let mut ip = get_ip(req.address);
+        let mut ip = remove_address_port(req.address);
 
         // If Ip is Localhost and 'X-Forwarded-For' Header is present
         // Use that as Ip
@@ -14,15 +16,6 @@ pub fn attach(server: &mut Server) {
             }
         }
 
-        Response::new()
-            .text(ip)
-            .header("Content-Type", "text/plain")
+        Response::new().text(ip).content(Content::TXT)
     });
-}
-
-fn get_ip(addr: String) -> String {
-    addr.split(':')
-        .next()
-        .expect("Error Getting Ip. No Idea now that happend but it did.")
-        .to_owned()
 }

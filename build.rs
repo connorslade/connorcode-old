@@ -21,7 +21,6 @@ fn quick_cmd(cmd: &str, args: &[&str]) -> Option<String> {
     Some(
         String::from_utf8(Command::new(cmd).args(args).output().ok()?.stdout)
             .unwrap()
-            .replace('\n', "")
-            .replace('\r', ""),
+            .replace(['\n', '\r'], ""),
     )
 }

@@ -7,6 +7,8 @@ use afire::{
 };
 use regex::Regex;
 
+use crate::app::App;
+
 mod footer;
 mod footer_rss;
 mod header;
@@ -51,7 +53,7 @@ impl Middleware for ComponentManager {
             }
         }
 
-        MiddleResponse::Add(res.to_owned())
+        MiddleResponse::Add(res)
     }
 }
 
@@ -67,7 +69,7 @@ impl ComponentManager {
     }
 }
 
-pub fn attach(server: &mut Server) {
+pub fn attach(server: &mut Server<App>) {
     let cmp = ComponentManager::new();
     cmp.add(Box::new(footer::Footer));
     cmp.add(Box::new(footer_rss::FooterRss));

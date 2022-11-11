@@ -1,69 +1,67 @@
-use lazy_static::initialize;
-use simple_config_parser::{Config, ConfigError};
+use std::{path::Path, str::FromStr};
 
-static mut CONFIG: Config = Config { data: Vec::new() };
+use simple_config_parser::Config as Cfg;
 
-macro_rules! get_config {
-    ($name:expr) => {
-        unsafe { &CONFIG }
-            .get($name)
-            .expect(concat!("Error getting `", $name, "` from Config"))
-    };
-}
-
-macro_rules! init_lazy {
-    ($($exp:expr),+) => {
-        $(initialize(&$exp);)*
-    };
-}
-
-lazy_static! {
+pub struct Config {
     // Server Config
-    pub static ref SERVER_HOST: String = get_config!("ip");
-    pub static ref SERVER_PORT: u16 = get_config!("port");
-    pub static ref EXTERNAL_URI: String = get_config!("external_uri");
-    pub static ref DATA_DIR: String = get_config!("data_dir");
+    pub server_host: String,
+    pub server_port: u16,
+    pub external_uri: String,
+    pub data_dir: String,
 
     // File Serve
-    pub static ref FILE_SERVE: bool = get_config!("file_serve");
-    pub static ref FILE_SERVE_PATH: String = get_config!("file_serve_path");
+    pub file_serve: bool,
+    pub file_serve_path: String,
 
     // Writing
-    pub static ref WRITING_PATH: String = get_config!("writing_path");
-
+    pub writing_path: String,
 
     // Analytics Config
-    pub static ref ANALYTICS_ENABLED: bool = get_config!("analytics_enabled");
-    pub static ref ANALYTICS_SERVE: bool = get_config!("analytics_serve");
-    pub static ref ANALYTICS_PATH: String = get_config!("analytics_path");
-    pub static ref DUMP_PEROID: u64 = get_config!("dump_peroid");
+    pub analytics_enabled: bool,
+    pub analytics_serve: bool,
+    pub analytics_path: String,
+    pub dump_peroid: u64,
 
     // Admin Other
-    pub static ref STATUS_SERVE: bool = get_config!("status_serve");
-    pub static ref PASS: String = get_config!("pass");
+    pub status_serve: bool,
+    pub pass: String,
 
     // Other
-    pub static ref DATABASE_PATH: String = get_config!("database_path");
-    pub static ref BROADCAST_ONION: bool = get_config!("onion_brodcast");
-    pub static ref ONION_SITE: String = get_config!("onion_site");
-    pub static ref TEMPEST_STATION: String = get_config!("tempest_station");
-    pub static ref TEMPEST_TOKEN: String = get_config!("tempest_token");
+    pub database_path: String,
+    pub broadcast_onion: bool,
+    pub onion_site: String,
+    pub tempest_station: String,
+    pub tempest_token: String,
 }
 
-pub fn load(path: &str) -> Result<(), ConfigError> {
-    let cfg = Config::new().file(path)?;
+impl Config {
+    pub fn new<T: AsRef<Path>>(file: T) -> Self {
+        let cfg = Cfg::new().file(file).unwrap();
 
-    unsafe {
-        CONFIG = cfg;
+        Self {
+            server_host: get_config(&cfg, "server_host"),
+            server_port: get_config(&cfg, "server_port"),
+            external_uri: get_config(&cfg, "external_uri"),
+            data_dir: get_config(&cfg, "data_dir"),
+            file_serve: get_config(&cfg, "file_serve"),
+            file_serve_path: get_config(&cfg, "file_serve_path"),
+            writing_path: get_config(&cfg, "writing_path"),
+            analytics_enabled: get_config(&cfg, "analytics_enabled"),
+            analytics_serve: get_config(&cfg, "analytics_serve"),
+            analytics_path: get_config(&cfg, "analytics_path"),
+            dump_peroid: get_config(&cfg, "dump_peroid"),
+            status_serve: get_config(&cfg, "status_serve"),
+            pass: get_config(&cfg, "pass"),
+            database_path: get_config(&cfg, "database_path"),
+            broadcast_onion: get_config(&cfg, "broadcast_onion"),
+            onion_site: get_config(&cfg, "onion_site"),
+            tempest_station: get_config(&cfg, "tempest_station"),
+            tempest_token: get_config(&cfg, "tempest_token"),
+        }
     }
+}
 
-    // Init the lazy config values
-    init_lazy! {
-        SERVER_HOST, SERVER_PORT, EXTERNAL_URI, DATA_DIR, FILE_SERVE,
-        FILE_SERVE_PATH, WRITING_PATH, ANALYTICS_ENABLED, ANALYTICS_SERVE,
-        ANALYTICS_PATH, DUMP_PEROID, STATUS_SERVE, PASS, DATABASE_PATH,
-        BROADCAST_ONION, ONION_SITE, TEMPEST_STATION, TEMPEST_TOKEN
-    }
-
-    Ok(())
+fn get_config<T: FromStr>(cfg: &Cfg, name: &str) -> T {
+    cfg.get(name)
+        .unwrap_or_else(|_| panic!("Error getting `{}` from Config", name))
 }

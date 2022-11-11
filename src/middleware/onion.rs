@@ -1,4 +1,4 @@
-use std::any::type_name;
+use std::{any::type_name, sync::Arc};
 
 use afire::{
     error::Result,
@@ -7,15 +7,9 @@ use afire::{
     Request, Response, Server,
 };
 
-use crate::config::{BROADCAST_ONION, ONION_SITE};
+use crate::app::App;
 
-pub struct Onion;
-
-impl Onion {
-    pub fn new() -> Self {
-        Onion
-    }
-}
+pub struct Onion(pub Arc<App>);
 
 impl Middleware for Onion {
     fn post(&self, req: &Result<Request>, res: &Result<Response>) -> MiddleResponse {
@@ -28,10 +22,10 @@ impl Middleware for Onion {
             Err(_) => return MiddleResponse::Continue,
         };
 
-        MiddleResponse::Add(
-            res.to_owned()
-                .header("Onion-Location", format!("{}{}", *ONION_SITE, req.path)),
-        )
+        MiddleResponse::Add(res.to_owned().header(
+            "Onion-Location",
+            format!("{}{}", self.0.config.onion_site, req.path),
+        ))
     }
 
     fn attach<State>(self, server: &mut Server<State>)
@@ -39,7 +33,7 @@ impl Middleware for Onion {
         Self: 'static + Send + Sync + Sized,
         State: 'static + Send + Sync,
     {
-        if !*BROADCAST_ONION {
+        if !self.0.config.broadcast_onion {
             return;
         }
 

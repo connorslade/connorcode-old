@@ -20,7 +20,7 @@ impl Middleware for Logger {
             _ => &req.path,
         };
 
-        println!("[{}] {} {}{}", get_ip(&req), req.method, path, req.query);
+        println!("[{}] {} {}{}", get_ip(req), req.method, path, req.query);
 
         MiddleRequest::Continue
     }

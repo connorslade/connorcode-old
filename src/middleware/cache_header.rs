@@ -10,12 +10,6 @@ const CACHE_LEN: u32 = 3600;
 
 pub struct Cache;
 
-impl Cache {
-    pub fn new() -> Self {
-        Cache
-    }
-}
-
 impl Middleware for Cache {
     fn post(&self, req: &Result<Request>, res: &Result<Response>) -> MiddleResponse {
         let req = match req {

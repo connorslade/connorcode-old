@@ -6,8 +6,11 @@ use afire::Response;
 use afire::Server;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
+use ureq::AgentBuilder;
 
-pub fn attach(server: &mut Server) {
+use crate::app::App;
+
+pub fn attach(server: &mut Server<App>) {
     server.route(Method::GET, "/randomimg/image.png", |_req| {
         // Try to find a ramdom image 5 times
         for _ in 1..5 {
@@ -31,9 +34,7 @@ fn get_random_image() -> Option<(Vec<u8>, String)> {
         .collect::<String>()
         .to_lowercase();
 
-    let agent = ureq::AgentBuilder::new()
-        .timeout(Duration::from_secs(1))
-        .build();
+    let agent = AgentBuilder::new().timeout(Duration::from_secs(1)).build();
 
     // Get Image page
     let i = agent

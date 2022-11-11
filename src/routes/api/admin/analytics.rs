@@ -7,15 +7,15 @@ use afire::{Method, Response, Server};
 use sha2::{Digest, Sha256};
 
 use crate::analytics::Stats;
+use crate::app::App;
 use crate::common::get_header;
-use crate::config::{ANALYTICS_PATH, ANALYTICS_SERVE, PASS};
 
-pub fn attach(server: &mut Server) {
-    if !*ANALYTICS_SERVE {
+pub fn attach(server: &mut Server<App>) {
+    if !server.state.as_ref().unwrap().config.analytics_serve {
         return;
     }
 
-    server.route(Method::GET, "/api/analytics", |req| {
+    server.stateful_route(Method::GET, "/api/analytics", |app, req| {
         // Check Auth
         let auth = match get_header(req.headers, "Auth") {
             Some(i) => i,
@@ -33,12 +33,12 @@ pub fn attach(server: &mut Server) {
         hasher.update(auth.into_bytes());
         let result = hasher.finalize();
 
-        if format!("{:02x}", result) != *PASS {
+        if format!("{:02x}", result) != app.config.pass {
             return Response::new().status(403).text("Invalid Auth Header");
         }
 
         // Get Data From Disk
-        let folder = Path::new(&*ANALYTICS_PATH);
+        let folder = Path::new(&app.config.analytics_path);
         let files = fs::read_dir(folder).expect("Error Reading Dir");
         let mut all_data: HashMap<String, Vec<Stats>> = HashMap::new();
 

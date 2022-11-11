@@ -1,34 +1,29 @@
 use std::fs;
-use std::path::PathBuf;
 
 use afire::Method;
 use afire::Response;
 use afire::Server;
 use rand::seq::SliceRandom;
 
-use crate::config::DATA_DIR;
+use crate::app::App;
 
-lazy_static! {
-    static ref NOSES: Vec<PathBuf> = {
-        let mut working = Vec::new();
-        let all_noses =
-            fs::read_dir(format!("{}/assets/Noses", *DATA_DIR)).expect("Error Reading Nose Dir");
+pub fn attach(server: &mut Server<App>) {
+    let mut noses = Vec::new();
+    let data_dir = &server.state.as_ref().unwrap().config.data_dir;
 
-        for nose in all_noses {
-            let nose = nose.expect("Error getting subfiles").path();
+    let all_noses =
+        fs::read_dir(format!("{}/assets/Noses", data_dir)).expect("Error Reading Nose Dir");
 
-            if nose.is_file() {
-                working.push(nose);
-            }
+    for nose in all_noses {
+        let nose = nose.expect("Error getting subfiles").path();
+
+        if nose.is_file() {
+            noses.push(nose);
         }
+    }
 
-        working
-    };
-}
-
-pub fn attach(server: &mut Server) {
-    server.route(Method::GET, "/api/randomnose", |_req| {
-        let random_nose = NOSES
+    server.route(Method::GET, "/api/randomnose", move |_req| {
+        let random_nose = noses
             .choose(&mut rand::thread_rng())
             .expect("Error Picking Nose");
         let random_nose_str = random_nose.to_string_lossy().replace('\\', "");
@@ -46,16 +41,15 @@ pub fn attach(server: &mut Server) {
 
 /// Get MIME type for common image formats
 fn get_type(path: &str) -> &str {
-    match path.split('.').last() {
-        Some(ext) => match ext {
+    // TODO: Test this
+    path.rsplit_once('.')
+        .map(|x| match x.1 {
             "png" => "image/png",
             "jpg" => "image/jpeg",
             "jpeg" => "image/jpeg",
             "gif" => "image/gif",
 
             _ => "application/octet-stream",
-        },
-
-        None => "application/octet-stream",
-    }
+        })
+        .unwrap_or("application/octet-stream")
 }

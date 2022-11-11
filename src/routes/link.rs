@@ -2,14 +2,15 @@ use std::fs;
 
 use afire::{Method, Response, Server};
 
-use crate::serve_static::not_found;
+use crate::{app::App, serve_static::not_found};
 
 lazy_static! {
+    // TODO: Use config path from env vars
     static ref LINKS: Vec<[String; 2]> =
         load_links("data/config/link.cfg").expect("Error Loading Links");
 }
 
-pub fn attach(server: &mut Server) {
+pub fn attach(server: &mut Server<App>) {
     lazy_static::initialize(&LINKS);
 
     server.route(Method::GET, "/r/{code}", |req| {

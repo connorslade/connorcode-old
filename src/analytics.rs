@@ -3,6 +3,7 @@ use std::collections::HashMap;
 use std::fmt;
 use std::fs;
 use std::path::Path;
+use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
@@ -15,7 +16,7 @@ use afire::{
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 
-use crate::config::{ANALYTICS_ENABLED, ANALYTICS_PATH, DUMP_PEROID};
+use crate::app::App;
 
 type Ip = String;
 
@@ -28,8 +29,10 @@ pub struct Stats {
     pub referer: Option<String>,
 }
 
-#[derive(Debug, Serialize, Deserialize)]
+// TODO: Make data accessable from App struct
 pub struct Analytics {
+    app: Arc<App>,
+
     data: Mutex<HashMap<Ip, Vec<Stats>>>,
     last_dump: Mutex<SystemTime>,
 }
@@ -62,7 +65,7 @@ impl Middleware for Analytics {
         Self: 'static + Send + Sync + Sized,
         State: 'static + Send + Sync,
     {
-        if !*ANALYTICS_ENABLED {
+        if !self.app.config.analytics_enabled {
             return;
         }
 
@@ -91,8 +94,9 @@ impl Stats {
 }
 
 impl Analytics {
-    pub fn new() -> Self {
+    pub fn new(app: Arc<App>) -> Self {
         Analytics {
+            app,
             data: Mutex::new(HashMap::new()),
             last_dump: Mutex::new(SystemTime::now()),
         }
@@ -103,7 +107,7 @@ impl Analytics {
             .duration_since(UNIX_EPOCH)
             .expect("Cant get time: Time went backwards!")
             .as_secs();
-        let mut ip = internal::common::remove_address_port(req.address.to_owned());
+        let mut ip = internal::common::remove_address_port(&req.address);
 
         // If Ip is Localhost and 'X-Forwarded-For' Header is present
         // Use that as Ip
@@ -141,7 +145,7 @@ impl Analytics {
             .elapsed()
             .expect("Cant get elapsed time: Time went backwards!")
             .as_secs()
-            < *DUMP_PEROID
+            < self.app.config.dump_peroid
         {
             return Some(());
         }
@@ -158,7 +162,7 @@ impl Analytics {
 
     pub fn dump(&self) -> Option<()> {
         // Create Path
-        let folder = Path::new(&*ANALYTICS_PATH);
+        let folder = Path::new(&self.app.config.analytics_path);
         if !folder.exists() {
             fs::create_dir_all(folder).ok()?;
         }

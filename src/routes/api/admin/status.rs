@@ -1,18 +1,18 @@
-use afire::{Method, Response, Server};
+use afire::{Content, Method, Response, Server};
 use sha2::{Digest, Sha256};
 
+use crate::app::App;
 use crate::common::get_header;
-use crate::config::{PASS, STATUS_SERVE};
 use crate::template::Template;
 
 const OUT_FORMAT: &str = r#"{"os": {"type": "{{OS_TYPE}}", "release": "{{OS_RELEASE}}"}, "disk": {"total": {{DISK_TOTAL}}, "free": {{DISK_FREE}}}, "memory": {"total": {{MEM_TOTAL}}, "free": {{MEM_FREE}}}, "load": {"1m": {{LOAD_1}}, "5m": {{LOAD_5}}, "15m": {{LOAD_15}}}, "processes": {{PROC}}}"#;
 
-pub fn attach(server: &mut Server) {
-    if !*STATUS_SERVE {
+pub fn attach(server: &mut Server<App>) {
+    if !server.state.as_ref().unwrap().config.status_serve {
         return;
     }
 
-    server.route(Method::GET, "/api/status", |req| {
+    server.stateful_route(Method::GET, "/api/status", |app, req| {
         // Check Auth
         let auth = match get_header(req.headers, "Auth") {
             Some(i) => i,
@@ -25,7 +25,7 @@ pub fn attach(server: &mut Server) {
         hasher.update(auth.into_bytes());
         let result = hasher.finalize();
 
-        if format!("{:02x}", result) != *PASS {
+        if format!("{:02x}", result) != app.config.pass {
             return Response::new().status(403).text("Invalid Pass Header");
         }
 
@@ -51,6 +51,6 @@ pub fn attach(server: &mut Server) {
                     .template("OS_RELEASE", os_rel)
                     .build(),
             )
-            .header("Content-Type", "application/json")
+            .content(Content::JSON)
     });
 }

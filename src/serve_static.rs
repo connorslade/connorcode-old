@@ -2,7 +2,7 @@ use std::fs;
 
 use afire::{extension::ServeStatic, Middleware, Response, Server};
 
-use crate::config::DATA_DIR;
+use crate::app::App;
 use crate::Template;
 use crate::VERSION;
 
@@ -26,8 +26,9 @@ lazy_static! {
     };
 }
 
-pub fn attach(server: &mut Server) {
-    ServeStatic::new(&*DATA_DIR)
+pub fn attach(server: &mut Server<App>) {
+    let data_dir = &server.state.as_ref().unwrap().config.data_dir;
+    ServeStatic::new(data_dir)
         // Inject version into reponses
         // Replaces `{{VERSION}}` with the verison in main.rs
         .middleware(|_req, res, suc| match String::from_utf8(res.data.clone()) {

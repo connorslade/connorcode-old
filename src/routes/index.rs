@@ -3,7 +3,7 @@ use std::fs;
 use afire::{Content, Method, Response, Server};
 use simple_config_parser::Config;
 
-use crate::VERSION;
+use crate::{app::App, VERSION};
 
 #[derive(Clone)]
 struct Project {
@@ -32,7 +32,7 @@ impl Project {
     }
 }
 
-pub fn attach(server: &mut Server) {
+pub fn attach(server: &mut Server<App>) {
     let cfg = Config::new()
         .file("data/config/projects.cfg")
         .expect("Error Reading Project Config");

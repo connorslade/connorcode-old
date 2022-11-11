@@ -2,7 +2,9 @@ use afire::Method;
 use afire::Response;
 use afire::Server;
 
-pub fn attach(server: &mut Server) {
+use crate::app::App;
+
+pub fn attach(server: &mut Server<App>) {
     server.route(Method::GET, "/api/headers", |req| {
         let mut resp = String::new();
 

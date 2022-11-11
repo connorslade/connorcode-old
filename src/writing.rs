@@ -1,7 +1,7 @@
 use std::borrow::Borrow;
 use std::fs::{self, DirEntry};
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
+use std::sync::Arc;
 
 use afire::{
     error::Result,
@@ -12,10 +12,10 @@ use chrono::prelude::*;
 use simple_config_parser::Config;
 use unindent::unindent;
 
+use crate::app::App;
 use crate::assets::{WRITING, WRITING_HOME};
 use crate::color::{color, Color};
 use crate::common::get_ip;
-use crate::config::{DATABASE_PATH, EXTERNAL_URI, WRITING_PATH};
 use crate::Template;
 
 #[derive(Debug, Clone)]
@@ -35,7 +35,7 @@ struct Document {
 }
 
 struct Writing {
-    connection: Mutex<rusqlite::Connection>,
+    app: Arc<App>,
     documents: Vec<Document>,
 
     writing_cache: String,
@@ -43,10 +43,11 @@ struct Writing {
     rss_cache: String,
 }
 
-pub fn attach(server: &mut Server) {
-    let docs = Document::load_documents(PathBuf::from(&*WRITING_PATH));
+pub fn attach(server: &mut Server<App>) {
+    let app = server.state.as_ref().unwrap();
+    let docs = Document::load_documents(PathBuf::from(&app.config.writing_path));
 
-    Writing::new(docs).attach(server);
+    Writing::new(docs, app.clone()).attach(server);
 }
 
 macro_rules! safe_config {
@@ -167,7 +168,7 @@ impl Document {
         )
     }
 
-    fn rssify(&self) -> String {
+    fn rssify(&self, external_uri: &str) -> String {
         let parts = self.date.split('-').collect::<Vec<_>>();
         let date = Utc
             .ymd(
@@ -189,7 +190,7 @@ impl Document {
                 self.title,
                 self.description,
                 date.to_rfc2822(),
-                *EXTERNAL_URI,
+                external_uri,
                 self.path
             )
             .as_str(),
@@ -206,7 +207,7 @@ impl Middleware for Writing {
 
         // Handel Like API requests
         if req.method == Method::POST && req.path == "/api/writing/like" {
-            match handle_like(&mut self.connection.lock().unwrap(), &self.documents, &req) {
+            match handle_like(&mut self.app.database.lock(), &self.documents, req) {
                 Some(i) => return MiddleRequest::Send(i),
                 None => return MiddleRequest::Send(Response::new().status(400).text("Error :/")),
             }
@@ -247,7 +248,9 @@ impl Middleware for Writing {
                 .unwrap_or_default()
                 .replace("..", "");
 
-            let path = Path::new(&*WRITING_PATH).join("assets").join(&file);
+            let path = Path::new(&self.app.config.writing_path)
+                .join("assets")
+                .join(&file);
             let ext = path.extension().unwrap_or_default();
             let ext = ext.borrow().to_str().unwrap_or_default();
 
@@ -293,9 +296,9 @@ impl Middleware for Writing {
             let data = data.split_once("---").unwrap().1;
 
             // Get real Client IP
-            let ip = get_ip(&req);
+            let ip = get_ip(req);
 
-            let mut conn = self.connection.lock().unwrap();
+            let mut conn = self.app.database.lock();
             let trans = conn.transaction().unwrap();
             // Add a vied to the article if it hasent been viewed before
             trans
@@ -367,32 +370,13 @@ impl Middleware for Writing {
 }
 
 impl Writing {
-    fn new(docs: Vec<Document>) -> Self {
-        // Connect to Database
-        let mut conn = rusqlite::Connection::open(&*DATABASE_PATH).unwrap();
-
-        conn.pragma_update(None, "journal_mode", "WAL").unwrap();
-        conn.pragma_update(None, "synchronous", "NORMAL").unwrap();
-
-        let trans = conn.transaction().unwrap();
-        // Init article table
-        trans
-            .execute(include_str!("sql/create_article_views.sql"), [])
-            .unwrap();
-
-        trans
-            .execute(include_str!("sql/create_article_likes.sql"), [])
-            .unwrap();
-
-        trans.commit().unwrap();
-
-        // Init Caches
+    fn new(docs: Vec<Document>, app: Arc<App>) -> Self {
         let writing_cache = gen_doc_data(&docs);
         let api_cache = gen_api_data(&docs);
-        let rss_cache = gen_rss_data(&docs);
+        let rss_cache = gen_rss_data(&docs, &app.config.external_uri);
 
         Self {
-            connection: Mutex::new(conn),
+            app,
             documents: docs,
 
             writing_cache,
@@ -434,11 +418,11 @@ fn gen_api_data(docs: &[Document]) -> String {
     format!("[{}]", out)
 }
 
-fn gen_rss_data(docs: &[Document]) -> String {
+fn gen_rss_data(docs: &[Document], external_uri: &str) -> String {
     let mut out = String::new();
 
     for i in docs.iter().filter(|x| !x.hidden) {
-        out.push_str(i.rssify().as_str());
+        out.push_str(i.rssify(external_uri).as_str());
         out.push_str("\n\n");
     }
 
@@ -461,7 +445,7 @@ fn gen_rss_data(docs: &[Document]) -> String {
 
             </channel>
             </rss>"#,
-            *EXTERNAL_URI, out
+            external_uri, out
         )
         .as_str(),
     )

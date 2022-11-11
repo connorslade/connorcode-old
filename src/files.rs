@@ -1,6 +1,7 @@
 use std::any::type_name;
 use std::fs;
 use std::path::{Path, PathBuf};
+use std::sync::Arc;
 
 use afire::{
     error::Result,
@@ -9,8 +10,8 @@ use afire::{
     Method, Request, Response, Server,
 };
 
+use crate::app::App;
 use crate::common::{best_size, best_time};
-use crate::config::{FILE_SERVE, FILE_SERVE_PATH};
 use crate::Template;
 use crate::VERSION;
 
@@ -28,7 +29,7 @@ const FILE_ICONS: &[(&str, &[&str])] = &[
     ("file-pdf-o",        &["pdf"]),
 ];
 
-pub struct Files;
+pub struct Files(pub Arc<App>);
 
 impl Middleware for Files {
     fn attach<State>(self, server: &mut Server<State>)
@@ -36,7 +37,7 @@ impl Middleware for Files {
         Self: 'static + Send + Sync + Sized,
         State: 'static + Send + Sync,
     {
-        if !*FILE_SERVE {
+        if !self.0.config.file_serve {
             return;
         }
 
@@ -69,7 +70,7 @@ impl Middleware for Files {
             file_path.remove(0);
         }
 
-        let path = PathBuf::from(FILE_SERVE_PATH.clone()).join(&file_path);
+        let path = PathBuf::from(&self.0.config.file_serve_path).join(&file_path);
 
         if path.is_dir() {
             let mut dir = match fs::read_dir(&path) {
@@ -89,11 +90,11 @@ impl Middleware for Files {
 
             let mut out = String::new();
 
-            if path != PathBuf::from(FILE_SERVE_PATH.clone()) {
+            if path != PathBuf::from(&self.0.config.file_serve_path) {
                 out.push_str(&format!(
                     r#"<div class="file"><i class="fa fa-folder"></i><a href="/files{}">..</a><p class="size"></p></div>"#,
                     path.parent().unwrap().to_string_lossy().replacen(
-                        FILE_SERVE_PATH.as_str(),
+                        self.0.config.file_serve_path.as_str(),
                         "",
                         1
                     )
@@ -102,7 +103,11 @@ impl Middleware for Files {
 
             for i in dir {
                 let j = i.to_string_lossy();
-                let url = j.split(&*FILE_SERVE_PATH).nth(1).unwrap().to_owned();
+                let url = j
+                    .split(&self.0.config.file_serve_path)
+                    .nth(1)
+                    .unwrap()
+                    .to_owned();
                 let name = j.split(path.to_str().unwrap()).nth(1).unwrap().to_owned();
                 let mut size = i.metadata().unwrap().len();
 
@@ -169,12 +174,6 @@ impl Middleware for Files {
                 })
                 .bytes(file),
         )
-    }
-}
-
-impl Files {
-    pub fn new() -> Self {
-        Self
     }
 }
 

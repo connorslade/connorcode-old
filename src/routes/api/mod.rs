@@ -1,5 +1,7 @@
 use afire::Server;
 
+use crate::app::App;
+
 mod admin;
 mod git;
 mod headers;
@@ -9,7 +11,7 @@ mod random_color;
 mod random_nose;
 mod raw_http;
 
-pub fn attach(server: &mut Server) {
+pub fn attach(server: &mut Server<App>) {
     admin::attach(server);
     git::attach(server);
     headers::attach(server);
