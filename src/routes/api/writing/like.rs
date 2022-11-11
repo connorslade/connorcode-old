@@ -16,7 +16,7 @@ pub fn attach(server: &mut Server<App>) {
         let ip = get_ip(&req);
 
         // Verify Document
-        let articles = app.articles.read();
+        let articles = app.articles.articles.read();
         let document = match articles.get(&json.doc) {
             Some(i) => i,
             None => panic!("Article Not Found"),

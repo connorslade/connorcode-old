@@ -19,14 +19,6 @@ impl Middleware for Article {
             Err(_) => return MiddleRequest::Continue,
         };
 
-        // // Handel Like API requests
-        // if req.method == Method::POST && req.path == "/api/writing/like" {
-        //     match handle_like(&mut self.0.database.lock(), &self.documents, req) {
-        //         Some(i) => return MiddleRequest::Send(i),
-        //         None => return MiddleRequest::Send(Response::new().status(400).text("Error :/")),
-        //     }
-        // }
-
         // For extra speed continue on non GET requests
         if req.method != Method::GET {
             return MiddleRequest::Continue;
@@ -63,7 +55,7 @@ impl Middleware for Article {
         // Handel requests for the base articles
         if req.path.starts_with("/writing/") {
             let code = req.path.strip_prefix("/writing/").unwrap_or_default();
-            let articles = self.0.articles.read();
+            let articles = self.0.articles.articles.read();
             let doc = match articles.get(code) {
                 Some(i) => i,
                 None => return MiddleRequest::Continue,

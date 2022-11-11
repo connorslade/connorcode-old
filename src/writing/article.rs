@@ -89,7 +89,7 @@ impl Article {
             .unwrap_or_else(|_| "Connor Slade".to_owned());
         let hidden = cfg.get("@Hidden").unwrap_or(false);
 
-        let epoch_parts = date.splitn(3, "-").collect::<Vec<_>>();
+        let epoch_parts = date.splitn(3, '-').collect::<Vec<_>>();
         let epoch = Utc.ymd(
             epoch_parts[2].parse().unwrap(),
             epoch_parts[0].parse().unwrap(),
