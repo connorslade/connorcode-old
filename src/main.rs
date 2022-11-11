@@ -14,6 +14,7 @@ mod assets;
 mod common;
 mod components;
 mod config;
+mod control;
 mod ctrlc;
 mod files;
 mod logger;
@@ -69,6 +70,7 @@ fn main() {
 
     components::attach(&mut server);
     serve_static::attach(&mut server);
+    control::attach(&mut server);
     routes::attach(&mut server);
     middleware::attach(&mut server);
     Files(app.clone()).attach(&mut server);
