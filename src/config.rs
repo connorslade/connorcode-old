@@ -39,8 +39,8 @@ impl Config {
         let cfg = Cfg::new().file(file).unwrap();
 
         Self {
-            server_host: get_config(&cfg, "server_host"),
-            server_port: get_config(&cfg, "server_port"),
+            server_host: get_config(&cfg, "ip"),
+            server_port: get_config(&cfg, "port"),
             external_uri: get_config(&cfg, "external_uri"),
             data_dir: get_config(&cfg, "data_dir"),
             file_serve: get_config(&cfg, "file_serve"),
@@ -53,7 +53,7 @@ impl Config {
             status_serve: get_config(&cfg, "status_serve"),
             pass: get_config(&cfg, "pass"),
             database_path: get_config(&cfg, "database_path"),
-            broadcast_onion: get_config(&cfg, "broadcast_onion"),
+            broadcast_onion: get_config(&cfg, "onion_brodcast"),
             onion_site: get_config(&cfg, "onion_site"),
             tempest_station: get_config(&cfg, "tempest_station"),
             tempest_token: get_config(&cfg, "tempest_token"),

@@ -29,11 +29,8 @@ pub struct Stats {
     pub referer: Option<String>,
 }
 
-// TODO: Make data accessable from App struct
 pub struct Analytics {
     app: Arc<App>,
-
-    data: Mutex<HashMap<Ip, Vec<Stats>>>,
     last_dump: Mutex<SystemTime>,
 }
 
@@ -97,7 +94,6 @@ impl Analytics {
     pub fn new(app: Arc<App>) -> Self {
         Analytics {
             app,
-            data: Mutex::new(HashMap::new()),
             last_dump: Mutex::new(SystemTime::now()),
         }
     }
@@ -128,7 +124,7 @@ impl Analytics {
             referer,
         );
 
-        let mut this = self.data.lock().unwrap();
+        let mut this = self.app.analytics_data.lock();
         if this.contains_key(&ip) {
             let mut new = this.get(&ip)?.to_vec();
             new.push(stats);
@@ -175,7 +171,7 @@ impl Analytics {
             let mut old: HashMap<Ip, Vec<Stats>> = bincode::deserialize(&old).ok()?;
 
             // Add New Data
-            let mut data = self.data.lock().unwrap();
+            let mut data = self.app.analytics_data.lock();
             for i in data.clone() {
                 let ip = i.0;
                 let data = i.1;
@@ -200,7 +196,7 @@ impl Analytics {
             return Some(());
         }
 
-        let new = bincode::serialize(&self.data).ok()?;
+        let new = bincode::serialize(&*self.app.analytics_data.lock()).ok()?;
         fs::write(path, new).ok()?;
         Some(())
     }

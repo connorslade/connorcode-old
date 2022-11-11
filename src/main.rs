@@ -1,4 +1,4 @@
-use std::time::Duration;
+use std::{sync::Arc, time::Duration};
 
 use afire::{Content, Middleware, Response, Server};
 #[macro_use]
@@ -72,23 +72,23 @@ fn main() {
     middleware::attach(&mut server);
     writing::attach(&mut server);
     Files(app.clone()).attach(&mut server);
-    Analytics::new(app).attach(&mut server);
+    Analytics::new(app.clone()).attach(&mut server);
     logger::Logger.attach(&mut server);
 
-    // print_info();
+    print_info(app);
     color_print!(Color::Blue, "[*] Starting server on {}:{}\n", &host, port);
 
     server.start().expect("Server Port In Use");
 }
 
-// #[rustfmt::skip]
-// fn print_info() {
-//     color_print!(Color::Magenta, "[=] Config");
-//     color_print!(Color::Magenta, " ├── Analytics");
-//     color_print!(Color::Magenta, " │   ├── Enabled: {}", config::ANALYTICS_ENABLED);
-//     color_print!(Color::Magenta, " │   ├── Peroid: {}", config::DUMP_PEROID);
-//     color_print!(Color::Magenta, " │   └── Serve: {}", config::ANALYTICS_SERVE);
-//     color_print!(Color::Magenta, " └── Other");
-//     color_print!(Color::Magenta, "     ├── Status Serve: {}", config::STATUS_SERVE);
-//     color_print!(Color::Magenta, "     └── Onion Brodcast: {}", config::BROADCAST_ONION);
-// }
+#[rustfmt::skip]
+fn print_info(app: Arc<App>) {
+    color_print!(Color::Magenta, "[=] Config");
+    color_print!(Color::Magenta, " ├── Analytics");
+    color_print!(Color::Magenta, " │   ├── Enabled: {}", app.config.analytics_enabled);
+    color_print!(Color::Magenta, " │   ├── Peroid: {}", app.config.dump_peroid);
+    color_print!(Color::Magenta, " │   └── Serve: {}", app.config.analytics_serve);
+    color_print!(Color::Magenta, " └── Other");
+    color_print!(Color::Magenta, "     ├── Status Serve: {}", app.config.status_serve);
+    color_print!(Color::Magenta, "     └── Onion Brodcast: {}", app.config.broadcast_onion);
+}

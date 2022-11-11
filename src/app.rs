@@ -1,9 +1,10 @@
 use std::env;
 
+use ahash::{HashMap, HashMapExt};
 use parking_lot::Mutex;
 use rusqlite::Connection;
 
-use crate::config::Config;
+use crate::{analytics::Stats, config::Config};
 
 pub struct App {
     /// App Config
@@ -11,6 +12,9 @@ pub struct App {
 
     /// Databse Connection
     pub database: Mutex<Connection>,
+
+    /// Current analytics_data (cleared on dump)
+    pub analytics_data: Mutex<HashMap<String, Vec<Stats>>>,
 }
 
 impl App {
@@ -34,6 +38,7 @@ impl App {
         Self {
             config: cfg,
             database: Mutex::new(db),
+            analytics_data: Mutex::new(HashMap::new()),
         }
     }
 }

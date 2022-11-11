@@ -1,9 +1,9 @@
-use std::collections::HashMap;
 use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
 use afire::{Method, Response, Server};
+use ahash::{HashMap, HashMapExt};
 use sha2::{Digest, Sha256};
 
 use crate::analytics::Stats;
@@ -52,13 +52,10 @@ pub fn attach(server: &mut Server<App>) {
             let data = fs::read(file.path()).expect("Error Reading Analytics File");
 
             // Parse Data
-            let data: HashMap<String, Vec<Stats>> = bincode::deserialize(&data).expect("Error Deserializeing Data");
+            let data = bincode::deserialize::<HashMap<String, Vec<Stats>>>(&data).expect("Error Deserializeing Data");
 
             // Marge data to all_data
-            for i in data {
-                let ip = i.0;
-                let data = i.1;
-
+            for (ip, data) in data {
                 if let Some(new) = all_data.get(&ip) {
                     let mut new = new.to_vec();
                     new.extend(data);
@@ -68,6 +65,18 @@ pub fn attach(server: &mut Server<App>) {
 
                 all_data.insert(ip.to_owned(), data);
             }
+        }
+
+        // Add in-memory data
+        for (ip, data) in app.analytics_data.lock().iter() {
+            if let Some(new) = all_data.get(ip) {
+                let mut new = new.to_vec();
+                new.extend(data.to_owned());
+                all_data.insert(ip.to_owned(), new);
+                continue;
+            }
+
+            all_data.insert(ip.to_owned(), data.to_owned());
         }
 
         if all_data.is_empty() {
