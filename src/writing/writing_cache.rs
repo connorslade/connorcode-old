@@ -1,11 +1,11 @@
-use std::{path::PathBuf, sync::Arc};
+use std::path::PathBuf;
 
 use ahash::{HashMap, HashMapExt};
 use parking_lot::RwLock;
 use serde_json::json;
 use unindent::unindent;
 
-use crate::app::App;
+use crate::config::Config;
 
 use super::Article;
 
@@ -28,11 +28,11 @@ impl WritingCache {
     }
 
     /// Reload articles from disk
-    pub fn reload_articles(&self, app: Arc<App>) {
+    pub fn reload_articles(&self, config: &Config) {
         let mut articles = self.articles.write();
         articles.clear();
 
-        for i in Article::load_documents(PathBuf::from(&app.config.writing_path)) {
+        for i in Article::load_documents(PathBuf::from(&config.writing_path)) {
             let path = i.path.to_owned();
             let insert = articles.insert(path.to_owned(), i);
 
@@ -59,7 +59,7 @@ impl WritingCache {
         // Rss Cache
         let mut out = String::new();
         for i in article_vec.iter().filter(|x| !x.hidden) {
-            out.push_str(i.rssify(&app.config.external_uri).as_str());
+            out.push_str(i.rssify(&config.external_uri).as_str());
             out.push_str("\n\n");
         }
 
@@ -82,7 +82,7 @@ impl WritingCache {
 
             </channel>
             </rss>"#,
-                app.config.external_uri, out
+                config.external_uri, out
             )
             .as_str(),
         );

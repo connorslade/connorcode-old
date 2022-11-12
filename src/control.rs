@@ -1,5 +1,3 @@
-use std::sync::Arc;
-
 use afire::{internal::common::remove_address_port, Server};
 use afire_integration::RemoteControl;
 
@@ -26,22 +24,13 @@ pub fn attach(server: &mut Server<App>) {
                 remove_address_port(&req.address)
             )
         })
-        .system("update-articles", move |_| update_articles(app.clone()))
-        .system("update-links", move |_| update_links(link_app.clone()))
-        .system("update-home", move |_| update_home(home_app.clone()))
+        .system("update-articles", move |_| ok(|| app.reload_articles()))
+        .system("update-links", move |_| ok(|| link_app.reload_links()))
+        // .system("update-home", move |_| ok(home_app.clone()))
         .attach(server);
 }
 
-fn update_articles(app: Arc<App>) -> String {
-    println!("[*] Reloading Articles");
-    app.reload_articles();
-    "Ok".to_owned()
-}
-
-fn update_links(app: Arc<App>) -> String {
-    "Ok".to_owned()
-}
-
-fn update_home(app: Arc<App>) -> String {
+fn ok(exe: impl Fn()) -> String {
+    exe();
     "Ok".to_owned()
 }

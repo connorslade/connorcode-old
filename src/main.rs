@@ -66,7 +66,8 @@ fn main() {
     });
 
     let app = server.state.as_ref().unwrap().clone();
-    app.clone().reload_articles();
+    app.reload_articles();
+    app.reload_links();
 
     components::attach(&mut server);
     serve_static::attach(&mut server);
