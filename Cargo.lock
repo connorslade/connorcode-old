@@ -17,7 +17,7 @@ checksum = "cfdb20fd3841c59112a3efc8c2ac9486baca9bda00c29b494c36ae861d6bf8de"
 [[package]]
 name = "afire_integration"
 version = "0.1.0"
-source = "git+https://github.com/Basicprogrammer10/chalk#83bb6d606e56b95c1452f2a83d220ef2184627a6"
+source = "git+https://github.com/Basicprogrammer10/chalk#66fdda301a61c9c7e315d3b4f9a3b7ce5450234c"
 dependencies = [
  "afire",
  "ahash 0.8.2",
@@ -224,7 +224,7 @@ dependencies = [
 
 [[package]]
 name = "connorcode"
-version = "6.0.4"
+version = "7.0.0"
 dependencies = [
  "afire",
  "afire_integration",

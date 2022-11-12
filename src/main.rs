@@ -25,7 +25,7 @@ use app::App;
 use color::Color;
 use files::Files;
 
-pub const VERSION: &str = "7.0.0";
+pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
 fn main() {
     println!(

@@ -1,42 +1,42 @@
 [package]
-name = "connorcode"
-version = "6.0.4"
 edition = "2021"
+name = "connorcode"
+version = "7.0.0"
 
 [dependencies]
 # My Crates :P
-afire_integration = { git = "https://github.com/Basicprogrammer10/chalk" }
-afire = { version = "1.2.0", features = ["extensions", "tracing"] }
+afire = {version = "1.2.0", features = ["extensions", "tracing"]}
+afire_integration = {git = "https://github.com/Basicprogrammer10/chalk"}
 simple_config_parser = "1.0.0"
 
 # (En / De)codeing
-rusqlite = { version = "0.28.0", features = ["bundled"] }
-serde = { version = "1.0.147", features = ["derive"] }
-serde_json = "1.0.78"
 bincode = "1.3.3"
 comrak = "0.14.0"
+rusqlite = {version = "0.28.0", features = ["bundled"]}
+serde = {version = "1.0.147", features = ["derive"]}
+serde_json = "1.0.78"
 
 # Hashing
 sha2 = "0.10.2"
 
 # Other
+ahash = "0.8.2"
+chrono = "0.4.19"
+ctrlc = "3.2.3"
 lazy_static = "1.4.0"
+parking_lot = "0.12.1"
+rand = "0.8.4"
+rand_pcg = "0.3.1"
+rand_seeder = "0.2.3"
+regex = "1.5.4"
 sys-info = "0.9.1"
 unindent = "0.1.7"
-chrono = "0.4.19"
-regex = "1.5.4"
 ureq = "2.3.0"
-rand = "0.8.4"
-rand_seeder = "0.2.3"
-rand_pcg = "0.3.1"
-parking_lot = "0.12.1"
-ahash = "0.8.2"
-ctrlc = "3.2.3"
 urlencoding = "2.1.2"
 
 [features]
 default = [
-  "tracing"
+  "tracing",
 ]
 
 tracing = []

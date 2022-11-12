@@ -30,6 +30,8 @@ impl WritingCache {
     /// Reload articles from disk
     pub fn reload_articles(&self, app: Arc<App>) {
         let mut articles = self.articles.write();
+        articles.clear();
+
         for i in Article::load_documents(PathBuf::from(&app.config.writing_path)) {
             let path = i.path.to_owned();
             let insert = articles.insert(path.to_owned(), i);
