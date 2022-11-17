@@ -9,3 +9,5 @@ function getGreeting() {
   if (hour >= 3) return "Good morning";
   return "Good evening";
 }
+
+feather.replace();

@@ -14,12 +14,15 @@
     <link rel="preload" href="/assets/fonts/BasementGrotesque-Black_v1.202.woff2" as="font" />
     <link rel="preload" href="/assets/fonts/Inter-Regular.woff2" as="font" />
     <link rel="preload" href="/assets/fonts/Aileron-SemiBold.woff2" as="font" />
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js" as="script" />
+    <link rel="preload" href="https://api.github.com/users/basicprogrammer10" as="fetch" />
     <link rel="preconnect" href="https://api.github.com" />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="prerender" href="/writing" />
     <link rel="prerender" href="/about" />
 
     <link rel="stylesheet" type="text/css" href="/assets/css/index.css" />
+    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <script
       defer
       src="https://cdn.jsdelivr.net/npm/vanilla-tilt@1.7.2/dist/vanilla-tilt.min.js"
@@ -46,16 +49,18 @@
             rel="noopener"
             target="_blank"
           >
-            Source <i class="fa fa-external-link"></i>
+            Source <i data-feather="external-link"></i>
           </a>
         </div>
       </div>
 
-      <div class="projects" id="main">
-        {{ITEMS}}
-      </div>
+      <div class="projects" id="main">{{ITEMS}}</div>
     </div>
 
     {{CMP: Footer}}
+
+    <script>
+      feather.replace();
+    </script>
   </body>
 </html>

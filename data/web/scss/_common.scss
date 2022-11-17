@@ -1,7 +1,5 @@
-@use 'fonts';
-@use 'vars';
-
-@import url("https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css");
+@use "fonts";
+@use "vars";
 
 @mixin center-h {
   left: 50%;
@@ -23,7 +21,7 @@
 
 a::selection {
   color: white;
-  background: #8092FF;
+  background: #8092ff;
 }
 
 .skip-link {
@@ -61,7 +59,7 @@ footer {
   width: 100%;
   bottom: 0;
 
-  & #foot {
+  & .foot {
     color: vars.$font-color;
     text-decoration: none;
   }
@@ -69,8 +67,14 @@ footer {
   & a {
     color: vars.$a-font-color;
   }
-}
 
+  & .feather {
+    height: 16px;
+    width: auto;
+    stroke-width: 2.5;
+    transform: translateY(2px);
+  }
+}
 
 blockquote {
   border-left: solid 4px #323546;

@@ -13,14 +13,15 @@ pub fn attach(server: &mut Server<App>) {
         for i in article_vec.iter().filter(|x| !x.hidden) {
             documents.push_str(&unindent(&format!(
                 r#"<div class="article">
-                <i class="icon"><i class="fa fa-{}"></i></i>
+                <i class="icon"><i data-feather="file-text"></i></i>
                 <p class="name">{}</p>
-                <p class="disc">{}</p>
-                <p class="date"><i class="fa fa-calendar"></i> {}</p>
-                <a href="/writing/{}"><span class="div-link"></span></a>
+                <p class="disc">{desc}</p>
+                <p class="date"><i data-feather="calendar"></i> {}</p>
+                <a href="/writing/{}" aria-label="Read more about {desc}"><span class="div-link"></span></a>
             </div>"#,
-                i.icon, i.title, i.description, i.date, i.path
+                /*i.icon,*/ i.title, i.date, i.path, desc = i.description
             )));
+            // TODO: Resolve icon not being displayed
         }
 
         Response::new()

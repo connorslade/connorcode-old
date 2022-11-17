@@ -58,6 +58,12 @@
 
     & .icon {
       display: flex;
+      align-items: center;
+
+      & svg {
+        height: 18px;
+        width: auto;
+      }
     }
 
     & .name {
@@ -76,9 +82,10 @@
       color: #a1a7bb;
       font-family: fonts.$jetbrains-mono;
 
-      & .fa {
+      & .feather.feather-calendar {
+        height: 16px;
+        width: auto;
         float: left;
-        margin-right: 5px;
       }
     }
 
