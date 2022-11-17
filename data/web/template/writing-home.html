@@ -2,12 +2,14 @@
 <html lang="en">
   <head>
     {{CMP: Header("My Articles...")}}
-    <link rel="preload" href="/api/writing" as="fetch" />
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css" as="style" />
+    <link
+      rel="preload"
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      as="style"
+    />
 
     <link href="/favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="/assets/css/writing.css" />
-    <script src="/writing/index.js"></script>
     <title>ConnorCode — Writing</title>
   </head>
   <body>
@@ -33,11 +35,8 @@
         </div>
       </div>
 
-      <div class="articles" id="main">
-          {{ARTICLES}}
-      </div>
+      <div class="articles" id="main">{{ARTICLES}}</div>
     </div>
-
 
     {{CMP: FooterRss}}
   </body>

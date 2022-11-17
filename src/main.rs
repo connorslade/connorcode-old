@@ -70,11 +70,11 @@ fn main() {
     app.reload_links();
 
     components::attach(&mut server);
-    serve_static::attach(&mut server);
-    control::attach(&mut server);
-    routes::attach(&mut server);
     middleware::attach(&mut server);
+    serve_static::attach(&mut server);
     Files(app.clone()).attach(&mut server);
+    routes::attach(&mut server);
+    control::attach(&mut server);
     Analytics::new(app.clone()).attach(&mut server);
     logger::Logger.attach(&mut server);
 
