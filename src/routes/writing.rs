@@ -15,11 +15,11 @@ pub fn attach(server: &mut Server<App>) {
                 r#"<div class="article">
                 <i class="icon"><i class="fa fa-{}"></i></i>
                 <p class="name">{}</p>
-                <p class="disc">{}</p>
+                <p class="disc">{desc}</p>
                 <p class="date"><i class="fa fa-calendar"></i> {}</p>
-                <a href="/writing/{}"><span class="div-link"></span></a>
+                <a href="/writing/{}" aria-label="Read more about {desc}"><span class="div-link"></span></a>
             </div>"#,
-                i.icon, i.title, i.description, i.date, i.path
+                i.icon, i.title, i.date, i.path, desc = i.description
             )));
         }
 
