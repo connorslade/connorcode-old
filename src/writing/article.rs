@@ -1,7 +1,7 @@
 use std::fs::{self, DirEntry};
 use std::path::PathBuf;
 
-use chrono::{Date, NaiveTime, TimeZone, Utc};
+use chrono::{DateTime, TimeZone, Utc};
 use serde::Serialize;
 use serde_json::{json, Value};
 use simple_config_parser::Config;
@@ -22,7 +22,7 @@ pub struct Article {
     pub description: String,
 
     #[serde(skip)]
-    pub epoch: Date<Utc>,
+    pub epoch: DateTime<Utc>,
     pub tags: Vec<String>,
     pub hidden: bool,
     pub words: usize,
@@ -90,11 +90,16 @@ impl Article {
         let hidden = cfg.get("@Hidden").unwrap_or(false);
 
         let epoch_parts = date.splitn(3, '-').collect::<Vec<_>>();
-        let epoch = Utc.ymd(
-            epoch_parts[2].parse().unwrap(),
-            epoch_parts[0].parse().unwrap(),
-            epoch_parts[1].parse().unwrap(),
-        );
+        let epoch = Utc
+            .with_ymd_and_hms(
+                epoch_parts[2].parse().unwrap(),
+                epoch_parts[0].parse().unwrap(),
+                epoch_parts[1].parse().unwrap(),
+                0,
+                0,
+                0,
+            )
+            .unwrap();
 
         Some(Self {
             file_path,
@@ -124,8 +129,6 @@ impl Article {
     }
 
     pub fn rssify(&self, external_uri: &str) -> String {
-        let date = self.epoch.and_time(NaiveTime::from_hms(0, 0, 0)).unwrap();
-
         unindent(
             format!(
                 r#"<item>
@@ -136,7 +139,7 @@ impl Article {
                  </item>"#,
                 self.title,
                 self.description,
-                date.to_rfc2822(),
+                self.epoch.to_rfc2822(),
                 external_uri,
                 self.path
             )

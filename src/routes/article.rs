@@ -125,7 +125,7 @@ impl Middleware for Article {
             opt.extension.strikethrough = true;
             opt.extension.autolink = true;
             opt.extension.header_ids = Some("".to_owned());
-            opt.extension.header_aria_hidden = false;
+            opt.extension.header_no_aria_hidden = false;
             opt.extension.footnotes = true;
             opt.parse.smart = true;
             opt.render.unsafe_ = true;
