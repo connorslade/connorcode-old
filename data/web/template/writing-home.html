@@ -2,10 +2,12 @@
 <html lang="en">
   <head>
     {{CMP: Header("My Articles...")}}
-    <link rel="preload" href="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js" as="script" />
+    <link
+      rel="preload"
+      href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
+      as="style"
+    />
 
-
-    <script src="https://cdn.jsdelivr.net/npm/feather-icons/dist/feather.min.js"></script>
     <link href="/favicon.ico" rel="icon" type="image/x-icon" />
     <link rel="stylesheet" type="text/css" href="/assets/css/writing.css" />
     <title>ConnorCode — Writing</title>
@@ -28,7 +30,7 @@
             rel="noopener"
             target="_blank"
           >
-            Source <i data-feather="external-link"></i>
+            Source <i class="fa fa-external-link"></i>
           </a>
         </div>
       </div>
@@ -37,9 +39,5 @@
     </div>
 
     {{CMP: FooterRss}}
-
-    <script>
-      feather.replace();
-    </script>
   </body>
 </html>

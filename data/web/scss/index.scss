@@ -1,6 +1,6 @@
-@use "common";
-@use "fonts";
-@use "vars";
+@use 'common';
+@use 'fonts';
+@use 'vars';
 
 body {
   overflow-y: scroll;
@@ -60,10 +60,8 @@ body {
   width: 100%;
   border-top: none;
 
-  .feather-external-link {
-    height: 16px;
-    width: auto;
-    stroke-width: 2.5;
+  .fa-external-link {
+    margin-left: 5px;
   }
 
   & .this {
@@ -130,9 +128,8 @@ body {
         display: inline;
       }
 
-      & .feather.feather-calendar {
-        height: 20px;
-        transform: translateY(3px);
+      & .fa {
+        margin-right: 2.5px;
       }
     }
 
@@ -236,7 +233,7 @@ a {
         max-width: calc(95vw - 150px);
       }
 
-      & .feather.feather-calendar {
+      & .fa {
         display: none;
       }
     }
