@@ -30,7 +30,6 @@ fn ok(exe: impl Fn()) -> String {
     "Ok".to_owned()
 }
 
-
 // TODO: Article caching
 /*
  - Make a new folder .cache maybe?

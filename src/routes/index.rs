@@ -5,7 +5,7 @@ use serde::Serialize;
 use serde_json::json;
 use simple_config_parser::Config;
 
-use crate::{app::App, VERSION};
+use crate::{app::App, common, VERSION};
 
 #[derive(Clone, Serialize)]
 struct Project {
@@ -14,6 +14,7 @@ struct Project {
     date: String,
     link: String,
     image: String,
+    image_aspect: (usize, usize),
 }
 
 impl Project {
@@ -24,10 +25,15 @@ impl Project {
             .replace("{{DATE}}", &self.date)
             .replace("{{LINK}}", &self.link)
             .replace("{{IMAGE}}", &self.image)
+            .replace(
+                "{{IMAGE_ASPECT}}",
+                &format!("{}/{}", self.image_aspect.0, self.image_aspect.1),
+            )
     }
 }
 
 pub fn attach(server: &mut Server<App>) {
+    let app = server.state.as_ref().unwrap();
     let cfg = Config::new()
         .file("data/config/projects.cfg")
         .expect("Error Reading Project Config");
@@ -48,12 +54,23 @@ pub fn attach(server: &mut Server<App>) {
                 .nth(1)
                 .expect("Error Parsing Project line");
 
+            // Load image to get its aspect ratio
+            let image = parts[3].trim().to_string();
+            let image_path = app.config.data_dir.join(&image);
+            let image_size = imagesize::size(image_path).expect("Error Getting Image Size");
+            let image_size_gcd = common::gcd(image_size.width, image_size.height);
+            let image_aspect = (
+                image_size.width / image_size_gcd,
+                image_size.height / image_size_gcd,
+            );
+
             projects.push(Project {
                 id: id.to_owned(),
                 name: parts[0].replace('_', ",").trim().to_string(),
                 date: parts[1].trim().to_string(),
                 link: parts[2].trim().to_string(),
-                image: parts[3].trim().to_string(),
+                image,
+                image_aspect,
             });
         }
     }

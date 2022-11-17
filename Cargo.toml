@@ -33,6 +33,7 @@ sys-info = "0.9.1"
 unindent = "0.1.7"
 ureq = "2.3.0"
 urlencoding = "2.1.2"
+imagesize = "0.10.1"
 
 [features]
 default = [

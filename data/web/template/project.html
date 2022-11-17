@@ -10,7 +10,12 @@
     <picture>
       <source type="image/webp" srcset="{{IMAGE}}.webp" />
       <source type="image/png" srcset="{{IMAGE}}" />
-      <img src="{{IMAGE}}" alt="Thumbnail for {{NAME}}" class="pre" />
+      <img
+        src="{{IMAGE}}"
+        alt="Thumbnail for {{NAME}}"
+        style="aspect-ratio: {{IMAGE_ASPECT}};"
+        class="pre"
+      />
     </picture>
   </button>
 </a>

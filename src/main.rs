@@ -60,7 +60,11 @@ fn main() {
                 assets::ERROR_PAGE
                     .replace("{{VERSION}}", VERSION)
                     .replace("{{ERROR}}", &err)
-                    .replace("{{ERROR_BODY}}", &urlencoding::encode(&err)),
+                    .replace("{{ERROR_BODY}}", &urlencoding::encode(&err))
+                    .replace(
+                        "{{CMP: Footer}}",
+                        &assets::FOOTER.replace("{{VERSION}}", VERSION),
+                    ),
             )
             .content(Content::HTML)
     });

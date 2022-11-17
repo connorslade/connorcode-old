@@ -1,4 +1,7 @@
-use std::{path::Path, str::FromStr};
+use std::{
+    path::{Path, PathBuf},
+    str::FromStr,
+};
 
 use simple_config_parser::Config as Cfg;
 
@@ -8,7 +11,7 @@ pub struct Config {
     pub server_port: u16,
     pub threads: usize,
     pub external_uri: String,
-    pub data_dir: String,
+    pub data_dir: PathBuf,
 
     // File Serve
     pub file_serve: bool,

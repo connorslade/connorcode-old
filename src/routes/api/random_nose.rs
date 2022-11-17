@@ -11,8 +11,7 @@ pub fn attach(server: &mut Server<App>) {
     let mut noses = Vec::new();
     let data_dir = &server.state.as_ref().unwrap().config.data_dir;
 
-    let all_noses =
-        fs::read_dir(format!("{}/assets/Noses", data_dir)).expect("Error Reading Nose Dir");
+    let all_noses = fs::read_dir(data_dir.join("assets/Noses")).expect("Error Reading Nose Dir");
 
     for nose in all_noses {
         let nose = nose.expect("Error getting subfiles").path();

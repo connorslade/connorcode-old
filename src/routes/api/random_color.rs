@@ -14,7 +14,7 @@ const COLORS: [&str; 11] = [
 
 pub fn attach(server: &mut Server<App>) {
     let data_dir = &server.state.as_ref().unwrap().config.data_dir;
-    let raw = fs::read_to_string(format!("{}/colornamegen/words.txt", data_dir))
+    let raw = fs::read_to_string(data_dir.join("colornamegen/words.txt"))
         .expect("Error Reading Words File");
     let words = raw.lines().map(|x| x.to_owned()).collect::<Vec<_>>();
 

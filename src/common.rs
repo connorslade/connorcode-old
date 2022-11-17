@@ -62,3 +62,10 @@ pub fn get_ip(req: &Request) -> String {
 
     ip
 }
+
+pub fn gcd(a: usize, b: usize) -> usize {
+    if b == 0 {
+        return a;
+    }
+    gcd(b, a % b)
+}

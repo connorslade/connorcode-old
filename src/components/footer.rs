@@ -1,13 +1,8 @@
-use std::fs;
-
 use afire::{middleware::MiddleResponse, Request, Response};
 
-use super::Component;
+use crate::assets::FOOTER;
 
-lazy_static! {
-    static ref FOOTER: String =
-        fs::read_to_string("data/web/components/footer.html").expect("Error Reading Footer");
-}
+use super::Component;
 
 pub struct Footer;
 
