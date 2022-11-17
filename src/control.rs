@@ -29,3 +29,11 @@ fn ok(exe: impl Fn()) -> String {
     exe();
     "Ok".to_owned()
 }
+
+
+// TODO: Article caching
+/*
+ - Make a new folder .cache maybe?
+ - When an article is loaded if it is not in the cache add its html and markdown hash
+ - If the article is already cached and the hash are the same serve that
+*/

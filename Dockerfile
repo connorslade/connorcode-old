@@ -1,4 +1,4 @@
-FROM rust:1.58
+FROM rust:1.65
 
 WORKDIR /connorcode
 COPY . .
