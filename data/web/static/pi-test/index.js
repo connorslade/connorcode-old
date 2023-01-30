@@ -1,21 +1,51 @@
-const pi = [1,4,1,5,9,2,6,5,3,5,8,9,7,9,3,2,3,8,4,6,2,6,4,3,3,8,3,2,7,9,5,0,2,8,8,4,1,9,7,1,6,9,3,9,9,3,7,5,1,0,5,8,2,0,9,7,4,9,4,4,5,9,2,3,0,7,8,1,6,4,0,6,2,8,6,2,0,8,9,9,8,6,2,8,0,3,4,8,2,5,3,4,2,1,1,7,0,6,7,9];
+const SIZE = 20;
+
+// https://stackoverflow.com/questions/30747235/javascript-pi-%CF%80-calculator
+function* piIter() {
+  let q = 1n;
+  let r = 180n;
+  let t = 60n;
+  let i = 2n;
+  while (true) {
+    let digit = ((i * 27n - 12n) * q + r * 5n) / (t * 5n);
+    yield Number(digit);
+    let u = i * 3n;
+    u = (u + 1n) * 3n * (u + 2n);
+    r = u * 10n * (q * (i * 5n - 2n) + r - t * digit);
+    q *= 10n * i * (i++ * 2n - 1n);
+    t *= u;
+  }
+}
+
+let iter = piIter();
+
+function initPi() {
+  let out = [];
+  iter.next();
+  for (let i = 0; i < SIZE; i++) out.push(iter.next().value);
+  return out;
+}
 
 function init() {
-  let highScore = localStorage.getItem('pi-test:high-score') ?? 0;
-  document.querySelector('[high-score]').innerText = highScore;
+  let highScore = localStorage.getItem("pi-test:high-score") ?? 0;
+  document.querySelector("[high-score]").innerText = highScore;
 
   return {
-    pi: pi,
+    pi: initPi(),
     index: -1,
     running: true,
     highScore,
 
-    checkValidInc: (e, i) => {
-      let num = parseInt(e.key);
-      if (isNaN(num)) return 0;
-      if (pi[i+1] !== num) return 1;
+    checkValidInc: (e, index, pi) => {
+      let res = checkResult(e.key, pi[index]);
+      pi.push(iter.next().value);
+      return { res, digit: pi[index] };
+    },
+  };
+}
 
-      return 2;
-    }
-  }
+function checkResult(num, digit) {
+  if (isNaN(num)) return 0;
+  if (num != digit) return 1;
+  return 2;
 }

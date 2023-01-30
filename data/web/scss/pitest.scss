@@ -60,3 +60,13 @@
     content: "High Score: ";
   }
 }
+
+[reset] {
+  color: white;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 25px;
+  top: calc(50% + 100px);
+  filter: none !important;
+}
