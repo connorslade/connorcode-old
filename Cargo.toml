@@ -5,7 +5,7 @@ version = "7.0.0"
 
 [dependencies]
 # My Crates :P
-afire = {version = "1.2.0", features = ["extensions", "tracing"]}
+afire = {version = "2.0.0", features = ["extensions", "tracing"]}
 afire_integration = {git = "https://github.com/Basicprogrammer10/chalk"}
 simple_config_parser = "1.0.0"
 

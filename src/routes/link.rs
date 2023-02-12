@@ -4,7 +4,7 @@ use crate::{app::App, serve_static::not_found};
 
 pub fn attach(server: &mut Server<App>) {
     server.stateful_route(Method::GET, "/r/{code}", |app, req| {
-        let code = req.path_param("code").unwrap();
+        let code = req.param("code").unwrap();
         let links = app.redirects.read();
 
         let link = match links.get(&code) {

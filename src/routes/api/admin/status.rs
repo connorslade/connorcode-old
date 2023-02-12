@@ -3,7 +3,6 @@ use serde_json::json;
 use sha2::{Digest, Sha256};
 
 use crate::app::App;
-use crate::common::get_header;
 
 pub fn attach(server: &mut Server<App>) {
     if !server.state.as_ref().unwrap().config.status_serve {
@@ -12,7 +11,7 @@ pub fn attach(server: &mut Server<App>) {
 
     server.stateful_route(Method::GET, "/api/status", |app, req| {
         // Check Auth
-        let auth = match get_header(req.headers, "Auth") {
+        let auth = match req.headers.get("Auth") {
             Some(i) => i,
             None => {
                 return Response::new().status(403).text("No Authorization Header");
@@ -20,7 +19,7 @@ pub fn attach(server: &mut Server<App>) {
         };
 
         let mut hasher = Sha256::new();
-        hasher.update(auth.into_bytes());
+        hasher.update(auth.as_bytes());
         let result = hasher.finalize();
 
         if format!("{:02x}", result) != app.config.pass {

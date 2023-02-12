@@ -1,4 +1,6 @@
-use afire::{internal::common::remove_address_port, Header, Request};
+use std::net::IpAddr;
+
+use afire::Request;
 
 const FILE_SIZES: &[&str] = &["B", "KB", "MB", "GB", "TB", "PB"];
 const TIME_UNITS: &[(&str, u16)] = &[
@@ -9,15 +11,6 @@ const TIME_UNITS: &[(&str, u16)] = &[
     ("month", 12),
     ("year", 0),
 ];
-
-pub fn get_header(headers: Vec<Header>, header: &str) -> Option<String> {
-    for i in headers {
-        if i.name == header {
-            return Some(i.value);
-        }
-    }
-    None
-}
 
 /// Convert a Byte size into the biggest unit
 pub fn best_size(bytes: u64) -> String {
@@ -52,20 +45,32 @@ pub fn best_time(secs: u64) -> String {
     format!("{} years", secs.round())
 }
 
-pub fn get_ip(req: &Request) -> String {
-    let mut ip = remove_address_port(&req.address);
-    if ip == "127.0.0.1" {
-        if let Some(i) = req.headers.iter().find(|x| x.name == "X-Forwarded-For") {
-            ip = i.value.to_owned();
-        }
-    }
-
-    ip
-}
-
 pub fn gcd(a: usize, b: usize) -> usize {
     if b == 0 {
         return a;
     }
     gcd(b, a % b)
+}
+
+pub trait RealIp {
+    fn real_ip(&self) -> IpAddr;
+}
+
+impl RealIp for Request {
+    fn real_ip(&self) -> IpAddr {
+        let mut ip = self.address.ip();
+
+        // If Ip is Localhost and 'X-Forwarded-For' Header is present
+        // Use that as Ip
+        if ip.is_loopback() && self.headers.has("X-Forwarded-For") {
+            ip = self
+                .headers
+                .get("X-Forwarded-For")
+                .unwrap()
+                .parse()
+                .unwrap();
+        }
+
+        ip
+    }
 }

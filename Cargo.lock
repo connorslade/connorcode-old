@@ -15,11 +15,17 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cfdb20fd3841c59112a3efc8c2ac9486baca9bda00c29b494c36ae861d6bf8de"
 
 [[package]]
+name = "afire"
+version = "2.0.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "749dec06bad15d56cfc5117d83efe35064c1a5a72f22acce777760159e5f884d"
+
+[[package]]
 name = "afire_integration"
 version = "0.1.0"
 source = "git+https://github.com/Basicprogrammer10/chalk#66fdda301a61c9c7e315d3b4f9a3b7ce5450234c"
 dependencies = [
- "afire",
+ "afire 1.2.0",
  "ahash 0.8.2",
  "serde",
  "serde_derive",
@@ -239,7 +245,7 @@ dependencies = [
 name = "connorcode"
 version = "7.0.0"
 dependencies = [
- "afire",
+ "afire 2.0.0",
  "afire_integration",
  "ahash 0.8.2",
  "bincode",

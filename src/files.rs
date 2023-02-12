@@ -1,13 +1,12 @@
 use std::any::type_name;
-use std::fs;
+use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+use afire::Content;
 use afire::{
-    error::Result,
-    internal::common::trace,
-    middleware::{MiddleRequest, Middleware},
-    Method, Request, Response, Server,
+    middleware::{MiddleResult, Middleware},
+    trace, Method, Request, Response, Server,
 };
 
 use crate::app::App;
@@ -40,19 +39,14 @@ impl Middleware for Files {
             return;
         }
 
-        trace(format!("📦 Adding Middleware {}", type_name::<Self>()));
+        trace!("📦 Adding Middleware {}", type_name::<Self>());
 
         server.middleware.push(Box::new(self));
     }
 
-    fn pre(&self, req: &Result<Request>) -> MiddleRequest {
-        let req = match req {
-            Ok(i) => i,
-            Err(_) => return MiddleRequest::Continue,
-        };
-
+    fn pre(&self, req: &mut Request) -> MiddleResult {
         if !req.path.starts_with("/files") || req.method != Method::GET {
-            return MiddleRequest::Continue;
+            return MiddleResult::Continue;
         }
 
         let mut file_path = req.path.to_owned();
@@ -75,7 +69,7 @@ impl Middleware for Files {
             let mut dir = match fs::read_dir(&path) {
                 Ok(i) => i,
                 Err(_) => {
-                    return MiddleRequest::Send(
+                    return MiddleResult::Send(
                         Response::new()
                             .status(404)
                             .text(format!("Folder `{}` not found", file_path)),
@@ -131,7 +125,7 @@ impl Middleware for Files {
                 ));
             }
 
-            return MiddleRequest::Send(
+            return MiddleResult::Send(
                 Response::new()
                     .text(
                         fs::read_to_string("./data/web/template/files.html")
@@ -144,10 +138,10 @@ impl Middleware for Files {
             );
         }
 
-        let file = match fs::read(&path) {
+        let file = match File::open(&path) {
             Ok(i) => i,
             Err(_) => {
-                return MiddleRequest::Send(
+                return MiddleResult::Send(
                     Response::new()
                         .status(404)
                         .text(format!("File `{}` not found", file_path)),
@@ -156,19 +150,17 @@ impl Middleware for Files {
         };
 
         if req.query.get("download").is_some() || req.query.get("raw").is_some() {
-            return MiddleRequest::Send(
+            return MiddleResult::Send(
                 Response::new()
-                    .bytes(file)
-                    .header("Content-Type", "text/html; charset=utf-8"),
+                    .stream(file)
+                    .header("Content-Type", "application/octet-stream"),
             );
         }
 
-        MiddleRequest::Send(
+        MiddleResult::Send(
             show_response(path)
-                .unwrap_or_else(|| {
-                    Response::new().header("Content-Type", "text/html; charset=utf-8")
-                })
-                .bytes(file),
+                .unwrap_or_else(|| Response::new().content(Content::HTML))
+                .stream(file),
         )
     }
 }

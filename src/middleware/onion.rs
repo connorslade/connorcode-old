@@ -1,10 +1,8 @@
 use std::{any::type_name, sync::Arc};
 
 use afire::{
-    error::Result,
-    internal::common::trace,
-    middleware::{MiddleResponse, Middleware},
-    Request, Response, Server,
+    middleware::{MiddleResult, Middleware},
+    trace, Header, Request, Response, Server,
 };
 
 use crate::app::App;
@@ -12,20 +10,13 @@ use crate::app::App;
 pub struct Onion(pub Arc<App>);
 
 impl Middleware for Onion {
-    fn post(&self, req: &Result<Request>, res: &Result<Response>) -> MiddleResponse {
-        let req = match req {
-            Ok(i) => i,
-            Err(_) => return MiddleResponse::Continue,
-        };
-        let res = match res {
-            Ok(i) => i,
-            Err(_) => return MiddleResponse::Continue,
-        };
-
-        MiddleResponse::Add(res.to_owned().header(
+    fn post(&self, req: &Request, res: &mut Response) -> MiddleResult {
+        res.headers.push(Header::new(
             "Onion-Location",
             format!("{}{}", self.0.config.onion_site, req.path),
-        ))
+        ));
+
+        MiddleResult::Continue
     }
 
     fn attach<State>(self, server: &mut Server<State>)
@@ -37,7 +28,7 @@ impl Middleware for Onion {
             return;
         }
 
-        trace(format!("📦 Adding Middleware {}", type_name::<Self>()));
+        trace!("📦 Adding Middleware {}", type_name::<Self>());
 
         server.middleware.push(Box::new(self));
     }

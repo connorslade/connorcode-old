@@ -16,7 +16,7 @@ pub fn attach(server: &mut Server<App>) {
         for _ in 1..5 {
             if let Some((i, j)) = get_random_image() {
                 return Response::new()
-                    .bytes(i)
+                    .stream(i)
                     .header("Content-Type", "image/png")
                     .header("X-Image-Id", j);
             }
@@ -27,7 +27,7 @@ pub fn attach(server: &mut Server<App>) {
 }
 
 /// Try to get a random Lightshot Image
-fn get_random_image() -> Option<(Vec<u8>, String)> {
+fn get_random_image() -> Option<(Box<dyn Read + Send + Sync + 'static>, String)> {
     // Gen Posable Lightshot Image ID
     let chars: String = (0..6)
         .map(|_| thread_rng().sample(Alphanumeric) as char)
@@ -53,17 +53,10 @@ fn get_random_image() -> Option<(Vec<u8>, String)> {
     }
 
     // Load Screenshot
-    let mut buf = Vec::new();
-    agent
-        .get(&j)
-        .call()
-        .ok()?
-        .into_reader()
-        .read_to_end(&mut buf)
-        .ok()?;
+    let reader = agent.get(&j).call().ok()?.into_reader();
 
     // Respond with Screenshot Bytes
-    Some((buf, chars))
+    Some((reader, chars))
 }
 
 /// Extract Image Url from Lightshot Page

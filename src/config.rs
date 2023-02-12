@@ -24,7 +24,7 @@ pub struct Config {
     pub analytics_enabled: bool,
     pub analytics_serve: bool,
     pub analytics_path: String,
-    pub dump_peroid: u64,
+    pub dump_period: u64,
 
     // Admin Other
     pub status_serve: bool,
@@ -54,7 +54,7 @@ impl Config {
             analytics_enabled: get_config(&cfg, "analytics_enabled"),
             analytics_serve: get_config(&cfg, "analytics_serve"),
             analytics_path: get_config(&cfg, "analytics_path"),
-            dump_peroid: get_config(&cfg, "dump_peroid"),
+            dump_period: get_config(&cfg, "dump_peroid"),
             status_serve: get_config(&cfg, "status_serve"),
             pass: get_config(&cfg, "pass"),
             database_path: get_config(&cfg, "database_path"),

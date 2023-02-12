@@ -1,3 +1,6 @@
+// TODO: Rethink this system
+// Its time for a static builder
+
 use std::sync::Mutex;
 
 use afire::{
