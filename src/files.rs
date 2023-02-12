@@ -76,7 +76,7 @@ impl Middleware for Files {
                     )
                 }
             }
-            .map(|x| x.expect("Error getting subfile").path())
+            .map(|x| x.expect("Error getting sub-file").path())
             .collect::<Vec<PathBuf>>();
 
             dir.sort();
@@ -128,7 +128,7 @@ impl Middleware for Files {
             return MiddleResult::Send(
                 Response::new()
                     .text(
-                        fs::read_to_string("./data/web/dist-template/files.html")
+                        fs::read_to_string("./web/dist/template/files.html")
                             .unwrap_or_else(|_| "{{FILES}}".to_owned())
                             .replace("{{PATH}}", path.file_name().unwrap().to_str().unwrap())
                             .replace("{{FILES}}", &out)
