@@ -1,4 +1,4 @@
-use std::{sync::Arc, time::Duration};
+use std::{process, sync::Arc, time::Duration};
 
 use afire::{
     trace::{set_log_level, Level},
@@ -39,8 +39,13 @@ fn main() {
         )
     );
 
-    // Make app
     let app = App::new();
+    if !app.config.data_dir.join("..").exists() {
+        color_print!(Color::Red, "[!] Data Directory Does Not Exist");
+        process::exit(1);
+    }
+
+    // Make app
     let host = app.config.server_host.clone();
     let port = app.config.server_port;
     let threads = app.config.threads;
@@ -95,10 +100,10 @@ fn main() {
 fn print_info(app: Arc<App>) {
     color_print!(Color::Magenta, "[=] Config");
     color_print!(Color::Magenta, " ├── Analytics");
-    color_print!(Color::Magenta, " │   ├── Enabled: {}", app.config.analytics_enabled);
-    color_print!(Color::Magenta, " │   ├── Period: {}", app.config.dump_period);
-    color_print!(Color::Magenta, " │   └── Serve: {}", app.config.analytics_serve);
+    color_print!(Color::Magenta, " │   ├── Enabled: {}", app.config.analytics_enabled);
+    color_print!(Color::Magenta, " │   ├── Period: {}", app.config.dump_period);
+    color_print!(Color::Magenta, " │   └── Serve: {}", app.config.analytics_serve);
     color_print!(Color::Magenta, " └── Other");
     color_print!(Color::Magenta, "     ├── Status Serve: {}", app.config.status_serve);
-    color_print!(Color::Magenta, "     └── Onion Brodcast: {}", app.config.broadcast_onion);
+    color_print!(Color::Magenta, "     └── Onion Broadcast: {}", app.config.broadcast_onion);
 }

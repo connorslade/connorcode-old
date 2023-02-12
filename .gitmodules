@@ -1,6 +1,6 @@
-[submodule "data/web/static/mc/help"]
-  path = data/web/static/mc/help
-  url = https://github.com/Basicprogrammer10/Denali-MC-Help.git
+[submodule "web/static/mc/help"]
+path = web/static/mc/help
+url = https://github.com/Basicprogrammer10/Denali-MC-Help.git
 [submodule "data/writing"]
-	path = data/writing
-	url = https://github.com/Basicprogrammer10/connorcode-writing.git
+path = data/writing
+url = https://github.com/Basicprogrammer10/connorcode-writing.git
