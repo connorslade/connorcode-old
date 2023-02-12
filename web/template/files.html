@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" dir="ltr">
   <head>
-    {{CMP: Header("Public Files")}}
+    <!-- #INCLUDE header -->
+    <meta name="description" content="Public Files" />
     <link
       rel="stylesheet"
       href="https://cdn.jsdelivr.net/npm/font-awesome@4.7.0/css/font-awesome.min.css"
@@ -12,11 +13,7 @@
   </head>
   <body>
     <a class="skip-link" href="#main">Skip to Content</a>
-
-    <div class="content" id="main">
-      {{FILES}}
-    </div>
-
-    {{CMP: Footer}}
+    <div class="content" id="main">{{FILES}}</div>
+    <!-- #INCLUDE footer -->
   </body>
 </html>

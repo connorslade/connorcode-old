@@ -4,8 +4,9 @@ local/
 data/data.*
 data/analytics/**/*.aan
 
-data/web/static/school/gamedesign/*
-!data/web/static/school/gamedesign/docs
-!data/web/static/school/gamedesign/mkdocs.yml
+web/static/school/gamedesign/*
+!web/static/school/gamedesign/docs
+!web/static/school/gamedesign/mkdocs.yml
+web/dist
 
-data/web/static/mc/docs
+web/static/mc/docs

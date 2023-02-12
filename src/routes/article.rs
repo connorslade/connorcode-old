@@ -1,27 +1,24 @@
-use std::{fs, path::Path, sync::Arc};
-
-use afire::{
-    error::Result, prelude::MiddleRequest, Content, Method, Middleware, Request, Response, Server,
+use std::{
+    fs::{self, File},
+    path::Path,
+    sync::Arc,
 };
+
+use afire::{prelude::MiddleResult, Content, Method, Middleware, Request, Response, Server};
 
 use crate::{
     app::App,
     assets::{self, WRITING},
-    common::get_ip,
+    common::RealIp,
 };
 
 struct Article(pub Arc<App>);
 
 impl Middleware for Article {
-    fn pre(&self, req: &Result<Request>) -> MiddleRequest {
-        let req = match req {
-            Ok(i) => i,
-            Err(_) => return MiddleRequest::Continue,
-        };
-
+    fn pre(&self, req: &mut Request) -> MiddleResult {
         // Continue on non GET requests
         if req.method != Method::GET {
-            return MiddleRequest::Continue;
+            return MiddleResult::Continue;
         }
 
         // Handel writing asset reuqests
@@ -45,9 +42,9 @@ impl Middleware for Article {
                 _ => "",
             };
 
-            if let Ok(data) = fs::read(path) {
-                return MiddleRequest::Send(
-                    Response::new().bytes(data).content(Content::Custom(mime)),
+            if let Ok(data) = File::open(path) {
+                return MiddleResult::Send(
+                    Response::new().stream(data).content(Content::Custom(mime)),
                 );
             }
         }
@@ -58,13 +55,13 @@ impl Middleware for Article {
             let articles = self.0.articles.articles.read();
             let doc = match articles.get(code) {
                 Some(i) => i,
-                None => return MiddleRequest::Continue,
+                None => return MiddleResult::Continue,
             };
 
             let data = match fs::read_to_string(&doc.file_path) {
                 Ok(i) => i,
                 Err(i) => {
-                    return MiddleRequest::Send(
+                    return MiddleResult::Send(
                         Response::new()
                             .status(500)
                             .text(
@@ -79,11 +76,10 @@ impl Middleware for Article {
             let data = data.split_once("---").unwrap().1;
 
             // Get real Client IP
-            let ip = get_ip(req);
-
+            let ip = req.real_ip().to_string();
             let mut conn = self.0.database.lock();
             let trans = conn.transaction().unwrap();
-            // Add a view to the article if it hasent been viewed before
+            // Add a view to the article if it hasn't been viewed before
             trans
                 .execute(
                     "INSERT OR IGNORE INTO article_views (name, ip, date) VALUES (?1, ?2, strftime('%s','now'))",
@@ -125,7 +121,7 @@ impl Middleware for Article {
             opt.extension.strikethrough = true;
             opt.extension.autolink = true;
             opt.extension.header_ids = Some("".to_owned());
-            opt.extension.header_no_aria_hidden = false;
+            // opt.extension.header_no_aria_hidden = false;
             opt.extension.footnotes = true;
             opt.parse.smart = true;
             opt.render.unsafe_ = true;
@@ -143,11 +139,11 @@ impl Middleware for Article {
                 .replace("{{TIME}}", &(doc.words as f64 / 3.0).round().to_string())
                 .replace("{{DISC}}", &doc.description)
                 .replace("{{TAGS}}", &doc.tags.join(", "));
-            return MiddleRequest::Send(Response::new().text(html).content(Content::HTML));
+            return MiddleResult::Send(Response::new().text(html).content(Content::HTML));
         }
 
         // If no writing related path found, continue
-        MiddleRequest::Continue
+        MiddleResult::Continue
     }
 }
 

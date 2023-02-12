@@ -1,7 +1,7 @@
 use afire::{Method, Response, Server};
 use serde::Deserialize;
 
-use crate::{app::App, common::get_ip};
+use crate::{app::App, common::RealIp};
 
 #[derive(Deserialize)]
 struct RequestData {
@@ -13,7 +13,7 @@ pub fn attach(server: &mut Server<App>) {
     server.stateful_route(Method::POST, "/api/writing/like", |app, req| {
         let body = String::from_utf8_lossy(&req.body);
         let json = serde_json::from_str::<RequestData>(&body).unwrap();
-        let ip = get_ip(&req);
+        let ip = req.real_ip().to_string();
 
         // Verify Document
         let articles = app.articles.articles.read();

@@ -1,27 +1,20 @@
 use afire::{
-    error::Result,
-    middleware::{MiddleRequest, Middleware},
+    middleware::{MiddleResult, Middleware},
     Request,
 };
 
-use crate::common::get_ip;
+use crate::common::RealIp;
 
 pub struct Logger;
 
 impl Middleware for Logger {
-    fn pre(&self, req: &Result<Request>) -> MiddleRequest {
-        let req = match req {
-            Ok(i) => i,
-            Err(_) => return MiddleRequest::Continue,
-        };
-
+    fn pre(&self, req: &mut Request) -> MiddleResult {
         let path = match req.path.as_str() {
             "" => "/",
             _ => &req.path,
         };
 
-        println!("[{}] {} {}{}", get_ip(req), req.method, path, req.query);
-
-        MiddleRequest::Continue
+        println!("[{}] {} {}{}", req.real_ip(), req.method, path, req.query);
+        MiddleResult::Continue
     }
 }

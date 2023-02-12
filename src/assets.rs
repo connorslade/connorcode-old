@@ -1,4 +1,9 @@
-pub const ERROR_PAGE: &str = include_str!("../data/web/template/error.html");
-pub const WRITING_HOME: &str = include_str!("../data/web/template/writing-home.html");
-pub const WRITING: &str = include_str!("../data/web/template/writing.html");
-pub const FOOTER: &str = include_str!("../data/web/components/footer.html");
+use std::fs;
+
+lazy_static! {
+    pub static ref ERROR_PAGE: String = fs::read_to_string("web/dist/template/error.html").unwrap();
+    pub static ref WRITING_HOME: String =
+        fs::read_to_string("web/dist/template/writing-home.html").unwrap();
+    pub static ref WRITING: String = fs::read_to_string("web/dist/template/writing.html").unwrap();
+    pub static ref FOOTER: String = fs::read_to_string("web/components/footer.html").unwrap();
+}

@@ -46,7 +46,7 @@ pub fn attach(server: &mut Server<App>) {
         .make_rng();
 
         if let Some(i) = req.query.get("type") {
-            return match i.as_str() {
+            return match i {
                 "password" => Response::new().content(Content::TXT).text(
                     (0..20)
                         .map(|_| *PASSWORD_CHARS.choose(&mut rng).unwrap())
@@ -67,7 +67,7 @@ pub fn attach(server: &mut Server<App>) {
             };
         }
 
-        Response::new().bytes(rng.gen::<[u8; 32]>().to_vec())
+        Response::new().bytes(&rng.gen::<[u8; 32]>())
     });
 }
 

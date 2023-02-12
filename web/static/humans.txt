@@ -2,10 +2,10 @@
   / ____/ __ \/ | / / | / / __ \/ __ \/ ____/ __ \/ __ \/ ____// ____/ __ \/  |/  /
  / /   / / / /  |/ /  |/ / / / / /_/ / /   / / / / / / / __/  / /   / / / / /|_/ /
 / /___/ /_/ / /|  / /|  / /_/ / _, _/ /___/ /_/ / /_/ / /____/ /___/ /_/ / /  / /
-\____/\____/_/ |_/_/ |_/\____/_/ |_|\____/\____/_____/_____(_)____/\____/_/  /_/ V{{VERSION}}
+\____/\____/_/ |_/_/ |_/\____/_/ |_|\____/\____/_____/_____(_)____/\____/_/  /_/ V7.1.0
 
 https://connorcode.com
-http://zgurppzm423u2ny7ljdj2m33na4wxoo7zvkvvu4vpce2ure5gplexnqd.onion/
+http://zgurppzm423u2ny7ljdj2m33na4wxoo7zvkvvu4vpce2ure5gplexnqd.onion
 
 https://github.com/Basicprogrammer10/connorcode
 
@@ -23,12 +23,9 @@ Email:  connor(at)connorcode.com
  / Backend /
 - Rust
 - afire (My Dependency Free Web Server Framework)
-- simple_config_parser (My *simple* ini Config Parser)
-- Other Crates: serde, bincode, sha2, lazy_static, chrono, ureq, rand
 
  / Other /
 - Atom (Text Editor)
 - Cargo
 - Git
 - Love!
-- More

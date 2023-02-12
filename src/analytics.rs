@@ -7,16 +7,17 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use afire::trace;
 use afire::{
-    error::Result,
-    internal::{self, common::trace},
-    middleware::{MiddleRequest, Middleware},
-    Header, Request, Server,
+    internal,
+    middleware::{MiddleResult, Middleware},
+    Request, Server,
 };
 use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::app::App;
+use crate::common::RealIp;
 
 type Ip = String;
 
@@ -48,13 +49,10 @@ pub enum Method {
 }
 
 impl Middleware for Analytics {
-    fn pre(&self, req: &Result<Request>) -> MiddleRequest {
-        if let Ok(req) = req {
-            self.save(req);
-            self.check_dump();
-        }
-
-        MiddleRequest::Continue
+    fn pre(&self, req: &mut Request) -> MiddleResult {
+        self.save(req);
+        self.check_dump();
+        MiddleResult::Continue
     }
 
     fn attach<State>(self, server: &mut Server<State>)
@@ -66,7 +64,7 @@ impl Middleware for Analytics {
             return;
         }
 
-        trace(format!("📦 Adding Middleware {}", type_name::<Self>()));
+        trace!("📦 Adding Middleware {}", type_name::<Self>());
 
         server.middleware.push(Box::new(self));
     }
@@ -103,26 +101,12 @@ impl Analytics {
             .duration_since(UNIX_EPOCH)
             .expect("Cant get time: Time went backwards!")
             .as_secs();
-        let mut ip = internal::common::remove_address_port(&req.address);
 
-        // If Ip is Localhost and 'X-Forwarded-For' Header is present
-        // Use that as Ip
-        if ip == "127.0.0.1" {
-            if let Some(i) = req.headers.iter().find(|x| x.name == "X-Forwarded-For") {
-                ip = i.value.to_owned();
-            }
-        }
-
+        let ip = req.real_ip().to_string();
         let path = internal::path::normalize_path(req.path.to_owned());
-        let agent = get_header(&req.headers, "User-Agent");
-        let referer = get_header(&req.headers, "Referer");
-        let stats = Stats::new(
-            time,
-            path,
-            Method::from_afire(req.method.clone()),
-            agent,
-            referer,
-        );
+        let agent = req.headers.get("User-Agent").map(|x| x.to_owned());
+        let referer = req.headers.get("Referer").map(|x| x.to_owned());
+        let stats = Stats::new(time, path, Method::from_afire(req.method), agent, referer);
 
         let mut this = self.app.analytics_data.lock();
         if this.contains_key(&ip) {
@@ -141,12 +125,12 @@ impl Analytics {
             .elapsed()
             .expect("Cant get elapsed time: Time went backwards!")
             .as_secs()
-            < self.app.config.dump_peroid
+            < self.app.config.dump_period
         {
             return Some(());
         }
 
-        println!("[*] Saveing Analytics");
+        println!("[*] Saving Analytics");
 
         // Update Last Dump time
         *time = SystemTime::now();
@@ -217,7 +201,6 @@ impl Method {
             afire::Method::HEAD => Method::Head,
             afire::Method::PATCH => Method::Patch,
             afire::Method::TRACE => Method::Trace,
-            afire::Method::CUSTOM(s) => Method::Custom(s),
             afire::Method::ANY => Method::Custom("ANY".to_owned()),
         }
     }
@@ -252,13 +235,4 @@ impl fmt::Debug for Stats {
 
         f.write_str(&out)
     }
-}
-
-fn get_header(headers: &[Header], key: &str) -> Option<String> {
-    for i in headers {
-        if i.name == key {
-            return Some(i.value.clone());
-        }
-    }
-    None
 }

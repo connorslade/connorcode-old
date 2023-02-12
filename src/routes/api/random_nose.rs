@@ -1,4 +1,5 @@
 use std::fs;
+use std::fs::File;
 
 use afire::Method;
 use afire::Response;
@@ -29,10 +30,10 @@ pub fn attach(server: &mut Server<App>) {
         let random_nose_str = random_nose_str
             .split('/')
             .last()
-            .expect("Error Spliting on Slash");
+            .expect("Error splitting on Slash");
 
         Response::new()
-            .bytes(fs::read(random_nose).expect("Error Reading Nose"))
+            .stream(File::open(random_nose).expect("Error Opening Nose"))
             .header("Content-Type", get_type(random_nose_str))
             .header("X-Nose-ID", random_nose_str)
     });

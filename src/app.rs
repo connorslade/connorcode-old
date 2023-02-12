@@ -7,11 +7,11 @@ use rusqlite::Connection;
 use crate::{analytics::Stats, config::Config, writing::WritingCache};
 
 pub struct App {
-    // == App Styff ==
+    // == App Stuff ==
     /// App Config
     pub config: Config,
 
-    /// Databse Connection
+    /// Database Connection
     pub database: Mutex<Connection>,
 
     // == Data ==
