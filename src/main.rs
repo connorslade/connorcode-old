@@ -15,7 +15,6 @@ mod analytics;
 mod app;
 mod assets;
 mod common;
-// mod components;
 mod config;
 mod control;
 mod ctrlc;
@@ -49,7 +48,7 @@ fn main() {
     // Setup HTTP Server
     let mut server = Server::new(host.as_str(), port)
         .state(app)
-        // Set defult headers
+        // Set default headers
         .default_header("X-Content-Type-Options", "nosniff")
         .default_header("X-Frame-Options", "DENY")
         .default_header("X-Version", format!("Connorcode/{}", VERSION))
@@ -77,7 +76,6 @@ fn main() {
     app.reload_articles();
     app.reload_links();
 
-    // components::attach(&mut server);
     middleware::attach(&mut server);
     serve_static::attach(&mut server);
     Files(app.clone()).attach(&mut server);

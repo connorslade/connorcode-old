@@ -38,10 +38,10 @@ pub fn attach(server: &mut Server<App>) {
         .file("data/config/projects.cfg")
         .expect("Error Reading Project Config");
 
-    let base_page =
-        fs::read_to_string("data/web/template/index.html").expect("Error Reading BasePage");
+    let base_page = fs::read_to_string(app.config.data_dir.join("../template/index.html"))
+        .expect("Error Reading BasePage");
 
-    let base_template = fs::read_to_string("data/web/template/project.html")
+    let base_template = fs::read_to_string(app.config.data_dir.join("../template/project.html"))
         .expect("Error Reading Project Template");
 
     let mut projects = Vec::new();

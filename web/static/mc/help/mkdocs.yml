@@ -1,0 +1,19 @@
+site_name: Denali MC Help
+site_url: http://mc.connorcode.com/help/
+site_description: Help for Denali MC (The minecraft server)
+site_author: Connor Slade
+
+repo_url: https://github.com/Basicprogrammer10/Denali-MC-Help/
+edit_uri: ""
+
+theme:
+    name: material
+
+nav:
+    - Home: index.md
+    - TOU: TOU.md
+
+copyright: Copyright &copy; 2020 , Connor Slade
+
+plugins:
+    - search

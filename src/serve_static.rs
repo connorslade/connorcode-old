@@ -70,7 +70,7 @@ pub fn not_found(path: &str) -> Response {
     Response::new()
         .status(404)
         .text(
-            fs::read_to_string("data/web/template/not_found.html")
+            fs::read_to_string("data/web/dist-template/not_found.html")
                 .unwrap_or_else(|_| "Not Found :/".to_owned())
                 .replace("{{VERSION}}", VERSION)
                 .replace("{{PAGE}}", path),
