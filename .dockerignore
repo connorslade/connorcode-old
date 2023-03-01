@@ -2,4 +2,5 @@
 target
 local
 data/*
-!data/web/template
+web/*
+!web/dist

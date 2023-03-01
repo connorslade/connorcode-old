@@ -25,7 +25,15 @@ const OUT_PATH: &str = "web/dist/static";
 fn main() {
     // Load constants
     let consts = Config::new().file(CONST_PATH).unwrap();
-    println!("Loaded Constants: {}", consts.data.iter().map(|x| x[0].to_owned()).collect::<Vec<_>>().join(", "));
+    println!(
+        "Loaded Constants: {}",
+        consts
+            .data
+            .iter()
+            .map(|x| x[0].to_owned())
+            .collect::<Vec<_>>()
+            .join(", ")
+    );
 
     // Load components
     let mut cmp = HashMap::new();
@@ -85,18 +93,19 @@ fn main() {
 
 fn substitute(cmp: &HashMap<String, String>, imp: String) -> Option<String> {
     let chars = imp.chars().collect::<Vec<_>>();
+    let bytes = imp.as_bytes();
     let mut out = String::new();
     let mut working = String::new();
     let mut in_comment = false;
 
     let mut i = 0;
     while i < chars.len() - 4 {
-        if chars[i..i + 4] == ['<', '!', '-', '-'] {
+        if &bytes[i..i + 4] == b"<!--" {
             in_comment = true;
             i += 4;
         }
 
-        if chars[i..i + 3] == ['-', '-', '>'] {
+        if &bytes[i..i + 3] == b"-->" {
             in_comment = false;
             i += 3;
 
