@@ -1,4 +1,3 @@
-
 use std::collections::HashMap;
 use std::fmt;
 use std::fs;
@@ -70,24 +69,6 @@ impl Middleware for Analytics {
     }
 }
 
-impl Stats {
-    fn new(
-        time: u64,
-        path: String,
-        method: Method,
-        agent: Option<String>,
-        referer: Option<String>,
-    ) -> Self {
-        Stats {
-            time,
-            path,
-            method,
-            user_agent: agent,
-            referer,
-        }
-    }
-}
-
 impl Analytics {
     pub fn new(app: Arc<App>) -> Self {
         Analytics {
@@ -106,7 +87,13 @@ impl Analytics {
         let path = internal::path::normalize_path(req.path.to_owned());
         let agent = req.headers.get("User-Agent").map(|x| x.to_owned());
         let referer = req.headers.get("Referer").map(|x| x.to_owned());
-        let stats = Stats::new(time, path, Method::from_afire(req.method), agent, referer);
+        let stats = Stats {
+            time,
+            path,
+            method: Method::from_afire(req.method),
+            user_agent: agent,
+            referer,
+        };
 
         let mut this = self.app.analytics_data.lock();
         if this.contains_key(&ip) {
@@ -157,7 +144,7 @@ pub fn dump(app: Arc<App>) -> Option<()> {
     // Load Prev Data
     if path.exists() {
         let old = fs::read(path.clone()).ok()?;
-        let mut old: HashMap<Ip, Vec<Stats>> = bincode::deserialize(&old).ok()?;
+        let mut old = bincode::deserialize::<HashMap<Ip, Vec<Stats>>>(&old).ok()?;
 
         // Add New Data
         let mut data = app.analytics_data.lock();

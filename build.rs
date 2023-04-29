@@ -19,8 +19,7 @@ fn main() {
 
 fn quick_cmd(cmd: &str, args: &[&str]) -> Option<String> {
     Some(
-        String::from_utf8(Command::new(cmd).args(args).output().ok()?.stdout)
-            .unwrap()
+        String::from_utf8_lossy(&Command::new(cmd).args(args).output().ok()?.stdout)
             .replace(['\n', '\r'], ""),
     )
 }
