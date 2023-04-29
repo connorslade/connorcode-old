@@ -5,37 +5,27 @@ version = "7.0.0"
 
 [dependencies]
 # My Crates :P
-afire = {version = "2.0.0", features = ["extensions", "tracing"]}
-afire_integration = {git = "https://github.com/Basicprogrammer10/chalk"}
+afire = { version = "2.1.0", features = ["extensions", "tracing"] }
+afire_integration = { git = "https://github.com/Basicprogrammer10/chalk" }
 simple_config_parser = "1.0.0"
 
-# (En / De)codeing
 bincode = "1.3.3"
-comrak = {git = "https://github.com/Sigma-8214/comrak"}
-rusqlite = {version = "0.28.0", features = ["bundled"]}
-serde = {version = "1.0.147", features = ["derive"]}
-serde_json = "1.0.78"
-
-# Hashing
-ahash = "0.8.2"
-chrono = "0.4.19"
-ctrlc = "3.2.3"
+comrak = { git = "https://github.com/Sigma-8214/comrak" }
+rusqlite = { version = "0.29.0", features = ["bundled"] }
+serde = { version = "1.0.158", features = ["derive"] }
+serde_json = "1.0.95"
+ahash = "0.8.3"
+chrono = "0.4.24"
+ctrlc = "3.2.5"
 imagesize = "0.11.0"
 lazy_static = "1.4.0"
 parking_lot = "0.12.1"
-rand = "0.8.4"
+rand = "0.8.5"
 rand_pcg = "0.3.1"
 rand_seeder = "0.2.3"
-regex = "1.5.4"
-sha2 = "0.10.2"
+regex = "1.7.3"
+sha2 = "0.10.6"
 sys-info = "0.9.1"
-unindent = "0.1.7"
-ureq = "2.3.0"
+unindent = "0.2.1"
+ureq = "2.6.2"
 urlencoding = "2.1.2"
-
-[features]
-default = [
-  "tracing",
-]
-
-tracing = []
