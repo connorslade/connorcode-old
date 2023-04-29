@@ -31,7 +31,7 @@ impl Middleware for Article {
 
             let path = Path::new(&self.0.config.writing_path)
                 .join("assets")
-                .join(&file);
+                .join(file);
             let ext = path.extension().unwrap_or_default().to_string_lossy();
 
             let mime = match ext.to_lowercase().as_str() {

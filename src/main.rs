@@ -1,4 +1,4 @@
-use std::{process, sync::Arc, time::Duration};
+use std::{process, time::Duration};
 
 use afire::{
     trace::{set_log_level, Level},
@@ -45,13 +45,8 @@ fn main() {
         process::exit(1);
     }
 
-    // Make app
-    let host = app.config.server_host.clone();
-    let port = app.config.server_port;
-    let threads = app.config.threads;
-
     // Setup HTTP Server
-    let mut server = Server::new(host.as_str(), port)
+    let mut server = Server::new(&app.config.server_host, app.config.server_port)
         .state(app)
         // Set default headers
         .default_header("X-Content-Type-Options", "nosniff")
@@ -77,7 +72,7 @@ fn main() {
             .content(Content::HTML)
     });
 
-    let app = server.state.as_ref().unwrap().clone();
+    let app = server.app();
     app.reload_articles();
     app.reload_links();
 
@@ -88,22 +83,9 @@ fn main() {
     control::attach(&mut server);
     Analytics::new(app.clone()).attach(&mut server);
     logger::Logger.attach(&mut server);
-
     ctrlc::init(app.clone());
-    print_info(app);
-    color_print!(Color::Blue, "[*] Starting server on {}:{}\n", &host, port);
 
-    server.start_threaded(threads).expect("Server Port In Use");
-}
-
-#[rustfmt::skip]
-fn print_info(app: Arc<App>) {
-    color_print!(Color::Magenta, "[=] Config");
-    color_print!(Color::Magenta, " ├── Analytics");
-    color_print!(Color::Magenta, " │   ├── Enabled: {}", app.config.analytics_enabled);
-    color_print!(Color::Magenta, " │   ├── Period: {}", app.config.dump_period);
-    color_print!(Color::Magenta, " │   └── Serve: {}", app.config.analytics_serve);
-    color_print!(Color::Magenta, " └── Other");
-    color_print!(Color::Magenta, "     ├── Status Serve: {}", app.config.status_serve);
-    color_print!(Color::Magenta, "     └── Onion Broadcast: {}", app.config.broadcast_onion);
+    server
+        .start_threaded(app.config.threads)
+        .expect("Server Port In Use");
 }

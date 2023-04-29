@@ -1,4 +1,4 @@
-use std::{any::type_name, sync::Arc};
+use std::sync::Arc;
 
 use afire::{
     middleware::{MiddleResult, Middleware},
