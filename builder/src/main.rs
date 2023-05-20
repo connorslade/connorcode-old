@@ -3,59 +3,21 @@ use std::fs;
 use std::path::PathBuf;
 
 use glob::glob;
-use simple_config_parser::Config;
+
+use crate::app::App;
 
 mod app;
 mod args;
 
-const COMPONENT_PATH: &str = "web/components";
-const CONST_PATH: &str = "web/const.cfg";
-
-const IN_PATH: &str = "web/static";
-const STATIC_IN: &str = "web/static";
-const OUT_PATH: &str = "web/dist/static";
-
-// const IN_PATH: &str = "web/template";
-// const STATIC_IN: &str = "web/template";
-// const OUT_PATH: &str = "web/dist/template";
-
 fn main() {
-    // Load constants
-    let consts = Config::new().file(CONST_PATH).unwrap();
-    println!(
-        "Loaded Constants: {}",
-        consts
-            .data
-            .iter()
-            .map(|x| x[0].to_owned())
-            .collect::<Vec<_>>()
-            .join(", ")
-    );
-
-    // Load components
-    let mut cmp = HashMap::new();
-    for i in glob(&format!("{}/**/*.html", COMPONENT_PATH))
-        .unwrap()
-        .map(|x| x.unwrap())
-    {
-        println!("[*] Loading Component `{}`", i.to_string_lossy());
-        let name = i.to_string_lossy().replace('\\', "/");
-        let name = name
-            .strip_prefix(COMPONENT_PATH)
-            .unwrap()
-            .strip_suffix(".html")
-            .unwrap();
-
-        let value = fs::read_to_string(i).unwrap();
-        cmp.insert(name[1..].to_owned(), value);
-    }
+    let app = App::new();
 
     // Remove Old Dist
-    let _ = fs::remove_dir_all(OUT_PATH);
-    fs::create_dir_all(OUT_PATH).unwrap();
+    let _ = fs::remove_dir_all(&app.args.out_path);
+    fs::create_dir_all(&app.args.out_path).unwrap();
 
     println!("[*] Copying Static Files");
-    for i in glob(&format!("{}/**/*", STATIC_IN))
+    for i in glob(&format!("{}/**/*", app.args.static_path))
         .unwrap()
         .map(|x| x.unwrap())
     {
@@ -63,26 +25,28 @@ fn main() {
             continue;
         }
 
-        let new_path = PathBuf::from(OUT_PATH).join(i.strip_prefix(STATIC_IN).unwrap());
+        let new_path =
+            PathBuf::from(&app.args.out_path).join(i.strip_prefix(&app.args.static_path).unwrap());
 
         fs::create_dir_all(new_path.parent().unwrap()).unwrap();
         fs::copy(&i, new_path).unwrap();
     }
 
     // Process Html files
-    for i in glob(&format!("{}/**/*.html", IN_PATH))
+    for i in glob(&format!("{}/**/*.html", &app.args.in_path))
         .unwrap()
         .map(|x| x.unwrap())
     {
         println!("[*] Processing Page `{}`", i.to_string_lossy());
         let value = fs::read_to_string(&i).unwrap();
-        let mut new = substitute(&cmp, value);
+        let mut new = substitute(&app.components, value);
 
-        for i in consts.data.iter() {
+        for i in app.consts.data.iter() {
             new = new.replace(&format!("{{{{{}}}}}", i[0].to_uppercase()), &i[1]);
         }
 
-        let out_path = PathBuf::from(OUT_PATH).join(i.strip_prefix(IN_PATH).unwrap());
+        let out_path =
+            PathBuf::from(&app.args.out_path).join(i.strip_prefix(&app.args.in_path).unwrap());
         fs::create_dir_all(out_path.parent().unwrap()).unwrap();
         fs::write(out_path, new).unwrap()
     }

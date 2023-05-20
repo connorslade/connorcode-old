@@ -4,6 +4,6 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
-clap = "4.3.0"
+clap = {version = "4.3.0", features = ["derive"]}
 glob = "0.3.0"
 simple_config_parser = "1.0.0"
