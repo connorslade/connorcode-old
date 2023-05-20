@@ -1,0 +1,9 @@
+[package]
+name = "builder"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+clap = "4.3.0"
+glob = "0.3.0"
+simple_config_parser = "1.0.0"

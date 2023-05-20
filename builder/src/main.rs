@@ -1,15 +1,12 @@
-//! ```cargo
-//! [dependencies]
-//! glob = "0.3.0"
-//! simple_config_parser = "1.0.0"
-//! ```
-
 use std::collections::HashMap;
 use std::fs;
 use std::path::PathBuf;
 
 use glob::glob;
 use simple_config_parser::Config;
+
+mod app;
+mod args;
 
 const COMPONENT_PATH: &str = "web/components";
 const CONST_PATH: &str = "web/const.cfg";

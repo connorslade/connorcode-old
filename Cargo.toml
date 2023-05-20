@@ -3,6 +3,9 @@ edition = "2021"
 name = "connorcode"
 version = "7.0.0"
 
+[workspace]
+members = ["builder"]
+
 [dependencies]
 # My Crates :P
 afire = { version = "2.1.0", features = ["extensions", "tracing"] }
