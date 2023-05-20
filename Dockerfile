@@ -3,7 +3,12 @@ FROM rust:1.69
 WORKDIR /connorcode
 COPY . .
 
-# Build packages
+# Install packages
+RUN apt-get -y update
+RUN apt-get -y upgrade
+RUN apt-get install -y sqlite3 libsqlite3-dev
+
+# Build crates
 RUN cargo install --path builder
 RUN cargo install --path .
 
