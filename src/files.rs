@@ -1,9 +1,8 @@
-
 use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
-use afire::Content;
+use afire::HeaderType;
 use afire::{
     middleware::{MiddleResult, Middleware},
     trace, Method, Request, Response, Server,
@@ -149,24 +148,30 @@ impl Middleware for Files {
             }
         };
 
-        if req.query.get("download").is_some() || req.query.get("raw").is_some() {
-            return MiddleResult::Send(
-                Response::new()
-                    .stream(file)
-                    .header("Content-Type", "application/octet-stream"),
-            );
+        let mut res = Response::new().header(
+            HeaderType::ContentType,
+            get_content_type(path).unwrap_or("application/octet-stream"),
+        );
+        if let Ok(i) = file.metadata() {
+            res.headers.add("Content-Length", i.len().to_string());
         }
 
-        MiddleResult::Send(
-            show_response(path)
-                .unwrap_or_else(|| Response::new().content(Content::HTML))
-                .stream(file),
-        )
+        if req.query.get("download").is_some() || req.query.get("raw").is_some() {
+            if let Some(i) = res
+                .headers
+                .iter()
+                .position(|x| x.name == HeaderType::ContentType)
+            {
+                res.headers.remove(i);
+            }
+        }
+
+        MiddleResult::Send(res.stream(file))
     }
 }
 
-fn show_response(file: PathBuf) -> Option<Response> {
-    let content_type = match file.extension()?.to_str()?.to_lowercase().as_str() {
+fn get_content_type(file: PathBuf) -> Option<&'static str> {
+    Some(match file.extension()?.to_str()?.to_lowercase().as_str() {
         "txt" => "text/plain; charset=utf-8",
         "html" => "text/html; charset=utf-8",
         "css" => "text/css; charset=utf-8",
@@ -185,9 +190,7 @@ fn show_response(file: PathBuf) -> Option<Response> {
         "mp3" => "audio/mpeg",
         "mp4" => "video/mp4",
         _ => "application/octet-stream",
-    };
-
-    Some(Response::new().header("Content-Type", content_type))
+    })
 }
 
 fn path_icon(path: &Path) -> String {

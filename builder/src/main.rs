@@ -76,7 +76,7 @@ fn main() {
     {
         println!("[*] Processing Page `{}`", i.to_string_lossy());
         let value = fs::read_to_string(&i).unwrap();
-        let mut new = substitute(&cmp, value).unwrap();
+        let mut new = substitute(&cmp, value);
 
         for i in consts.data.iter() {
             new = new.replace(&format!("{{{{{}}}}}", i[0].to_uppercase()), &i[1]);
@@ -88,21 +88,20 @@ fn main() {
     }
 }
 
-fn substitute(cmp: &HashMap<String, String>, imp: String) -> Option<String> {
+fn substitute(cmp: &HashMap<String, String>, imp: String) -> String {
     let chars = imp.chars().collect::<Vec<_>>();
-    let bytes = imp.as_bytes();
     let mut out = String::new();
     let mut working = String::new();
     let mut in_comment = false;
 
     let mut i = 0;
     while i < chars.len() - 4 {
-        if &bytes[i..i + 4] == b"<!--" {
+        if Pattern("<!--") == &chars[i..i + 4] {
             in_comment = true;
             i += 4;
         }
 
-        if &bytes[i..i + 3] == b"-->" {
+        if Pattern("-->") == &chars[i..i + 3] {
             in_comment = false;
             i += 3;
 
@@ -130,5 +129,13 @@ fn substitute(cmp: &HashMap<String, String>, imp: String) -> Option<String> {
     }
 
     out.push_str(&chars[(chars.len() - 4)..].iter().collect::<String>());
-    Some(out)
+    out
+}
+
+struct Pattern(&'static str);
+
+impl PartialEq<&[char]> for Pattern {
+    fn eq(&self, other: &&[char]) -> bool {
+        self.0.chars().zip(other.iter()).all(|(a, b)| a == *b)
+    }
 }
