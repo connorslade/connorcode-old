@@ -4,7 +4,10 @@ use std::{
     sync::Arc,
 };
 
-use afire::{prelude::MiddleResult, Content, Method, Middleware, Request, Response, Server};
+use afire::{
+    extension::serve_static, prelude::MiddleResult, Content, Method, Middleware, Request, Response,
+    Server,
+};
 
 use crate::{
     app::App,
@@ -32,15 +35,10 @@ impl Middleware for Article {
             let path = Path::new(&self.0.config.writing_path)
                 .join("assets")
                 .join(file);
-            let ext = path.extension().unwrap_or_default().to_string_lossy();
 
-            let mime = match ext.to_lowercase().as_str() {
-                "png" => "image/png",
-                "jpg" => "image/jpeg",
-                "jpeg" => "image/jpeg",
-                "svg" => "image/svg+xml",
-                _ => "",
-            };
+            let ext = path.extension().unwrap_or_default().to_string_lossy();
+            let mime = serve_static::get_type(ext.to_lowercase().as_str(), &serve_static::TYPES)
+                .unwrap_or("application/octet-stream");
 
             if let Ok(data) = File::open(path) {
                 return MiddleResult::Send(
