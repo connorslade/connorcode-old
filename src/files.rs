@@ -2,6 +2,7 @@ use std::fs::{self, File};
 use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
+use afire::internal::encoding::url;
 use afire::HeaderType;
 use afire::{
     middleware::{MiddleResult, Middleware},
@@ -44,11 +45,14 @@ impl Middleware for Files {
     }
 
     fn pre(&self, req: &mut Request) -> MiddleResult {
-        if !req.path.starts_with("/files") || req.method != Method::GET {
+        let Some(mut file_path) = url::decode(&req.path) else {
+            return MiddleResult::Continue;
+        };
+
+        if !file_path.starts_with("/files") || req.method != Method::GET {
             return MiddleResult::Continue;
         }
 
-        let mut file_path = req.path.to_owned();
         while file_path.contains("/..") {
             file_path = file_path.replace("/..", "");
         }
