@@ -57,7 +57,8 @@ pub fn attach(server: &mut Server<App>) {
             // Load image to get its aspect ratio
             let image = parts[3].trim().to_string();
             let image_path = app.config.data_dir.join(&image);
-            let image_size = imagesize::size(image_path).expect("Error Getting Image Size");
+            let image_size = imagesize::size(&image_path)
+                .expect(&format!("Error Getting Image Size: {:?}", image_path));
             let image_size_gcd = common::gcd(image_size.width, image_size.height);
             let image_aspect = (
                 image_size.width / image_size_gcd,
