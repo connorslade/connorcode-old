@@ -1,28 +1,27 @@
-use afire::Server;
-use afire_integration::RemoteControl;
-use serde_json::Value;
+// use afire::Server;
+// use serde_json::Value;
 
-use crate::App;
+// use crate::App;
 
 /*
  - update-articles | Reloads articles from disk
  - update-links    | Reloads links from disk
 */
 
-pub fn attach(server: &mut Server<App>) {
-    let app = server.state.as_ref().unwrap().clone();
-    let link_app = app.clone();
+// pub fn attach(server: &mut Server<App>) {
+//     let app = server.state.as_ref().unwrap().clone();
+//     let link_app = app.clone();
 
-    RemoteControl::new()
-        .system("update-articles", move |_| ok(|| app.reload_articles()))
-        .system("update-links", move |_| ok(|| link_app.reload_links()));
-    // .attach(server);
-}
+//     RemoteControl::new()
+//         .system("update-articles", move |_| ok(|| app.reload_articles()))
+//         .system("update-links", move |_| ok(|| link_app.reload_links()));
+//     .attach(server);
+// }
 
-fn ok(exe: impl Fn()) -> Value {
-    exe();
-    Value::String("Ok".to_owned())
-}
+// fn ok(exe: impl Fn()) -> Value {
+//     exe();
+//     Value::String("Ok".to_owned())
+// }
 
 // TODO: Article caching
 /*

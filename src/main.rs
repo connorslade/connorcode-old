@@ -80,7 +80,6 @@ fn main() {
     serve_static::attach(&mut server);
     Files(app.clone()).attach(&mut server);
     routes::attach(&mut server);
-    control::attach(&mut server);
     Analytics::new(app.clone()).attach(&mut server);
     logger::Logger.attach(&mut server);
     ctrlc::init(app.clone());
