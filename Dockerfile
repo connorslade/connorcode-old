@@ -1,5 +1,7 @@
 FROM rust:1.69
 
+LABEL org.opencontainers.image.source = "https://github.com/Basicprogrammer10/connorcode"
+
 WORKDIR /connorcode
 COPY . .
 
