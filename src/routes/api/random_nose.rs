@@ -1,8 +1,8 @@
 use std::fs;
 use std::fs::File;
 
+use afire::route::RouteContext;
 use afire::Method;
-use afire::Response;
 use afire::Server;
 use rand::seq::SliceRandom;
 
@@ -10,7 +10,7 @@ use crate::app::App;
 
 pub fn attach(server: &mut Server<App>) {
     let mut noses = Vec::new();
-    let data_dir = &server.state.as_ref().unwrap().config.data_dir;
+    let data_dir = &server.app().config.data_dir;
 
     let all_noses = fs::read_dir(data_dir.join("assets/Noses")).expect("Error Reading Nose Dir");
 
@@ -25,14 +25,15 @@ pub fn attach(server: &mut Server<App>) {
     server.route(Method::GET, "/api/randomnose", move |ctx| {
         let random_nose = noses
             .choose(&mut rand::thread_rng())
-            .expect("Error Picking Nose");
+            .context("Error Picking Nose")?;
         let random_nose_str = random_nose.to_string_lossy().replace('\\', "");
         let random_nose_str = random_nose_str
             .split('/')
             .last()
-            .expect("Error splitting on Slash");
+            .context("Error splitting on Slash")?;
 
-        ctx.stream(File::open(random_nose).expect("Error Opening Nose"))
+        let file = File::open(random_nose).context("Error Opening Nose")?;
+        ctx.stream(file)
             .header("Content-Type", get_type(random_nose_str))
             .header("X-Nose-ID", random_nose_str)
             .send()?;

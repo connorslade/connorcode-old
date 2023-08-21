@@ -33,7 +33,7 @@ impl Project {
 }
 
 pub fn attach(server: &mut Server<App>) {
-    let app = server.state.as_ref().unwrap();
+    let app = server.app();
     let cfg = Config::new()
         .file("data/config/projects.cfg")
         .expect("Error Reading Project Config");

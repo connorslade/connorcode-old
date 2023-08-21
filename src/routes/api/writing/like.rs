@@ -14,7 +14,7 @@ pub fn attach(server: &mut Server<App>) {
         let app = ctx.app();
 
         let body = String::from_utf8_lossy(&ctx.req.body);
-        let json = serde_json::from_str::<RequestData>(&body).unwrap();
+        let json = serde_json::from_str::<RequestData>(&body)?;
         let ip = ctx.req.real_ip().to_string();
 
         // Verify Document
@@ -26,24 +26,21 @@ pub fn attach(server: &mut Server<App>) {
 
         let connection = app.database.lock();
         if json.like {
-            connection
-                .execute(
-                    "INSERT OR IGNORE INTO article_likes (name, ip, date) VALUES (?1, ?2, strftime('%s','now'))",
-                    rusqlite::params![document.path, ip],
-                )
-                .unwrap();
+            connection.execute(
+                "INSERT OR IGNORE INTO article_likes (name, ip, date) VALUES (?1, ?2, \
+                 strftime('%s','now'))",
+                rusqlite::params![document.path, ip],
+            )?;
             ctx.send()?;
             return Ok(());
         }
 
-        connection
-            .execute(
-                "DELETE FROM article_likes where name = ?1 AND ip = ?2",
-                rusqlite::params![document.path, ip],
-            )
-            .unwrap();
+        connection.execute(
+            "DELETE FROM article_likes where name = ?1 AND ip = ?2",
+            rusqlite::params![document.path, ip],
+        )?;
 
         ctx.send()?;
-            return Ok(());
+        return Ok(());
     });
 }

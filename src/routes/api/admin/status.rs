@@ -1,11 +1,11 @@
-use afire::{Content, Method, Server};
+use afire::{route::RouteContext, Content, Method, Server};
 use serde_json::json;
 use sha2::{Digest, Sha256};
 
 use crate::app::App;
 
 pub fn attach(server: &mut Server<App>) {
-    if !server.state.as_ref().unwrap().config.status_serve {
+    if !server.app().config.status_serve {
         return;
     }
 
@@ -28,12 +28,12 @@ pub fn attach(server: &mut Server<App>) {
             return Ok(ctx.status(403).text("Invalid Pass Header").send()?);
         }
 
-        let disk = sys_info::disk_info().expect("Error getting Disk info");
-        let mem = sys_info::mem_info().expect("Error getting Memory info");
-        let load = sys_info::loadavg().expect("Error getting Load history");
-        let proc = sys_info::proc_total().expect("Error getting process count");
-        let os = sys_info::os_type().expect("Error getting OS type");
-        let os_rel = sys_info::os_release().expect("Error getting OS info");
+        let disk = sys_info::disk_info().context("Error getting Disk info")?;
+        let mem = sys_info::mem_info().context("Error getting Memory info")?;
+        let load = sys_info::loadavg().context("Error getting Load history")?;
+        let proc = sys_info::proc_total().context("Error getting process count")?;
+        let os = sys_info::os_type().context("Error getting OS type")?;
+        let os_rel = sys_info::os_release().context("Error getting OS info")?;
 
         ctx.text(json!({
          "os": {

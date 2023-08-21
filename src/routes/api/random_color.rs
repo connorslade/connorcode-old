@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{Content, Method, Server};
+use afire::{route::RouteContext, Content, Method, Server};
 use rand::seq::SliceRandom;
 
 use crate::app::App;
@@ -10,7 +10,7 @@ const COLORS: [&str; 11] = [
 ];
 
 pub fn attach(server: &mut Server<App>) {
-    let data_dir = &server.state.as_ref().unwrap().config.data_dir;
+    let data_dir = &server.app().config.data_dir;
     let raw = fs::read_to_string(data_dir.join("colornamegen/words.txt"))
         .expect("Error Reading Words File");
     let words = raw.lines().map(|x| x.to_owned()).collect::<Vec<_>>();
@@ -18,10 +18,10 @@ pub fn attach(server: &mut Server<App>) {
     server.route(Method::GET, "/api/randomcolor", move |ctx| {
         let random_name = words
             .choose(&mut rand::thread_rng())
-            .expect("Error Picking Word");
+            .context("Error Picking Word")?;
         let random_color = COLORS
             .choose(&mut rand::thread_rng())
-            .expect("Error Picking Color");
+            .context("Error Picking Color")?;
 
         ctx.text(format!("{} {}", random_name, random_color))
             .content(Content::TXT)

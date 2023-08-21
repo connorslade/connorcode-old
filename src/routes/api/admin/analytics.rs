@@ -2,7 +2,8 @@ use std::ffi::OsStr;
 use std::fs;
 use std::path::Path;
 
-use afire::{Method, Response, Server};
+use afire::route::RouteContext;
+use afire::{Method, Server};
 use ahash::{HashMap, HashMapExt};
 use serde_json::json;
 use sha2::{Digest, Sha256};
@@ -11,7 +12,7 @@ use crate::analytics::Stats;
 use crate::app::App;
 
 pub fn attach(server: &mut Server<App>) {
-    if !server.state.as_ref().unwrap().config.analytics_serve {
+    if !server.app().config.analytics_serve {
         return;
     }
 
@@ -44,21 +45,21 @@ pub fn attach(server: &mut Server<App>) {
 
         // Get Data From Disk
         let folder = Path::new(&app.config.analytics_path);
-        let files = fs::read_dir(folder).expect("Error Reading Dir");
+        let files = fs::read_dir(folder).context("Error Reading Dir")?;
         let mut all_data: HashMap<String, Vec<Stats>> = HashMap::new();
 
         for i in files {
             // Read file
-            let file = i.expect("Error getting analytics file");
+            let file = i.context("Error getting analytics file")?;
             if !file.path().is_file() || file.path().extension() != Some(OsStr::new("aan")) {
                 continue;
             }
 
-            let data = fs::read(file.path()).expect("Error Reading Analytics File");
+            let data = fs::read(file.path()).context("Error Reading Analytics File")?;
 
             // Parse Data
             let data = bincode::deserialize::<HashMap<String, Vec<Stats>>>(&data)
-                .expect("Error Deserializing Data");
+                .context("Error Deserializing Data")?;
 
             // Marge data to all_data
             for (ip, data) in data {

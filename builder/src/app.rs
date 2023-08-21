@@ -44,6 +44,10 @@ impl App {
             components.insert(name[1..].to_owned(), value);
         }
 
-        Self { args, consts, components }
+        Self {
+            args,
+            consts,
+            components,
+        }
     }
 }
