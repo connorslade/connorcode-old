@@ -1,4 +1,4 @@
-use afire::{Content, Method, Response, Server};
+use afire::{Content, Method, Server};
 
 use crate::app::App;
 

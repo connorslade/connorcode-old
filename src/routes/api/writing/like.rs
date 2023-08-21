@@ -41,6 +41,6 @@ pub fn attach(server: &mut Server<App>) {
         )?;
 
         ctx.send()?;
-        return Ok(());
+        Ok(())
     });
 }

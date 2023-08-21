@@ -83,7 +83,7 @@ fn main() -> Result<()> {
     routes::attach(&mut server);
     Analytics::new(app.clone()).attach(&mut server);
     logger::Logger.attach(&mut server);
-    ctrlc::init(app.clone());
+    ctrlc::init(app);
 
     server.start().unwrap();
     Ok(())

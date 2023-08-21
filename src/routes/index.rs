@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{Content, Method, Response, Server};
+use afire::{Content, Method, Server};
 use serde::Serialize;
 use serde_json::json;
 use simple_config_parser::Config;
@@ -59,7 +59,7 @@ pub fn attach(server: &mut Server<App>) {
             let image_path = app.config.data_dir.join(&image);
             assert!(image_path.exists(), "Image Not Found: {:?}", image_path);
             let image_size = imagesize::size(&image_path)
-                .expect(&format!("Error Getting Image Size: {:?}", image_path));
+                .unwrap_or_else(|_| panic!("Error Getting Image Size: {:?}", image_path));
             let image_size_gcd = common::gcd(image_size.width, image_size.height);
             let image_aspect = (
                 image_size.width / image_size_gcd,
