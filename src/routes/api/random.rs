@@ -4,7 +4,7 @@ use std::sync::{
 };
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use afire::{Content, Method, Response, Server};
+use afire::{Content, Method, Server};
 use rand::prelude::*;
 use rand_pcg::Pcg64;
 use rand_seeder::Seeder;
@@ -24,7 +24,8 @@ pub fn attach(server: &mut Server<App>) {
     let last_update = AtomicU64::new(0);
     let last_value = Arc::new(RwLock::new(String::new()));
 
-    server.stateful_route(Method::GET, "/api/random", move |app, req| {
+    server.route(Method::GET, "/api/random", move |ctx| {
+        let app = ctx.app();
         if get_epoch() - last_update.load(Ordering::Relaxed) > 60 {
             update_weather(
                 last_value.clone(),
@@ -45,29 +46,30 @@ pub fn attach(server: &mut Server<App>) {
         ))
         .make_rng();
 
-        if let Some(i) = req.query.get("type") {
-            return match i {
-                "password" => Response::new().content(Content::TXT).text(
-                    (0..20)
-                        .map(|_| *PASSWORD_CHARS.choose(&mut rng).unwrap())
-                        .map(char::from)
-                        .collect::<String>(),
-                ),
-                "dice" => Response::new()
-                    .content(Content::TXT)
-                    .text(rng.gen_range(1..=6)),
-                "coin" => Response::new()
-                    .content(Content::TXT)
-                    .text(if rng.gen_ratio(1, 2) {
-                        "Heads"
-                    } else {
-                        "Tails"
-                    }),
-                _ => Response::new().status(400).text("Invalid type (password)"),
+        if let Some(i) = ctx.req.query.get("type") {
+            let txt = match i {
+                "password" => (0..20)
+                    .map(|_| *PASSWORD_CHARS.choose(&mut rng).unwrap())
+                    .map(char::from)
+                    .collect::<String>(),
+                "dice" => rng.gen_range(1..=6).to_string(),
+                "coin" => if rng.gen_ratio(1, 2) {
+                    "Heads"
+                } else {
+                    "Tails"
+                }
+                .to_owned(),
+                _ => {
+                    ctx.status(400).text("Invalid type (password)").send()?;
+                    return Ok(());
+                }
             };
+            ctx.text(txt).content(Content::TXT).send()?;
+            return Ok(());
         }
 
-        Response::new().bytes(&rng.gen::<[u8; 32]>())
+        ctx.bytes(rng.gen::<[u8; 32]>()).send()?;
+        Ok(())
     });
 }
 

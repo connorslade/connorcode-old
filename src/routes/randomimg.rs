@@ -2,7 +2,6 @@ use std::io::Read;
 use std::time::Duration;
 
 use afire::Method;
-use afire::Response;
 use afire::Server;
 use rand::distributions::Alphanumeric;
 use rand::{thread_rng, Rng};
@@ -11,18 +10,20 @@ use ureq::AgentBuilder;
 use crate::app::App;
 
 pub fn attach(server: &mut Server<App>) {
-    server.route(Method::GET, "/randomimg/image.png", |_req| {
-        // Try to find a ramdom image 5 times
+    server.route(Method::GET, "/randomimg/image.png", |ctx| {
+        // Try to find a random image 5 times
         for _ in 1..5 {
             if let Some((i, j)) = get_random_image() {
-                return Response::new()
-                    .stream(i)
+                ctx.stream(i)
                     .header("Content-Type", "image/png")
-                    .header("X-Image-Id", j);
+                    .header("X-Image-Id", j)
+                    .send()?;
+                return Ok(());
             }
         }
 
-        Response::new().status(404).text("Error Getting Image")
+        ctx.status(404).text("Error Getting Image").send()?;
+        Ok(())
     });
 }
 

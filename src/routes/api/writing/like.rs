@@ -1,4 +1,4 @@
-use afire::{Method, Response, Server};
+use afire::{Method, Server};
 use serde::Deserialize;
 
 use crate::{app::App, common::RealIp};
@@ -10,10 +10,12 @@ struct RequestData {
 }
 
 pub fn attach(server: &mut Server<App>) {
-    server.stateful_route(Method::POST, "/api/writing/like", |app, req| {
-        let body = String::from_utf8_lossy(&req.body);
+    server.route(Method::POST, "/api/writing/like", |ctx| {
+        let app = ctx.app();
+
+        let body = String::from_utf8_lossy(&ctx.req.body);
         let json = serde_json::from_str::<RequestData>(&body).unwrap();
-        let ip = req.real_ip().to_string();
+        let ip = ctx.req.real_ip().to_string();
 
         // Verify Document
         let articles = app.articles.articles.read();
@@ -30,7 +32,8 @@ pub fn attach(server: &mut Server<App>) {
                     rusqlite::params![document.path, ip],
                 )
                 .unwrap();
-            return Response::new();
+            ctx.send()?;
+            return Ok(());
         }
 
         connection
@@ -40,6 +43,7 @@ pub fn attach(server: &mut Server<App>) {
             )
             .unwrap();
 
-        Response::new()
+        ctx.send()?;
+            return Ok(());
     });
 }

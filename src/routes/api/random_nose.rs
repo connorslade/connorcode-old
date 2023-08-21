@@ -22,7 +22,7 @@ pub fn attach(server: &mut Server<App>) {
         }
     }
 
-    server.route(Method::GET, "/api/randomnose", move |_req| {
+    server.route(Method::GET, "/api/randomnose", move |ctx| {
         let random_nose = noses
             .choose(&mut rand::thread_rng())
             .expect("Error Picking Nose");
@@ -32,10 +32,11 @@ pub fn attach(server: &mut Server<App>) {
             .last()
             .expect("Error splitting on Slash");
 
-        Response::new()
-            .stream(File::open(random_nose).expect("Error Opening Nose"))
+        ctx.stream(File::open(random_nose).expect("Error Opening Nose"))
             .header("Content-Type", get_type(random_nose_str))
             .header("X-Nose-ID", random_nose_str)
+            .send()?;
+        Ok(())
     });
 }
 

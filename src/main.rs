@@ -4,6 +4,7 @@ use afire::{
     trace::{set_log_level, Level},
     Content, Middleware, Response, Server,
 };
+use anyhow::Result;
 #[macro_use]
 extern crate lazy_static;
 
@@ -29,7 +30,7 @@ use files::Files;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-fn main() {
+fn main() -> Result<()> {
     set_log_level(Level::Trace);
     println!(
         "{}",
@@ -84,7 +85,6 @@ fn main() {
     logger::Logger.attach(&mut server);
     ctrlc::init(app.clone());
 
-    server
-        .start_threaded(app.config.threads)
-        .expect("Server Port In Use");
+    server.start().unwrap();
+    Ok(())
 }

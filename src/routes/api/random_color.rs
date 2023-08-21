@@ -1,9 +1,6 @@
 use std::fs;
 
-use afire::Content;
-use afire::Method;
-use afire::Response;
-use afire::Server;
+use afire::{Content, Method, Server};
 use rand::seq::SliceRandom;
 
 use crate::app::App;
@@ -18,7 +15,7 @@ pub fn attach(server: &mut Server<App>) {
         .expect("Error Reading Words File");
     let words = raw.lines().map(|x| x.to_owned()).collect::<Vec<_>>();
 
-    server.route(Method::GET, "/api/randomcolor", move |_req| {
+    server.route(Method::GET, "/api/randomcolor", move |ctx| {
         let random_name = words
             .choose(&mut rand::thread_rng())
             .expect("Error Picking Word");
@@ -26,8 +23,9 @@ pub fn attach(server: &mut Server<App>) {
             .choose(&mut rand::thread_rng())
             .expect("Error Picking Color");
 
-        Response::new()
-            .text(format!("{} {}", random_name, random_color))
+        ctx.text(format!("{} {}", random_name, random_color))
             .content(Content::TXT)
+            .send()?;
+        Ok(())
     });
 }

@@ -1,11 +1,11 @@
-use afire::{Content, Method, Response, Server};
+use afire::{Content, Method, Server};
 use unindent::unindent;
 
 use crate::{app::App, assets::WRITING_HOME};
 
 pub fn attach(server: &mut Server<App>) {
-    server.stateful_route(Method::GET, "/writing", |app, _req| {
-        let articles = app.articles.articles.read();
+    server.route(Method::GET, "/writing", |ctx| {
+        let articles = ctx.app().articles.articles.read();
         let mut article_vec = articles.iter().map(|x| x.1).collect::<Vec<_>>();
         article_vec.sort_unstable_by(|x, y| y.epoch.cmp(&x.epoch));
 
@@ -23,8 +23,7 @@ pub fn attach(server: &mut Server<App>) {
             )));
         }
 
-        Response::new()
-            .text(WRITING_HOME.replace("{{ARTICLES}}", &documents))
-            .content(Content::HTML)
+            ctx.text(WRITING_HOME.replace("{{ARTICLES}}", &documents)).content(Content::HTML).send()?;
+            Ok(())
     });
 }

@@ -1,22 +1,27 @@
-use afire::{Method, Response, Server};
+use afire::{Method, Server};
 
 use crate::{app::App, serve_static::not_found};
 
 pub fn attach(server: &mut Server<App>) {
-    server.stateful_route(Method::GET, "/r/{code}", |app, req| {
-        let code = req.param("code").unwrap();
-        let links = app.redirects.read();
+    server.route(Method::GET, "/r/{code}", |ctx| {
+        let code = ctx.param("code").unwrap();
+        let links = ctx.app().redirects.read();
 
-        let link = match links.get(&code) {
+        let link = match links.get(code) {
             Some(i) => i,
-            None => return not_found(&req.path),
+            None => {
+                not_found(&ctx.req.path)
+                    .write(ctx.req.socket.clone(), &ctx.server.default_headers)?;
+                return Ok(());
+            }
         };
 
-        Response::new()
-            .status(308)
+        ctx.status(308)
             .reason("Permanent Redirect")
             .text(format!(r#"<a href={link}>{link}</a>"#, link = link))
             .header("Content-Type", "text/html")
             .header("Location", link)
+            .send()?;
+        Ok(())
     });
 }

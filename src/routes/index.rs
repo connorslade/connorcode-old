@@ -96,11 +96,13 @@ pub fn attach(server: &mut Server<App>) {
     let projects_json = format!("[{}]", projects_json);
 
     // Serve Main Page
-    server.route(Method::GET, "/", move |_req| {
-        Response::new().text(&projects_html).content(Content::HTML)
+    server.route(Method::GET, "/", move |ctx| {
+        ctx.text(&projects_html).content(Content::HTML).send()?;
+        Ok(())
     });
 
-    server.route(Method::GET, "/api/projects", move |_req| {
-        Response::new().text(&projects_json).content(Content::JSON)
+    server.route(Method::GET, "/api/projects", move |ctx| {
+        ctx.text(&projects_json).content(Content::JSON).send()?;
+        Ok(())
     });
 }

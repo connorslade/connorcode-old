@@ -15,20 +15,23 @@ pub fn attach(server: &mut Server<App>) {
         return;
     }
 
-    server.stateful_route(Method::GET, "/api/analytics", |app, req| {
+    server.route(Method::GET, "/api/analytics", |ctx| {
+        let app = ctx.app();
+
         // Check Auth
-        let auth = match req.headers.get("Auth") {
+        let auth = match ctx.req.headers.get("Auth") {
             Some(i) => i,
             None => {
-                return Response::new().status(403).text("No Authorization Header");
+                return Ok(ctx.status(403).text("No Authorization Header").send()?);
             }
         };
 
         // Make sure Auth is not too long before hashing
         if auth.len() > 100 {
-            return Response::new()
+            return Ok(ctx
                 .status(403)
-                .text("Auth Header is *way* too long");
+                .text("Auth Header is *way* too long")
+                .send()?);
         }
 
         let mut hasher = Sha256::new();
@@ -36,7 +39,7 @@ pub fn attach(server: &mut Server<App>) {
         let result = hasher.finalize();
 
         if format!("{:02x}", result) != app.config.pass {
-            return Response::new().status(403).text("Invalid Auth Header");
+            return Ok(ctx.status(403).text("Invalid Auth Header").send()?);
         }
 
         // Get Data From Disk
@@ -55,7 +58,7 @@ pub fn attach(server: &mut Server<App>) {
 
             // Parse Data
             let data = bincode::deserialize::<HashMap<String, Vec<Stats>>>(&data)
-                .expect("Error Deserializeing Data");
+                .expect("Error Deserializing Data");
 
             // Marge data to all_data
             for (ip, data) in data {
@@ -83,15 +86,17 @@ pub fn attach(server: &mut Server<App>) {
         }
 
         if all_data.is_empty() {
-            return Response::new()
+            return Ok(ctx
                 .status(425)
                 .reason("Too Early")
                 .text(r#"{"error": "No Data Yet"}"#)
-                .header("Content-Type", "application/json");
+                .header("Content-Type", "application/json")
+                .send()?);
         }
 
-        Response::new()
-            .text(json!(all_data))
+        ctx.text(json!(all_data))
             .header("Content-Type", "application/json")
+            .send()?;
+        Ok(())
     });
 }

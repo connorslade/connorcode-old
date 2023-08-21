@@ -8,8 +8,7 @@ members = ["builder"]
 
 [dependencies]
 # My Crates :P
-afire = { version = "2.2.0", features = ["extensions", "tracing"] }
-# afire_integration = { git = "https://github.com/Basicprogrammer10/chalk" }
+afire = { version = "3.0.0-alpha.1", features = ["extensions", "tracing"] }
 simple_config_parser = "1.0.0"
 
 bincode = "1.3.3"
@@ -32,6 +31,7 @@ unindent = "0.2.1"
 ureq = "2.6.2"
 urlencoding = "2.1.2"
 comrak = "0.18.0"
+anyhow = "1.0.75"
 
 [target.'cfg(windows)'.dependencies]
 rusqlite = { version = "0.29.0", features = ["bundled"] }

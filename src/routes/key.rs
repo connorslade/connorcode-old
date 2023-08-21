@@ -1,13 +1,16 @@
 use std::fs::File;
 
-use afire::{Method, Response, Server};
+use afire::{route::RouteContext, Method, Server};
 
 use crate::app::App;
 
 pub fn attach(server: &mut Server<App>) {
-    server.stateful_route(Method::GET, "/key", |app, _req| {
-        Response::new().stream(
-            File::open(app.config.data_dir.join("key.asc")).expect("Error Reading key file"),
+    server.route(Method::GET, "/key", |ctx| {
+        ctx.stream(
+            File::open(ctx.app().config.data_dir.join("key.asc"))
+                .context("Error Reading key file")?,
         )
+        .send()?;
+        Ok(())
     });
 }
