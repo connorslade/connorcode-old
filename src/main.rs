@@ -48,6 +48,7 @@ fn main() -> Result<()> {
 
     // Setup HTTP Server
     let mut server = Server::new(&app.config.server_host, app.config.server_port)
+        .workers(app.config.threads)
         .state(app)
         // Set default headers
         .default_header("X-Content-Type-Options", "nosniff")
