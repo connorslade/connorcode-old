@@ -1,9 +1,7 @@
 use afire::{
     middleware::{MiddleResult, Middleware},
-    Request,
+    Request, extension::RealIp,
 };
-
-use crate::common::RealIp;
 
 pub struct Logger;
 

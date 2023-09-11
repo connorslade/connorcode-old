@@ -5,18 +5,18 @@ use std::{
 };
 
 use afire::{
-    extension::serve_static, prelude::MiddleResult, Content, Method, Middleware, Request, Response,
+    extension::{serve_static, RealIp}, prelude::MiddleResult, Content, Method, Middleware, Request, Response,
     Server,
 };
 
 use crate::{
     app::App,
     assets::{self, WRITING},
-    common::RealIp,
 };
 
 struct Article(pub Arc<App>);
 
+// TODO: Convert this into a route and do good error handling
 impl Middleware for Article {
     fn pre(&self, req: &mut Request) -> MiddleResult {
         // Continue on non GET requests
@@ -80,7 +80,8 @@ impl Middleware for Article {
             // Add a view to the article if it hasn't been viewed before
             trans
                 .execute(
-                    "INSERT OR IGNORE INTO article_views (name, ip, date) VALUES (?1, ?2, strftime('%s','now'))",
+                    "INSERT OR IGNORE INTO article_views (name, ip, date) VALUES (?1, ?2, \
+                     strftime('%s','now'))",
                     rusqlite::params![doc.path, ip],
                 )
                 .unwrap();

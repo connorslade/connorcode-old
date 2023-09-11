@@ -1,7 +1,7 @@
-use afire::{Method, Response, Server};
+use afire::{Method, Server, extension::RealIp};
 use serde::Deserialize;
 
-use crate::{app::App, common::RealIp};
+use crate::app::App;
 
 #[derive(Deserialize)]
 struct RequestData {
@@ -10,10 +10,12 @@ struct RequestData {
 }
 
 pub fn attach(server: &mut Server<App>) {
-    server.stateful_route(Method::POST, "/api/writing/like", |app, req| {
-        let body = String::from_utf8_lossy(&req.body);
-        let json = serde_json::from_str::<RequestData>(&body).unwrap();
-        let ip = req.real_ip().to_string();
+    server.route(Method::POST, "/api/writing/like", |ctx| {
+        let app = ctx.app();
+
+        let body = String::from_utf8_lossy(&ctx.req.body);
+        let json = serde_json::from_str::<RequestData>(&body)?;
+        let ip = ctx.req.real_ip().to_string();
 
         // Verify Document
         let articles = app.articles.articles.read();
@@ -24,22 +26,21 @@ pub fn attach(server: &mut Server<App>) {
 
         let connection = app.database.lock();
         if json.like {
-            connection
-                .execute(
-                    "INSERT OR IGNORE INTO article_likes (name, ip, date) VALUES (?1, ?2, strftime('%s','now'))",
-                    rusqlite::params![document.path, ip],
-                )
-                .unwrap();
-            return Response::new();
+            connection.execute(
+                "INSERT OR IGNORE INTO article_likes (name, ip, date) VALUES (?1, ?2, \
+                 strftime('%s','now'))",
+                rusqlite::params![document.path, ip],
+            )?;
+            ctx.send()?;
+            return Ok(());
         }
 
-        connection
-            .execute(
-                "DELETE FROM article_likes where name = ?1 AND ip = ?2",
-                rusqlite::params![document.path, ip],
-            )
-            .unwrap();
+        connection.execute(
+            "DELETE FROM article_likes where name = ?1 AND ip = ?2",
+            rusqlite::params![document.path, ip],
+        )?;
 
-        Response::new()
+        ctx.send()?;
+        Ok(())
     });
 }

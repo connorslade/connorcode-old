@@ -1,20 +1,22 @@
-use afire::{Content, Method, Response, Server};
+use afire::{route::RouteContext, Content, Method, Server};
 use serde_json::json;
 use sha2::{Digest, Sha256};
 
 use crate::app::App;
 
 pub fn attach(server: &mut Server<App>) {
-    if !server.state.as_ref().unwrap().config.status_serve {
+    if !server.app().config.status_serve {
         return;
     }
 
-    server.stateful_route(Method::GET, "/api/status", |app, req| {
+    server.route(Method::GET, "/api/status", |ctx| {
+        let app = ctx.app();
+
         // Check Auth
-        let auth = match req.headers.get("Auth") {
+        let auth = match ctx.req.headers.get("Auth") {
             Some(i) => i,
             None => {
-                return Response::new().status(403).text("No Authorization Header");
+                return Ok(ctx.status(403).text("No Authorization Header").send()?);
             }
         };
 
@@ -23,37 +25,38 @@ pub fn attach(server: &mut Server<App>) {
         let result = hasher.finalize();
 
         if format!("{:02x}", result) != app.config.pass {
-            return Response::new().status(403).text("Invalid Pass Header");
+            return Ok(ctx.status(403).text("Invalid Pass Header").send()?);
         }
 
-        let disk = sys_info::disk_info().expect("Error getting Disk info");
-        let mem = sys_info::mem_info().expect("Error getting Memory info");
-        let load = sys_info::loadavg().expect("Error getting Load history");
-        let proc = sys_info::proc_total().expect("Error getting process count");
-        let os = sys_info::os_type().expect("Error getting OS type");
-        let os_rel = sys_info::os_release().expect("Error getting OS info");
+        let disk = sys_info::disk_info().context("Error getting Disk info")?;
+        let mem = sys_info::mem_info().context("Error getting Memory info")?;
+        let load = sys_info::loadavg().context("Error getting Load history")?;
+        let proc = sys_info::proc_total().context("Error getting process count")?;
+        let os = sys_info::os_type().context("Error getting OS type")?;
+        let os_rel = sys_info::os_release().context("Error getting OS info")?;
 
-        Response::new()
-            .text(json!({
-             "os": {
-                 "type": os,
-                 "release": os_rel
-             },
-             "disk": {
-                 "total": disk.total,
-                 "free": disk.free
-             },
-             "memory": {
-                 "total": mem.total,
-                 "free": mem.free,
-             },
-             "load": {
-                 "1m": load.one,
-                 "5m": load.five,
-                 "15m": load.fifteen,
-             },
-             "processes": proc
-            }))
-            .content(Content::JSON)
+        ctx.text(json!({
+         "os": {
+             "type": os,
+             "release": os_rel
+         },
+         "disk": {
+             "total": disk.total,
+             "free": disk.free
+         },
+         "memory": {
+             "total": mem.total,
+             "free": mem.free,
+         },
+         "load": {
+             "1m": load.one,
+             "5m": load.five,
+             "15m": load.fifteen,
+         },
+         "processes": proc
+        }))
+        .content(Content::JSON)
+        .send()?;
+        Ok(())
     });
 }

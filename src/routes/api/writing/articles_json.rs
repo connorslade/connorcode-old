@@ -1,11 +1,12 @@
-use afire::{Content, Method, Response, Server};
+use afire::{Content, Method, Server};
 
 use crate::app::App;
 
 pub fn attach(server: &mut Server<App>) {
-    server.stateful_route(Method::GET, "/api/writing", |app, _req| {
-        Response::new()
-            .text(app.articles.api_cache.read())
+    server.route(Method::GET, "/api/writing", |ctx| {
+        ctx.text(ctx.app().articles.api_cache.read())
             .content(Content::JSON)
+            .send()?;
+        Ok(())
     });
 }

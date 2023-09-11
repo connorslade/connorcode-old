@@ -4,6 +4,7 @@ use afire::{
     trace::{set_log_level, Level},
     Content, Middleware, Response, Server,
 };
+use anyhow::Result;
 #[macro_use]
 extern crate lazy_static;
 
@@ -29,7 +30,7 @@ use files::Files;
 
 pub const VERSION: &str = env!("CARGO_PKG_VERSION");
 
-fn main() {
+fn main() -> Result<()> {
     set_log_level(Level::Trace);
     println!(
         "{}",
@@ -47,6 +48,7 @@ fn main() {
 
     // Setup HTTP Server
     let mut server = Server::new(&app.config.server_host, app.config.server_port)
+        .workers(app.config.threads)
         .state(app)
         // Set default headers
         .default_header("X-Content-Type-Options", "nosniff")
@@ -82,9 +84,8 @@ fn main() {
     routes::attach(&mut server);
     Analytics::new(app.clone()).attach(&mut server);
     logger::Logger.attach(&mut server);
-    ctrlc::init(app.clone());
+    ctrlc::init(app);
 
-    server
-        .start_threaded(app.config.threads)
-        .expect("Server Port In Use");
+    server.start().unwrap();
+    Ok(())
 }

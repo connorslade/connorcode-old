@@ -6,6 +6,7 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
+use afire::extension::RealIp;
 use afire::trace;
 use afire::{
     internal,
@@ -16,7 +17,6 @@ use chrono::prelude::*;
 use serde::{Deserialize, Serialize};
 
 use crate::app::App;
-use crate::common::RealIp;
 
 type Ip = String;
 

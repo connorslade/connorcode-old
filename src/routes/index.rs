@@ -1,6 +1,6 @@
 use std::fs;
 
-use afire::{Content, Method, Response, Server};
+use afire::{Content, Method, Server};
 use serde::Serialize;
 use serde_json::json;
 use simple_config_parser::Config;
@@ -33,7 +33,7 @@ impl Project {
 }
 
 pub fn attach(server: &mut Server<App>) {
-    let app = server.state.as_ref().unwrap();
+    let app = server.app();
     let cfg = Config::new()
         .file("data/config/projects.cfg")
         .expect("Error Reading Project Config");
@@ -59,7 +59,7 @@ pub fn attach(server: &mut Server<App>) {
             let image_path = app.config.data_dir.join(&image);
             assert!(image_path.exists(), "Image Not Found: {:?}", image_path);
             let image_size = imagesize::size(&image_path)
-                .expect(&format!("Error Getting Image Size: {:?}", image_path));
+                .unwrap_or_else(|_| panic!("Error Getting Image Size: {:?}", image_path));
             let image_size_gcd = common::gcd(image_size.width, image_size.height);
             let image_aspect = (
                 image_size.width / image_size_gcd,
@@ -96,11 +96,13 @@ pub fn attach(server: &mut Server<App>) {
     let projects_json = format!("[{}]", projects_json);
 
     // Serve Main Page
-    server.route(Method::GET, "/", move |_req| {
-        Response::new().text(&projects_html).content(Content::HTML)
+    server.route(Method::GET, "/", move |ctx| {
+        ctx.text(&projects_html).content(Content::HTML).send()?;
+        Ok(())
     });
 
-    server.route(Method::GET, "/api/projects", move |_req| {
-        Response::new().text(&projects_json).content(Content::JSON)
+    server.route(Method::GET, "/api/projects", move |ctx| {
+        ctx.text(&projects_json).content(Content::JSON).send()?;
+        Ok(())
     });
 }
