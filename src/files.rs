@@ -15,7 +15,7 @@ use crate::VERSION;
 
 #[rustfmt::skip]
 const FILE_ICONS: &[(&str, &[&str])] = &[
-    ("file-code-o",       &["rs", "python", "lua", "scriptable", "js", "html", "css", "scss"]),
+    ("file-code-o",       &["rs", "py", "lua", "scriptable", "js", "html", "css", "scss"]),
     ("file-audio-o",      &["mp3", "wav", "flac"]),
     ("file-video-o",      &["mp4", "mov"]),
     ("file-image-o",      &["png", "jpg", "jpeg", "gif"]),
@@ -193,6 +193,7 @@ fn get_content_type(file: PathBuf) -> Option<&'static str> {
         "otf" => "application/font-otf",
         "mp3" => "audio/mpeg",
         "mp4" => "video/mp4",
+        "pdf" => "application/pdf",
         _ => "application/octet-stream",
     })
 }
