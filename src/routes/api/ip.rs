@@ -1,6 +1,6 @@
-use afire::{Content, Method, Server};
+use afire::{extension::RealIp, Content, Method, Server};
 
-use crate::{app::App, common::RealIp};
+use crate::app::App;
 
 pub fn attach(server: &mut Server<App>) {
     server.route(Method::GET, "/api/ip", |ctx| {

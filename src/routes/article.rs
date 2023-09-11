@@ -5,14 +5,13 @@ use std::{
 };
 
 use afire::{
-    extension::serve_static, prelude::MiddleResult, Content, Method, Middleware, Request, Response,
+    extension::{serve_static, RealIp}, prelude::MiddleResult, Content, Method, Middleware, Request, Response,
     Server,
 };
 
 use crate::{
     app::App,
     assets::{self, WRITING},
-    common::RealIp,
 };
 
 struct Article(pub Arc<App>);

@@ -1,7 +1,3 @@
-use std::net::IpAddr;
-
-use afire::Request;
-
 const FILE_SIZES: &[&str] = &["B", "KB", "MB", "GB", "TB", "PB"];
 const TIME_UNITS: &[(&str, u16)] = &[
     ("second", 60),
@@ -50,27 +46,4 @@ pub fn gcd(a: usize, b: usize) -> usize {
         return a;
     }
     gcd(b, a % b)
-}
-
-pub trait RealIp {
-    fn real_ip(&self) -> IpAddr;
-}
-
-impl RealIp for Request {
-    fn real_ip(&self) -> IpAddr {
-        let mut ip = self.address.ip();
-
-        // If Ip is Localhost and 'X-Forwarded-For' Header is present
-        // Use that as Ip
-        if ip.is_loopback() && self.headers.has("X-Forwarded-For") {
-            ip = self
-                .headers
-                .get("X-Forwarded-For")
-                .unwrap()
-                .parse()
-                .unwrap();
-        }
-
-        ip
-    }
 }

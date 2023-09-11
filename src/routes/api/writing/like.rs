@@ -1,7 +1,7 @@
-use afire::{Method, Server};
+use afire::{Method, Server, extension::RealIp};
 use serde::Deserialize;
 
-use crate::{app::App, common::RealIp};
+use crate::app::App;
 
 #[derive(Deserialize)]
 struct RequestData {
