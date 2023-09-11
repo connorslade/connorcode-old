@@ -5,8 +5,9 @@ use std::{
 };
 
 use afire::{
-    extension::{serve_static, RealIp}, prelude::MiddleResult, Content, Method, Middleware, Request, Response,
-    Server,
+    extensions::{serve_static, RealIp},
+    prelude::MiddleResult,
+    Content, Method, Middleware, Request, Response, Server,
 };
 
 use crate::{

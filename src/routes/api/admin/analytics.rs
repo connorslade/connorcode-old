@@ -91,12 +91,12 @@ pub fn attach(server: &mut Server<App>) {
                 .status(425)
                 .reason("Too Early")
                 .text(r#"{"error": "No Data Yet"}"#)
-                .header("Content-Type", "application/json")
+                .header(("Content-Type", "application/json"))
                 .send()?);
         }
 
         ctx.text(json!(all_data))
-            .header("Content-Type", "application/json")
+            .header(("Content-Type", "application/json"))
             .send()?;
         Ok(())
     });

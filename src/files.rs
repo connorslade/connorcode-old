@@ -3,7 +3,7 @@ use std::path::{Path, PathBuf};
 use std::sync::Arc;
 
 use afire::internal::encoding::url;
-use afire::HeaderType;
+use afire::HeaderName;
 use afire::{
     middleware::{MiddleResult, Middleware},
     trace, Method, Request, Response, Server,
@@ -45,9 +45,7 @@ impl Middleware for Files {
     }
 
     fn pre(&self, req: &mut Request) -> MiddleResult {
-        let Some(mut file_path) = url::decode(&req.path) else {
-            return MiddleResult::Continue;
-        };
+        let mut file_path = url::decode(&req.path);
 
         if !file_path.starts_with("/files") || req.method != Method::GET {
             return MiddleResult::Continue;
@@ -137,7 +135,7 @@ impl Middleware for Files {
                             .replace("{{FILES}}", &out)
                             .replace("{{VERSION}}", VERSION),
                     )
-                    .header("Content-Type", "text/html; charset=utf-8"),
+                    .header(("Content-Type", "text/html; charset=utf-8")),
             );
         }
 
@@ -152,10 +150,10 @@ impl Middleware for Files {
             }
         };
 
-        let mut res = Response::new().header(
-            HeaderType::ContentType,
+        let mut res = Response::new().header((
+            HeaderName::ContentType,
             get_content_type(path).unwrap_or("application/octet-stream"),
-        );
+        ));
         if let Ok(i) = file.metadata() {
             res.headers.add("Content-Length", i.len().to_string());
         }
@@ -164,7 +162,7 @@ impl Middleware for Files {
             if let Some(i) = res
                 .headers
                 .iter()
-                .position(|x| x.name == HeaderType::ContentType)
+                .position(|x| x.name == HeaderName::ContentType)
             {
                 res.headers.remove(i);
             }

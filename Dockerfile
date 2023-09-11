@@ -1,4 +1,4 @@
-FROM rust:1.69
+FROM rust:1.70.0
 
 LABEL org.opencontainers.image.source = "https://github.com/Basicprogrammer10/connorcode"
 

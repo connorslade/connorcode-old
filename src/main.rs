@@ -86,6 +86,6 @@ fn main() -> Result<()> {
     logger::Logger.attach(&mut server);
     ctrlc::init(app);
 
-    server.start().unwrap();
+    server.run()?;
     Ok(())
 }

@@ -1,6 +1,7 @@
 use afire::{
+    extensions::RealIp,
     middleware::{MiddleResult, Middleware},
-    Request, extension::RealIp,
+    Request,
 };
 
 pub struct Logger;

@@ -5,7 +5,8 @@ use crate::{app::App, assets::WRITING_HOME};
 
 pub fn attach(server: &mut Server<App>) {
     server.route(Method::GET, "/writing", |ctx| {
-        let articles = ctx.app().articles.articles.read();
+        let app = ctx.app();
+        let articles = app.articles.articles.read();
         let mut article_vec = articles.iter().map(|x| x.1).collect::<Vec<_>>();
         article_vec.sort_unstable_by(|x, y| y.epoch.cmp(&x.epoch));
 

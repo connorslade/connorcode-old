@@ -15,8 +15,8 @@ pub fn attach(server: &mut Server<App>) {
         for _ in 1..5 {
             if let Some((i, j)) = get_random_image() {
                 ctx.stream(i)
-                    .header("Content-Type", "image/png")
-                    .header("X-Image-Id", j)
+                    .header(("Content-Type", "image/png"))
+                    .header(("X-Image-Id", j))
                     .send()?;
                 return Ok(());
             }

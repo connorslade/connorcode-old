@@ -1,4 +1,4 @@
-use afire::{extension::RealIp, Content, Method, Server};
+use afire::{extensions::RealIp, Content, Method, Server};
 
 use crate::app::App;
 

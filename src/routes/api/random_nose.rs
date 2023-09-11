@@ -34,8 +34,8 @@ pub fn attach(server: &mut Server<App>) {
 
         let file = File::open(random_nose).context("Error Opening Nose")?;
         ctx.stream(file)
-            .header("Content-Type", get_type(random_nose_str))
-            .header("X-Nose-ID", random_nose_str)
+            .header(("Content-Type", get_type(random_nose_str)))
+            .header(("X-Nose-ID", random_nose_str))
             .send()?;
         Ok(())
     });

@@ -1,4 +1,4 @@
-use afire::{Method, Server, extension::RealIp};
+use afire::{extensions::RealIp, Method, Server};
 use serde::Deserialize;
 
 use crate::app::App;

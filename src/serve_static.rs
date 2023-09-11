@@ -1,7 +1,7 @@
 use std::fs;
 
-use afire::HeaderType;
-use afire::{extension::ServeStatic, Middleware, Response, Server};
+use afire::HeaderName;
+use afire::{extensions::ServeStatic, Middleware, Response, Server};
 
 use crate::app::App;
 use crate::VERSION;
@@ -31,9 +31,9 @@ pub fn attach(server: &mut Server<App>) {
     ServeStatic::new(data_dir.to_string_lossy())
         // Set content encoding to utf-8
         .middleware(|_req, res, _suc| {
-            if let Some(i) = res.headers.get_mut(HeaderType::ContentType) {
+            if let Some(i) = res.headers.get_mut(HeaderName::ContentType) {
                 if i == "text/html" {
-                    i.push_str("; charset=utf-8");
+                    *i = "text/html; charset=utf-8".into();
                 }
             }
         })
@@ -65,5 +65,5 @@ pub fn not_found(path: &str) -> Response {
                 .replace("{{VERSION}}", VERSION)
                 .replace("{{PAGE}}", path),
         )
-        .header("Content-Type", "text/html")
+        .header(("Content-Type", "text/html"))
 }

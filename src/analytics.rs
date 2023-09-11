@@ -6,10 +6,9 @@ use std::sync::Arc;
 use std::sync::Mutex;
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use afire::extension::RealIp;
+use afire::extensions::RealIp;
 use afire::trace;
 use afire::{
-    internal,
     middleware::{MiddleResult, Middleware},
     Request, Server,
 };
@@ -84,12 +83,14 @@ impl Analytics {
             .as_secs();
 
         let ip = req.real_ip().to_string();
-        let path = internal::path::normalize_path(req.path.to_owned());
-        let agent = req.headers.get("User-Agent").map(|x| x.to_owned());
-        let referer = req.headers.get("Referer").map(|x| x.to_owned());
+        let agent = req
+            .headers
+            .get("User-Agent")
+            .map(|x| x.clone().into_owned());
+        let referer = req.headers.get("Referer").map(|x| x.clone().into_owned());
         let stats = Stats {
             time,
-            path,
+            path: req.path.to_owned(),
             method: Method::from_afire(req.method),
             user_agent: agent,
             referer,
