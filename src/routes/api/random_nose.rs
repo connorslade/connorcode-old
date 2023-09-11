@@ -12,7 +12,12 @@ pub fn attach(server: &mut Server<App>) {
     let mut noses = Vec::new();
     let data_dir = &server.app().config.data_dir;
 
-    let all_noses = fs::read_dir(data_dir.join("assets/Noses")).expect("Error Reading Nose Dir");
+    let nose_dir = data_dir.join("assets/Noses");
+    if !nose_dir.exists() {
+        return;
+    }
+
+    let all_noses = fs::read_dir(nose_dir).expect("Error Reading Nose Dir");
 
     for nose in all_noses {
         let nose = nose.expect("Error getting subfiles").path();
