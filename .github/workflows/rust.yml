@@ -1,7 +1,9 @@
-name: CI
+name: Build
+
 on: [push, pull_request]
+
 jobs:
-  buildAndTest:
+  build:
     strategy:
       fail-fast: false
       matrix:
