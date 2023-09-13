@@ -128,6 +128,7 @@ impl Middleware for Article {
 
             let doc_render = comrak::markdown_to_html(data, &opt);
             let html = WRITING
+                .replace("{{TITLE}}", &doc.title)
                 .replace("{{VERSION}}", crate::VERSION)
                 .replace("{{DOCUMENT}}", &doc_render)
                 .replace("{{AUTHOR}}", &doc.author)

@@ -64,7 +64,7 @@ impl Article {
 
         let cfg = Config::new()
             .text(parts.next().unwrap())
-            .expect("Error Parseing a Writing Config");
+            .expect("Error parsing a writing config");
 
         let words = parts.next().unwrap().split_whitespace().count();
 
