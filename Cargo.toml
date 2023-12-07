@@ -9,7 +9,7 @@ members = ["builder"]
 [dependencies]
 # My Crates :P
 # afire = { version = "3.0.0-alpha.2", features = ["extensions", "tracing"] }
-afire = { git = "https://github.com/Basicprogrammer10/afire", branch = "dev", features = [
+afire = { git = "https://github.com/Basicprogrammer10/afire", rev = "25f71ca51867778d13a703daecf9ba3128d3cde3", features = [
     "extensions",
     "tracing",
 ] }
