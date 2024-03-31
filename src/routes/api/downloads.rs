@@ -18,13 +18,15 @@ pub fn attach(server: &mut Server<App>) {
 
     server.route(Method::GET, "/api/downloads", move |ctx| {
         let services = Service::from_query(&ctx.req.query);
+        let mut out = json!({});
 
         let mut downloads = 0;
         let mut cache = cache.force_lock();
-        for service in services {
+        for service in &services {
             if let Some(i) = cache.get(&service) {
                 if !i.older_than(CACHE_DURATION) {
                     downloads += i.get();
+                    out[service.service.name()] = (*i.get()).into();
                     continue;
                 }
             }
@@ -32,20 +34,26 @@ pub fn attach(server: &mut Server<App>) {
             let i = service.get_downloads()?;
             cache.insert(service.clone(), Cached::new(i));
             downloads += i;
+            out[service.service.name()] = i.into();
         }
 
-        ctx.text(json!({ "downloads": downloads }))
-            .content(Content::JSON)
-            .send()?;
+        out["total"] = downloads.into();
+        ctx.text(out).content(Content::JSON).send()?;
         Ok(())
     });
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, Hash)]
-enum Service {
-    Github { repo: String },
-    Modrinth { project: String },
-    CurseForge { project: String },
+enum ServiceType {
+    Github,
+    Modrinth,
+    CurseForge,
+}
+
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
+struct Service {
+    service: ServiceType,
+    project: String,
 }
 
 struct Cached<T> {
@@ -53,34 +61,39 @@ struct Cached<T> {
     last_updated: Instant,
 }
 
+impl ServiceType {
+    const ALL: [Self; 3] = [Self::Github, Self::Modrinth, Self::CurseForge];
+
+    fn name(&self) -> &str {
+        match self {
+            Self::Github => "github",
+            Self::Modrinth => "modrinth",
+            Self::CurseForge => "curseforge",
+        }
+    }
+}
+
 impl Service {
     fn from_query(query: &Query) -> Vec<Self> {
         let mut services = Vec::new();
-        if let Some(repo) = query.get("github") {
-            services.push(Self::Github {
-                repo: repo.to_string(),
-            });
-        }
 
-        if let Some(project) = query.get("modrinth") {
-            services.push(Self::Modrinth {
-                project: project.to_string(),
-            });
-        }
-
-        if let Some(project) = query.get("curseforge") {
-            services.push(Self::CurseForge {
-                project: project.to_string(),
-            });
+        for service in ServiceType::ALL.iter() {
+            if let Some(project) = query.get(service.name()) {
+                services.push(Self {
+                    service: service.clone(),
+                    project: project.to_string(),
+                });
+            }
         }
 
         services
     }
 
     fn get_downloads(&self) -> Result<u64> {
-        match self {
-            Self::Github { repo } => {
-                let url = format!("https://api.github.com/repos/{repo}/releases");
+        let project = &self.project;
+        match self.service {
+            ServiceType::Github => {
+                let url = format!("https://api.github.com/repos/{project}/releases");
                 let json = ureq::get(&url).call()?.into_json::<Value>()?;
                 let downloads = json
                     .as_array()
@@ -97,12 +110,12 @@ impl Service {
                     .sum::<u64>();
                 Ok(downloads)
             }
-            Self::Modrinth { project } => {
+            ServiceType::Modrinth => {
                 let url = format!("https://api.modrinth.com/v2/project/{project}");
                 let json = ureq::get(&url).call()?.into_json::<Value>()?;
                 Ok(json["downloads"].as_u64().unwrap_or(0))
             }
-            Self::CurseForge { project } => {
+            ServiceType::CurseForge => {
                 let url = format!("https://api.cfwidget.com/minecraft/mc-mods/{project}/download");
                 let json = ureq::get(&url).call()?.into_json::<Value>()?;
                 Ok(json["downloads"]["total"].as_u64().unwrap_or(0))
