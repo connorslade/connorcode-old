@@ -32,7 +32,7 @@ regex = "1.7.3"
 sha2 = "0.10.6"
 sys-info = "0.9.1"
 unindent = "0.2.1"
-ureq = "2.6.2"
+ureq = { version = "2.6.2", features = ["json"] }
 urlencoding = "2.1.2"
 comrak = "0.18.0"
 anyhow = "1.0.75"

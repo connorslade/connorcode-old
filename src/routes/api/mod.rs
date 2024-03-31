@@ -3,6 +3,7 @@ use afire::Server;
 use crate::app::App;
 
 mod admin;
+mod downloads;
 mod git;
 mod headers;
 mod ip;
@@ -14,6 +15,7 @@ mod writing;
 
 pub fn attach(server: &mut Server<App>) {
     admin::attach(server);
+    downloads::attach(server);
     git::attach(server);
     headers::attach(server);
     ip::attach(server);
