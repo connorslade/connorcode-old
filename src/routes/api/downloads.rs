@@ -9,7 +9,7 @@ use ahash::{HashMap, HashMapExt};
 use anyhow::Result;
 use serde_json::{json, Value};
 
-use crate::app::App;
+use crate::{app::App, common::best_number};
 
 const CACHE_DURATION: Duration = Duration::from_secs(60 * 60 * 12);
 
@@ -36,8 +36,10 @@ pub fn attach(server: &mut Server<App>) {
             downloads += i;
             out[service.service.name()] = i.into();
         }
+        drop(cache);
 
         out["total"] = downloads.into();
+        out["total-human"] = best_number(downloads).into();
         ctx.text(out).content(Content::JSON).send()?;
         Ok(())
     });

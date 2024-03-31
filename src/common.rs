@@ -1,4 +1,5 @@
 const FILE_SIZES: &[&str] = &["B", "KB", "MB", "GB", "TB", "PB"];
+const NUMBER_ABBREVIATIONS: &[&str] = &["", "k", "m", "b", "t", "q"];
 const TIME_UNITS: &[(&str, u16)] = &[
     ("second", 60),
     ("minute", 60),
@@ -39,6 +40,23 @@ pub fn best_time(secs: u64) -> String {
     }
 
     format!("{} years", secs.round())
+}
+
+pub fn best_number(num: u64) -> String {
+    let mut num = num as f64;
+
+    for i in NUMBER_ABBREVIATIONS {
+        if num < 1000.0 {
+            return format!("{}{}", (num * 10.0).round() / 10.0, i);
+        }
+        num /= 1000.0;
+    }
+
+    format!(
+        "{}{}",
+        (num * 10.0).round() / 10.0,
+        NUMBER_ABBREVIATIONS.last().unwrap()
+    )
 }
 
 pub fn gcd(a: usize, b: usize) -> usize {
